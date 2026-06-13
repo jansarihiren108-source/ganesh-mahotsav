@@ -592,7 +592,7 @@ function pc(ii,li,v){document.getElementById(ii).value=v;hc(li);}
 function toast(m,t='ts'){const el=document.getElementById('toast');el.textContent=m;el.className=`toast show ${t}`;setTimeout(()=>el.classList.remove('show'),2800);}
 function fmt(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
 function fD(d){if(!d)return '-';const p=d.split('-');return `${p[2]}/${p[1]}/${p[0]}`;}
-function fDGu(d){if(!d)return '';const dt=new Date(d+'T00:00:00');return `${dt.getDate()} ${GU_MONTHS[dt.getMonth()]} (${GU_DAYS[dt.getDay()]})`;}
+function fDGu(d){if(!d)return '';const p=d.split('-').map(Number);const dt=new Date(p[0],p[1]-1,p[2]);return `${dt.getDate()} ${GU_MONTHS[dt.getMonth()]} (${GU_DAYS[dt.getDay()]})`;}
 function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
 function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
@@ -753,10 +753,16 @@ async function saveEvent(){
 // -------- MAHOTSAV RENDER --------
 function getMahotsavDates(){
   const c=cfg();if(!c.start||!c.end)return[];
-  const dates=[];let d=new Date(c.start+'T00:00:00');const end=new Date(c.end+'T00:00:00');
-  while(d<=end){dates.push(d.toISOString().split('T')[0]);d=new Date(d.getTime()+86400000);}
+  const dates=[];
+  // Parse date parts directly to avoid timezone shift
+  function parseLocal(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+  function toYMD(dt){const y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');return `${y}-${m}-${d}`;}
+  let d=parseLocal(c.start);const end=parseLocal(c.end);
+  while(d<=end){dates.push(toYMD(d));d=new Date(d.getTime()+86400000);}
   return dates;
 }
+function toYMD(dt){const y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');return `${y}-${m}-${d}`;}
+function parseLocal(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
 function renderMahotsav(){
   const c=cfg();const dates=getMahotsavDates();
   // Header
@@ -773,7 +779,7 @@ function renderDayStrip(){
   const dates=getMahotsavDates();
   const strip=document.getElementById('day-strip');
   strip.innerHTML=dates.map((d,i)=>{
-    const dt=new Date(d+'T00:00:00');
+    const p=d.split('-').map(Number);const dt=new Date(p[0],p[1]-1,p[2]);
     const dayAartis=aartis.filter(x=>x.event_date===d);
     const dayEvents=events.filter(x=>x.event_date===d);
     const hasDots=dayAartis.length>0||dayEvents.length>0;
@@ -843,8 +849,9 @@ function renderWAPreview(){
   const dates=getMahotsavDates();
   const was=document.getElementById('wa-section');
   if(!dates.length){was.style.display='none';return;}
-  // Find tomorrow's date relative to today, or next day in mahotsav
-  const today=new Date().toISOString().split('T')[0];
+  // Fix today using local date to avoid timezone issue
+  const now=new Date();
+  const today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const todayIdx=dates.indexOf(today);
   let tomorrowDate=null,tomorrowIdx=-1;
   if(todayIdx>=0&&todayIdx<dates.length-1){tomorrowDate=dates[todayIdx+1];tomorrowIdx=todayIdx+1;}
@@ -852,23 +859,53 @@ function renderWAPreview(){
   if(!tomorrowDate){was.style.display='none';return;}
   was.style.display='block';
   document.getElementById('wa-day-label').textContent=fDGu(tomorrowDate)+' (Day '+(tomorrowIdx+1)+')';
-  const c=cfg();
   const tmAartis=aartis.filter(x=>x.event_date===tomorrowDate).sort((a,b)=>(a.aarti_time||'').localeCompare(b.aarti_time||''));
   const tmEvents=events.filter(x=>x.event_date===tomorrowDate).sort((a,b)=>(a.event_time||'').localeCompare(b.event_time||''));
-  let msg=`🕉 *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*\n*૨૫મો ગણેશ મહોત્સવ*\n\n`;
-  msg+=`📅 *આવતીકાલ — ${fDGu(tomorrowDate)}*\n*(Day ${tomorrowIdx+1})*\n\n`;
+  const dayNum=tomorrowIdx+1;
+  const totalDays=dates.length;
+
+  // 25th anniversary special decorations
+  const headerLines=[
+    `🎊✨ *ગણપતિ બાપ્પા મોર્યા* ✨🎊`,
+    ``,
+    `🕉 *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ* 🕉`,
+    `🏆 *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee* 🏆`,
+    `🎉 *25 વર્ષની ઉજવણી — એક ઐતિહાસિક પ્રસંગ!* 🎉`,
+    ``,
+    `${'🟠'.repeat(Math.min(dayNum,10))} Day ${dayNum}/${totalDays}`,
+    `📅 *આવતીકાલ — ${fDGu(tomorrowDate)}*`,
+    ``,
+  ];
+
+  const footerLines=[
+    ``,
+    `〰️〰️〰️〰️〰️〰️〰️〰️〰️〰️`,
+    `🙏 *ગણપતિ બાપ્પા મોર્યા!*`,
+    `🙏 *મંગળ મૂર્તિ મોર્યા!*`,
+    ``,
+    `🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺`,
+    `✨ *Silver Jubilee Ganesh Mahotsav 2025* ✨`,
+  ];
+
+  let bodyLines=[];
   if(tmAartis.length>0){
-    msg+=`🔔 *આરતી Schedule:*\n`;
-    tmAartis.forEach(a=>{msg+=`• ${a.aarti_time||'--:--'} — ${a.aarti_name}${a.person_name?' ('+a.person_name+')':''}\n`;});
-    msg+='\n';
+    bodyLines.push(`🔔 *આરતી Schedule:*`);
+    bodyLines.push(`━━━━━━━━━━━━━━`);
+    tmAartis.forEach(a=>{bodyLines.push(`⏰ ${a.aarti_time||'--:--'} — *${a.aarti_name}*${a.person_name?'\n   👤 '+a.person_name:''}`);});
+    bodyLines.push('');
   }
   if(tmEvents.length>0){
-    msg+=`🎪 *પ્રસંગ / Events:*\n`;
-    tmEvents.forEach(e=>{msg+=`• ${e.event_time||'--:--'} — ${e.event_name}${e.description?' ('+e.description+')':''}\n`;});
-    msg+='\n';
+    bodyLines.push(`🎪 *પ્રસંગ / Events:*`);
+    bodyLines.push(`━━━━━━━━━━━━━━`);
+    tmEvents.forEach(e=>{bodyLines.push(`🎯 ${e.event_time||'--:--'} — *${e.event_name}*${e.description?'\n   📌 '+e.description:''}`);});
+    bodyLines.push('');
   }
-  if(tmAartis.length===0&&tmEvents.length===0){msg+=`ℹ️ કાલ માટે schedule ઉમેરવામાં આવ્યો નથી.\n\n`;}
-  msg+=`🙏 *ગણપતિ બાપ્પા મોર્યા!*\n— ${c.an} (${c.an.split(' ')[0]})`;
+  if(tmAartis.length===0&&tmEvents.length===0){
+    bodyLines.push(`ℹ️ *કાલ માટે schedule ટૂંક સમયમાં અપડેટ થશે.*`);
+    bodyLines.push('');
+  }
+
+  const msg=[...headerLines,...bodyLines,...footerLines].join('\n');
   document.getElementById('wa-preview').textContent=msg;
 }
 function copyWA(){
