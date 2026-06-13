@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --orange: #e65c00;
+    --orange-light: #fff3eb;
+    --orange-mid: #ff8c42;
+    --gold: #f4a400;
+    --green: #1a7a4a;
+    --green-light: #eaf7f0;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --blue: #1a5fa8;
+    --blue-light: #e8f1fb;
+    --amber: #b5620a;
+    --amber-light: #fef3e2;
+    --gray: #6b7280;
+    --gray-light: #f8f8f8;
+    --border: #e5e7eb;
+    --text: #1a1a1a;
+    --text2: #555;
+    --white: #fff;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f5f3ef; color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .app-header {
+    background: linear-gradient(135deg, #8B1A1A 0%, #c0392b 40%, #e65c00 100%);
+    color: #fff;
+    text-align: center;
+    padding: 18px 16px 14px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .app-header .om { font-size: 22px; letter-spacing: 2px; opacity: .9; margin-bottom: 3px; }
+  .app-header h1 { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
+  .app-header .sub { font-size: 12px; opacity: .85; margin-top: 3px; letter-spacing: .5px; }
+
+  /* TABS */
+  .tabs { display: flex; background: #fff; border-bottom: 1.5px solid var(--border); overflow-x: auto; }
+  .tab-btn {
+    flex: 1; min-width: 70px; padding: 11px 8px 10px;
+    border: none; background: none; cursor: pointer;
+    font-size: 12px; color: var(--gray); font-weight: 500;
+    border-bottom: 2.5px solid transparent; transition: all .15s;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .tab-btn .ti { font-size: 17px; }
+  .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); background: #fff8f4; }
+  .tab-btn:hover:not(.active) { background: #f9f9f9; color: var(--text); }
+
+  /* PAGES */
+  .page { display: none; padding: 14px; max-width: 900px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* METRIC CARDS */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 10px; margin-bottom: 14px; }
+  .metric {
+    background: var(--white); border-radius: var(--radius); padding: 13px 14px;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .metric-label { font-size: 11px; color: var(--gray); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+  .metric-value { font-size: 20px; font-weight: 700; }
+  .metric-value.green { color: var(--green); }
+  .metric-value.red { color: var(--red); }
+  .metric-value.blue { color: var(--blue); }
+  .metric-value.amber { color: var(--amber); }
+
+  /* CARDS */
+  .card {
+    background: var(--white); border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 7px;
+    padding-bottom: 9px; border-bottom: 1px solid var(--border);
+  }
+  .card-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block;
+  }
+  .dot-green { background: var(--green); }
+  .dot-red { background: var(--red); }
+  .dot-amber { background: var(--amber); }
+  .dot-blue { background: var(--blue); }
+
+  /* FORM */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group label {
+    display: block; font-size: 12px; color: var(--gray);
+    margin-bottom: 4px; font-weight: 500;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 8px 10px; font-size: 13px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: #fff; color: var(--text); outline: none;
+    transition: border .15s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--orange-mid); box-shadow: 0 0 0 2px rgba(230,92,0,.1);
+  }
+  .combo-wrap { position: relative; }
+  .combo-list {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); max-height: 170px;
+    overflow-y: auto; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .combo-item { padding: 8px 11px; font-size: 13px; cursor: pointer; color: var(--text); }
+  .combo-item:hover { background: var(--orange-light); color: var(--orange); }
+
+  /* BUTTONS */
+  .btn {
+    padding: 8px 16px; font-size: 13px; font-weight: 600;
+    border-radius: var(--radius-sm); cursor: pointer;
+    border: none; transition: all .15s; display: inline-flex;
+    align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--orange); color: #fff; }
+  .btn-primary:hover { background: #c94e00; }
+  .btn-export { background: var(--blue); color: #fff; font-size: 12px; padding: 7px 13px; }
+  .btn-export:hover { background: #144e8a; }
+  .btn-export.green { background: var(--green); }
+  .btn-export.green:hover { background: #145a38; }
+  .btn-success { background: var(--green); color: #fff; font-size: 12px; padding: 5px 11px; }
+  .btn-success:hover { background: #145a38; }
+  .btn-del { background: none; border: none; cursor: pointer; color: #bbb; padding: 3px 5px; font-size: 15px; }
+  .btn-del:hover { color: var(--red); }
+  .btn-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+
+  /* TABLE */
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 7px 10px; font-size: 11px; font-weight: 600; color: var(--gray); background: var(--gray-light); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; color: var(--text); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-gray { background: var(--gray-light); color: var(--gray); }
+
+  /* AGENCY ROW */
+  .agency-row {
+    background: var(--gray-light); border-radius: var(--radius-sm);
+    padding: 11px 13px; margin-bottom: 9px;
+    border: 1px solid var(--border);
+  }
+  .agency-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 9px; }
+  .agency-3col .col-label { font-size: 10px; color: var(--gray); margin-bottom: 2px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+  .agency-3col .col-val { font-size: 14px; font-weight: 700; }
+
+  /* MISC */
+  .empty { text-align: center; padding: 26px; color: var(--gray); font-size: 13px; }
+  .section-head { font-size: 11px; font-weight: 700; color: var(--gray); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: .05em; }
+  .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .flex-gap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .export-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+  .loading { text-align: center; padding: 30px; color: var(--gray); font-size: 14px; }
+  .toast {
+    position: fixed; bottom: 20px; right: 20px; z-index: 999;
+    background: #222; color: #fff; padding: 10px 18px;
+    border-radius: var(--radius-sm); font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: opacity .3s; opacity: 0; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+  .toast.success { background: var(--green); }
+  .toast.error { background: var(--red); }
+
+  @media (max-width: 500px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-row.three { grid-template-columns: 1fr 1fr; }
+    .agency-3col { grid-template-columns: 1fr 1fr; }
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="om">🕉</div>
+  <h1>શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</h1>
+  <div class="sub">આયોજિત ૨૫મો ગણેશ મહોત્સવ — હિસાબ વ્યવસ્થાપન</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('dashboard')">
+    <span style="font-size:17px">⊞</span><span>ડૅશબોર્ડ</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('aavak')">
+    <span style="font-size:17px">↗</span><span>આવક</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('javak')">
+    <span style="font-size:17px">↙</span><span>જાવક</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('pending')">
+    <span style="font-size:17px">⏰</span><span>પેન્ડિંગ</span>
+  </button>
+  <button class="tab-btn" onclick="showTab('agency')">
+    <span style="font-size:17px">🏪</span><span>એજન્સી</span>
+  </button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="metric-grid" id="metrics">
+    <div class="loading">Loading...</div>
+  </div>
+  <div class="export-bar">
+    <span style="font-size:12px;color:var(--gray);font-weight:500">Export:</span>
+    <button class="btn btn-export green" onclick="exportExcel('all')">📊 Full Report Excel</button>
+    <button class="btn btn-export" onclick="exportCSV()">📄 CSV Download</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>આવક એન્ટ્રીઝ</div>
+    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>રકમ (₹)</th></tr></thead><tbody id="dash-inc"></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot dot-red"></span>જાવક એન્ટ્રીઝ</div>
+    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>વિવરણ</th><th>પ્રકાર</th><th>રકમ (₹)</th></tr></thead><tbody id="dash-exp"></tbody></table></div>
+  </div>
+</div>
+
+<!-- AAVAK -->
+<div id="page-aavak" class="page">
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>નવી આવક એન્ટ્રી</div>
+    <div class="form-row">
+      <div class="form-group"><label>તારીખ</label><input type="date" id="in-date"></div>
+      <div class="form-group"><label>પ્રકાર</label>
+        <div class="combo-wrap">
+          <input type="text" id="in-type" placeholder="પ્રકાર..." autocomplete="off"
+            oninput="showCombo('in-type','in-type-list',incomeTypes)"
+            onfocus="showCombo('in-type','in-type-list',incomeTypes)"
+            onblur="setTimeout(()=>hideCombo('in-type-list'),180)">
+          <div class="combo-list" id="in-type-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group"><label>દાતાર / Source નું નામ</label>
+        <input type="text" id="in-name" placeholder="જેમ કે: રમેશ પટેલ, XYZ Company...">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>રકમ (₹)</label><input type="number" id="in-amount" placeholder="0" min="0"></div>
+      <div class="form-group"><label>નોંધ (Optional)</label><input type="text" id="in-note" placeholder="..."></div>
+    </div>
+    <div class="btn-bar">
+      <button class="btn btn-primary" onclick="addIncome()">💾 સેવ કરો</button>
+      <button class="btn btn-export" onclick="exportExcel('income')">📊 Excel Export</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>બધી આવક એન્ટ્રીઝ</div>
+    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>રકમ (₹)</th><th>નોંધ</th><th></th></tr></thead><tbody id="income-tbody"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody></table></div>
+  </div>
+</div>
+
+<!-- JAVAK -->
+<div id="page-javak" class="page">
+  <div class="card">
+    <div class="card-title"><span class="dot dot-red"></span>નવી જાવક એન્ટ્રી</div>
+    <div class="form-row">
+      <div class="form-group"><label>તારીખ</label><input type="date" id="ex-date"></div>
+      <div class="form-group"><label>પ્રકાર</label>
+        <div class="combo-wrap">
+          <input type="text" id="ex-type" placeholder="પ્રકાર..."
+            oninput="showCombo('ex-type','ex-type-list',expenseTypes)"
+            onfocus="showCombo('ex-type','ex-type-list',expenseTypes)"
+            onblur="setTimeout(()=>hideCombo('ex-type-list'),180)">
+          <div class="combo-list" id="ex-type-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group"><label>વિવરણ</label><input type="text" id="ex-desc" placeholder="શું ખર્ચ થયો..."></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>રકમ (₹)</label><input type="number" id="ex-amount" placeholder="0" min="0"></div>
+      <div class="form-group"><label>નોંધ (Optional)</label><input type="text" id="ex-note" placeholder="..."></div>
+    </div>
+    <div class="btn-bar">
+      <button class="btn btn-primary" onclick="addExpense()">💾 સેવ કરો</button>
+      <button class="btn btn-export" onclick="exportExcel('expense')">📊 Excel Export</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot dot-red"></span>બધી જાવક એન્ટ્રીઝ</div>
+    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>વિવરણ</th><th>પ્રકાર</th><th>રકમ (₹)</th><th>નોંધ</th><th></th></tr></thead><tbody id="expense-tbody"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody></table></div>
+  </div>
+</div>
+
+<!-- PENDING -->
+<div id="page-pending" class="page">
+  <div class="card">
+    <div class="card-title"><span class="dot dot-amber"></span>પેન્ડિંગ Amount એન્ટ્રી</div>
+    <div class="form-row full">
+      <div class="form-group"><label>નામ</label><input type="text" id="pend-name" placeholder="જેની પાસે રકમ આવવાની છે..."></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>પેન્ડિંગ રકમ (₹)</label><input type="number" id="pend-amount" placeholder="0" min="0"></div>
+      <div class="form-group"><label>પ્રકાર</label>
+        <div class="combo-wrap">
+          <input type="text" id="pend-type" placeholder="પ્રકાર..."
+            oninput="showCombo('pend-type','pend-type-list',pendingTypes)"
+            onfocus="showCombo('pend-type','pend-type-list',pendingTypes)"
+            onblur="setTimeout(()=>hideCombo('pend-type-list'),180)">
+          <div class="combo-list" id="pend-type-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="pend-date"></div>
+      <div class="form-group"><label>નોંધ</label><input type="text" id="pend-note" placeholder="..."></div>
+    </div>
+    <div class="btn-bar">
+      <button class="btn btn-primary" onclick="addPending()">💾 સેવ કરો</button>
+      <button class="btn btn-export" onclick="exportExcel('pending')">📊 Excel Export</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot dot-amber"></span>પેન્ડિંગ List</div>
+    <div id="pending-list"><div class="empty">Loading...</div></div>
+  </div>
+</div>
+
+<!-- AGENCY -->
+<div id="page-agency" class="page">
+  <div class="card">
+    <div class="card-title"><span class="dot dot-blue"></span>Agency / Vendor Final એન્ટ્રી</div>
+    <div class="form-row">
+      <div class="form-group"><label>Agency / Vendor નું નામ</label><input type="text" id="ag-name" placeholder="DJ Sound, Decoration Wala..."></div>
+      <div class="form-group"><label>સેવા પ્રકાર</label>
+        <div class="combo-wrap">
+          <input type="text" id="ag-type" placeholder="પ્રકાર..."
+            oninput="showCombo('ag-type','ag-type-list',agencyTypes)"
+            onfocus="showCombo('ag-type','ag-type-list',agencyTypes)"
+            onblur="setTimeout(()=>hideCombo('ag-type-list'),180)">
+          <div class="combo-list" id="ag-type-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row three">
+      <div class="form-group"><label>Final Date</label><input type="date" id="ag-date"></div>
+      <div class="form-group"><label>Total Final રકમ (₹)</label><input type="number" id="ag-total" placeholder="0" min="0"></div>
+      <div class="form-group"><label>Advance આપ્યું (₹)</label><input type="number" id="ag-advance" placeholder="0" min="0"></div>
+    </div>
+    <div class="form-row full">
+      <div class="form-group"><label>નોંધ</label><input type="text" id="ag-note" placeholder="કોઈ શરત, detail..."></div>
+    </div>
+    <div class="btn-bar">
+      <button class="btn btn-primary" onclick="addAgency()">💾 સેવ કરો</button>
+      <button class="btn btn-export" onclick="exportExcel('agency')">📊 Excel Export</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot dot-blue"></span>Agency / Vendor List</div>
+    <div id="agency-list"><div class="empty">Loading...</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://dplgawjfwevhhpymohqr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwbGdhd2pmd2V2aGhweW1vaHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMjk2MTIsImV4cCI6MjA5NjkwNTYxMn0.mWGHj27iKEnBY7FLlG81VC4qGtcUW4yLoXCL9ZjNaVE';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const incomeTypes  = ['દાન / Donation','Sponsorship','Stall કિરાયો','Ticket','Last Year બાકી','ભેટ','Other'];
+const expenseTypes = ['DJ','Decoration','પ્રસાદ','Light / વીજળી','Sound','Pandal','મૂર્તિ','Printing','ભોજ / જમણ','Puja Samagri','Transport','Other'];
+const pendingTypes = ['Last Year બાકી','Daan Promised','Sponsor','Other'];
+const agencyTypes  = ['DJ','Decoration','Light','Sound','Pandal','Catering','Photography','Tent House','Flower','Other'];
+
+let income=[], expense=[], pending=[], agencies=[];
+
+function showCombo(inputId, listId, items){
+  const val = document.getElementById(inputId).value.toLowerCase();
+  const list = document.getElementById(listId);
+  const filtered = items.filter(i => i.toLowerCase().includes(val));
+  if(!filtered.length){ list.style.display='none'; return; }
+  list.innerHTML = filtered.map(i =>
+    `<div class="combo-item" onmousedown="pickCombo('${inputId}','${listId}','${i.replace(/'/g,"\\'")}')">${i}</div>`
+  ).join('');
+  list.style.display = 'block';
+}
+function hideCombo(listId){ document.getElementById(listId).style.display='none'; }
+function pickCombo(inputId, listId, val){ document.getElementById(inputId).value=val; hideCombo(listId); }
+
+function toast(msg, type='success'){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  setTimeout(()=>{ el.classList.remove('show'); }, 2500);
+}
+
+function fmt(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
+function fmtD(d){ if(!d) return '-'; const p=d.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
+
+function setToday(){
+  const t = new Date().toISOString().split('T')[0];
+  ['in-date','ex-date','pend-date','ag-date'].forEach(id=>{
+    const el=document.getElementById(id); if(el && !el.value) el.value=t;
+  });
+}
+
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const idx = ['dashboard','aavak','javak','pending','agency'].indexOf(name);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  document.getElementById('page-'+name).classList.add('active');
+}
+
+/* ── LOAD ALL ── */
+async function loadAll(){
+  const [r1,r2,r3,r4] = await Promise.all([
+    sb.from('income').select('*').order('entry_date', {ascending:false}),
+    sb.from('expense').select('*').order('entry_date', {ascending:false}),
+    sb.from('pending_amount').select('*').order('created_at', {ascending:false}),
+    sb.from('agency').select('*').order('final_date', {ascending:false})
+  ]);
+  income   = r1.data || [];
+  expense  = r2.data || [];
+  pending  = r3.data || [];
+  agencies = r4.data || [];
+  render();
+}
+
+/* ── ADD INCOME ── */
+async function addIncome(){
+  const date   = document.getElementById('in-date').value;
+  const type   = document.getElementById('in-type').value.trim() || 'Other';
+  const name   = document.getElementById('in-name').value.trim();
+  const amount = parseFloat(document.getElementById('in-amount').value)||0;
+  const note   = document.getElementById('in-note').value.trim();
+  if(!name || !amount){ toast('નામ અને રકમ ફરજિયાત છે!','error'); return; }
+  const {error} = await sb.from('income').insert({entry_date:date, type, name, amount, note});
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  toast('આવક સેવ થઈ ✓');
+  document.getElementById('in-name').value='';
+  document.getElementById('in-amount').value='';
+  document.getElementById('in-note').value='';
+  await loadAll();
+}
+
+/* ── ADD EXPENSE ── */
+async function addExpense(){
+  const date   = document.getElementById('ex-date').value;
+  const type   = document.getElementById('ex-type').value.trim() || 'Other';
+  const desc   = document.getElementById('ex-desc').value.trim();
+  const amount = parseFloat(document.getElementById('ex-amount').value)||0;
+  const note   = document.getElementById('ex-note').value.trim();
+  if(!desc || !amount){ toast('વિવરણ અને રકમ ફરજિયાત છે!','error'); return; }
+  const {error} = await sb.from('expense').insert({entry_date:date, type, description:desc, amount, note});
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  toast('જાવક સેવ થઈ ✓');
+  document.getElementById('ex-desc').value='';
+  document.getElementById('ex-amount').value='';
+  document.getElementById('ex-note').value='';
+  await loadAll();
+}
+
+/* ── ADD PENDING ── */
+async function addPending(){
+  const name   = document.getElementById('pend-name').value.trim();
+  const amount = parseFloat(document.getElementById('pend-amount').value)||0;
+  const type   = document.getElementById('pend-type').value.trim() || 'Other';
+  const date   = document.getElementById('pend-date').value;
+  const note   = document.getElementById('pend-note').value.trim();
+  if(!name || !amount){ toast('નામ અને રકમ ફરજિયાત છે!','error'); return; }
+  const {error} = await sb.from('pending_amount').insert({name, amount, type, entry_date:date, note, received:false});
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  toast('પેન્ડિંગ સેવ થઈ ✓');
+  document.getElementById('pend-name').value='';
+  document.getElementById('pend-amount').value='';
+  document.getElementById('pend-note').value='';
+  await loadAll();
+}
+
+/* ── ADD AGENCY ── */
+async function addAgency(){
+  const name    = document.getElementById('ag-name').value.trim();
+  const type    = document.getElementById('ag-type').value.trim() || 'Other';
+  const date    = document.getElementById('ag-date').value;
+  const total   = parseFloat(document.getElementById('ag-total').value)||0;
+  const advance = parseFloat(document.getElementById('ag-advance').value)||0;
+  const note    = document.getElementById('ag-note').value.trim();
+  if(!name || !total){ toast('નામ અને Total ફરજિયાત છે!','error'); return; }
+  const {error} = await sb.from('agency').insert({name, type, final_date:date, total_amount:total, advance_amount:advance, note});
+  if(error){ toast('Error: '+error.message,'error'); return; }
+  toast('Agency સેવ થઈ ✓');
+  document.getElementById('ag-name').value='';
+  document.getElementById('ag-total').value='';
+  document.getElementById('ag-advance').value='';
+  document.getElementById('ag-note').value='';
+  await loadAll();
+}
+
+/* ── DELETE ── */
+async function delIncome(id){
+  if(!confirm('Delete કરવું?')) return;
+  await sb.from('income').delete().eq('id',id);
+  toast('Delete થઈ ✓'); await loadAll();
+}
+async function delExpense(id){
+  if(!confirm('Delete કરવું?')) return;
+  await sb.from('expense').delete().eq('id',id);
+  toast('Delete થઈ ✓'); await loadAll();
+}
+async function delPending(id){
+  if(!confirm('Delete કરવું?')) return;
+  await sb.from('pending_amount').delete().eq('id',id);
+  toast('Delete થઈ ✓'); await loadAll();
+}
+async function delAgency(id){
+  if(!confirm('Delete કરવું?')) return;
+  await sb.from('agency').delete().eq('id',id);
+  toast('Delete થઈ ✓'); await loadAll();
+}
+
+/* ── MARK RECEIVED ── */
+async function markReceived(id){
+  const p = pending.find(x=>x.id===id);
+  if(!p) return;
+  await sb.from('pending_amount').update({received:true}).eq('id',id);
+  const today = new Date().toISOString().split('T')[0];
+  await sb.from('income').insert({entry_date:today, type:'Pending Recovery', name:p.name, amount:p.amount, note:'Pending recover થયો'});
+  toast('પેન્ડિંગ recover — આવક માં ઉમેરાઈ ✓');
+  await loadAll();
+}
+
+/* ── RENDER ── */
+function render(){
+  const ti  = income.reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const tad = agencies.reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+  const te  = expense.reduce((s,x)=>s+parseFloat(x.amount||0),0) + tad;
+  const tp  = pending.filter(x=>!x.received).reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const bal = ti - te;
+
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric">
+      <div class="metric-label">↗ કુલ આવક</div>
+      <div class="metric-value green">${fmt(ti)}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">↙ કુલ જાવક</div>
+      <div class="metric-value red">${fmt(te)}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">💰 હાથ માં બાકી</div>
+      <div class="metric-value ${bal>=0?'blue':'red'}">${fmt(bal)}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">⏰ પેન્ડિંગ આવની</div>
+      <div class="metric-value amber">${fmt(tp)}</div>
+    </div>
+  `;
+
+  // Dashboard income
+  const di = document.getElementById('dash-inc');
+  di.innerHTML = income.length
+    ? [...income].map(x=>`<tr><td>${fmtD(x.entry_date)}</td><td>${x.name}</td><td><span class="badge badge-green">${x.type}</span></td><td style="font-weight:700;color:var(--green)">${fmt(x.amount)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty">કોઈ આવક નથી</td></tr>';
+
+  // Dashboard expense (expense + agency advances combined)
+  const allExp = [
+    ...expense.map(x=>({date:x.entry_date, desc:x.description, type:x.type, amount:x.amount})),
+    ...agencies.map(x=>({date:x.final_date, desc:x.name+' (Advance)', type:x.type, amount:x.advance_amount}))
+  ].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const de = document.getElementById('dash-exp');
+  de.innerHTML = allExp.length
+    ? allExp.map(x=>`<tr><td>${fmtD(x.date)}</td><td>${x.desc}</td><td><span class="badge badge-red">${x.type}</span></td><td style="font-weight:700;color:var(--red)">${fmt(x.amount)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty">કોઈ જાવક નથી</td></tr>';
+
+  // Income table
+  const itb = document.getElementById('income-tbody');
+  itb.innerHTML = income.length
+    ? income.map(x=>`<tr><td>${fmtD(x.entry_date)}</td><td>${x.name}</td><td><span class="badge badge-green">${x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td style="color:var(--gray);font-size:12px">${x.note||'-'}</td><td><button class="btn-del" onclick="delIncome(${x.id})" title="Delete">🗑</button></td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty">કોઈ એન્ટ્રી નથી</td></tr>';
+
+  // Expense table
+  const etb = document.getElementById('expense-tbody');
+  etb.innerHTML = expense.length
+    ? expense.map(x=>`<tr><td>${fmtD(x.entry_date)}</td><td>${x.description}</td><td><span class="badge badge-red">${x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td style="color:var(--gray);font-size:12px">${x.note||'-'}</td><td><button class="btn-del" onclick="delExpense(${x.id})" title="Delete">🗑</button></td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty">કોઈ એન્ટ્રી નથી</td></tr>';
+
+  // Pending list
+  const pl = document.getElementById('pending-list');
+  const ap = pending.filter(x=>!x.received);
+  const dp = pending.filter(x=>x.received);
+  if(!pending.length){ pl.innerHTML='<div class="empty">કોઈ પેન્ડિંગ એન્ટ્રી નથી</div>'; }
+  else {
+    let h = '';
+    if(ap.length){
+      h += '<div class="section-head">⏳ બાકી પેન્ડિંગ</div>';
+      ap.forEach(x=>{
+        h += `<div class="agency-row">
+          <div class="flex-between">
+            <div><strong>${x.name}</strong><span class="badge badge-amber" style="margin-left:8px">${x.type}</span></div>
+            <span style="font-size:16px;font-weight:700;color:var(--amber)">${fmt(x.amount)}</span>
+          </div>
+          <div class="flex-between" style="margin-top:8px">
+            <span style="font-size:12px;color:var(--gray)">📅 ${fmtD(x.entry_date)}${x.note?' · '+x.note:''}</span>
+            <div class="flex-gap">
+              <button class="btn btn-success" onclick="markReceived(${x.id})">✓ મળી ગઈ</button>
+              <button class="btn-del" onclick="delPending(${x.id})">🗑</button>
+            </div>
+          </div>
+        </div>`;
+      });
+    }
+    if(dp.length){
+      h += '<div class="section-head" style="margin-top:16px">✅ Recover થઈ ગઈ</div>';
+      dp.forEach(x=>{
+        h += `<div class="agency-row" style="opacity:.55">
+          <div class="flex-between">
+            <div><strong>${x.name}</strong><span class="badge badge-green" style="margin-left:8px">Received</span></div>
+            <span style="font-size:14px;font-weight:700">${fmt(x.amount)}</span>
+          </div>
+        </div>`;
+      });
+    }
+    pl.innerHTML = h;
+  }
+
+  // Agency list
+  const al = document.getElementById('agency-list');
+  if(!agencies.length){ al.innerHTML='<div class="empty">કોઈ agency entry નથી</div>'; }
+  else {
+    al.innerHTML = agencies.map(x=>{
+      const baki = parseFloat(x.total_amount||0) - parseFloat(x.advance_amount||0);
+      return `<div class="agency-row">
+        <div class="flex-between">
+          <div><strong>${x.name}</strong><span class="badge badge-blue" style="margin-left:8px">${x.type}</span></div>
+          <button class="btn-del" onclick="delAgency(${x.id})">🗑</button>
+        </div>
+        <div class="agency-3col">
+          <div><div class="col-label">Total Final</div><div class="col-val">${fmt(x.total_amount)}</div></div>
+          <div><div class="col-label">Advance આપ્યું</div><div class="col-val" style="color:var(--red)">${fmt(x.advance_amount)}</div></div>
+          <div><div class="col-label">બાકી આપવું</div><div class="col-val" style="color:var(--amber)">${fmt(baki)}</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--gray);margin-top:7px">📅 ${fmtD(x.final_date)}${x.note?' · '+x.note:''}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* ── EXCEL EXPORT ── */
+function exportExcel(type){
+  const wb = XLSX.utils.book_new();
+  const H = 'Shree Vishvanath Mahadev Group — 25th Ganesh Mahotsav';
+
+  if(type==='income'||type==='all'){
+    const rows = [[H],['Aavak (Income) Report'],[''],
+      ['Tarikh','Naam','Prakar','Rakam (Rs)','Nondh'],
+      ...income.map(x=>[fmtD(x.entry_date),x.name,x.type,x.amount,x.note||''])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:12},{wch:28},{wch:20},{wch:14},{wch:24}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Aavak');
+  }
+  if(type==='expense'||type==='all'){
+    const rows = [[H],['Javak (Expense) Report'],[''],
+      ['Tarikh','Vivaran','Prakar','Rakam (Rs)','Nondh'],
+      ...expense.map(x=>[fmtD(x.entry_date),x.description,x.type,x.amount,x.note||''])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:12},{wch:28},{wch:20},{wch:14},{wch:24}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Javak');
+  }
+  if(type==='pending'||type==='all'){
+    const rows = [[H],['Pending Amount Report'],[''],
+      ['Naam','Rakam (Rs)','Prakar','Date','Nondh','Status'],
+      ...pending.map(x=>[x.name,x.amount,x.type,fmtD(x.entry_date),x.note||'',x.received?'Recover Thayo':'Baaki'])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:24},{wch:14},{wch:20},{wch:12},{wch:24},{wch:14}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Pending');
+  }
+  if(type==='agency'||type==='all'){
+    const rows = [[H],['Agency / Vendor Report'],[''],
+      ['Naam','Seva Prakar','Final Date','Total (Rs)','Advance (Rs)','Baaki (Rs)','Nondh'],
+      ...agencies.map(x=>[x.name,x.type,fmtD(x.final_date),x.total_amount,x.advance_amount,(x.total_amount-x.advance_amount),x.note||''])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:24},{wch:16},{wch:12},{wch:12},{wch:13},{wch:12},{wch:24}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Agency');
+  }
+  if(type==='all'){
+    const ti  = income.reduce((s,x)=>s+parseFloat(x.amount||0),0);
+    const tad = agencies.reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+    const te  = expense.reduce((s,x)=>s+parseFloat(x.amount||0),0)+tad;
+    const tp  = pending.filter(x=>!x.received).reduce((s,x)=>s+parseFloat(x.amount||0),0);
+    const rows = [[H],['Summary Report'],[''],
+      ['Vivaran','Rakam (Rs)'],
+      ['Kul Aavak', ti],
+      ['Kul Javak (+ Agency Advance)', te],
+      ['Haath Ma Bakee', ti-te],
+      ['Pending Aavani', tp],
+      ['Agency — Total Final', agencies.reduce((s,x)=>s+parseFloat(x.total_amount||0),0)],
+      ['Agency — Total Advance', tad],
+      ['Agency — Baaki Aapvu', agencies.reduce((s,x)=>s+(parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0)),0)]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:32},{wch:16}];
+    XLSX.utils.book_append_sheet(wb, ws, 'Summary');
+  }
+  XLSX.writeFile(wb, type==='all' ? 'Ganesh_Mahotsav_Full_Report.xlsx' : `Ganesh_Mahotsav_${type}.xlsx`);
+}
+
+function exportCSV(){
+  let rows = [];
+  rows.push(['Shree Vishvanath Mahadev Group — 25th Ganesh Mahotsav']);
+  rows.push([]);
+  rows.push(['--- AAVAK ---']);
+  rows.push(['Tarikh','Naam','Prakar','Rakam','Nondh']);
+  income.forEach(x=>rows.push([fmtD(x.entry_date),x.name,x.type,x.amount,x.note||'']));
+  rows.push([]);
+  rows.push(['--- JAVAK ---']);
+  rows.push(['Tarikh','Vivaran','Prakar','Rakam','Nondh']);
+  expense.forEach(x=>rows.push([fmtD(x.entry_date),x.description,x.type,x.amount,x.note||'']));
+  rows.push([]);
+  rows.push(['--- AGENCY ---']);
+  rows.push(['Naam','Prakar','Date','Total','Advance','Baaki','Nondh']);
+  agencies.forEach(x=>rows.push([x.name,x.type,fmtD(x.final_date),x.total_amount,x.advance_amount,x.total_amount-x.advance_amount,x.note||'']));
+  const csv = rows.map(r=>r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='Ganesh_Mahotsav.csv'; a.click();
+}
+
+/* ── INIT ── */
+setToday();
+loadAll();
+</script>
+</body>
+</html>
