@@ -26,7 +26,7 @@
 body{font-family:'Poppins',sans-serif;background:#f7f3ee;color:var(--tx);min-height:100vh;padding-bottom:80px}
 
 /* LOGIN */
-#ls{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#1a0a2e 0%,#3d1a6e 50%,#7a2a00 100%)}
+#ls{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#1a0a2e 0%,#3d1a6e 50%,#7a2a00 100%);text-align:center}
 .l-om{font-size:44px;margin-bottom:5px}
 
 .l-title{font-size:19px;font-weight:700;color:var(--gold2);text-align:center;line-height:1.4}
@@ -100,7 +100,7 @@ body{font-family:'Poppins',sans-serif;background:#f7f3ee;color:var(--tx);min-hei
 .transfer-ttl{font-size:12px;font-weight:700;color:var(--pu);margin-bottom:11px;display:flex;align-items:center;gap:6px}
 
 /* MAHOTSAV CALENDAR */
-.mah-header{background:linear-gradient(135deg,#7a1010,#b5341f,#d95f1a);border-radius:var(--r);padding:14px 15px;margin-bottom:12px;color:#fff;position:relative;overflow:hidden}
+.mah-header{background:linear-gradient(135deg,#7a1010,#b5341f,#d95f1a);border-radius:var(--r);padding:14px 15px;margin-bottom:12px;color:#fff;position:relative}
 .mah-header::after{content:'🐘';position:absolute;right:12px;bottom:-4px;font-size:52px;opacity:.18}
 .mah-h-title{font-size:14px;font-weight:700;color:var(--gold2);margin-bottom:3px}
 .mah-h-dates{font-size:12px;color:rgba(255,255,255,.75)}
@@ -246,16 +246,13 @@ tr:last-child td{border-bottom:none}
 
 <!-- LOGIN -->
 <div id="ls">
-  <!-- Ganesh Ji - Login -->
-  <div style="position:relative;margin-bottom:10px;text-align:center">
-    <div style="display:inline-block;position:relative">
-      <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
-        alt="Shree Ganesh Ji"
-        style="width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(212,160,23,.6)) drop-shadow(0 0 40px rgba(212,160,23,.3))"
-        onerror="this.style.display='none';document.getElementById('gfb').style.display='block'">
-      <div id="gfb" style="display:none;width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,#1a0a2e,#3d1a6e);display:flex;align-items:center;justify-content:center;font-size:80px">🐘</div>
-    </div>
-  </div>  </div>
+  <div style="text-align:center;margin-bottom:6px">
+    <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
+      alt="Shree Ganesh Ji"
+      id="ganesh-login-img"
+      style="width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 0 24px rgba(212,160,23,.8)) drop-shadow(0 0 50px rgba(212,160,23,.4))"
+      onerror="this.style.display='none'">
+  </div>
   <div class="l-title">શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div>
   <div class="l-sub">SHREE VISHVANATH MAHADEV GROUP</div>
   <div class="l-25">25</div>
@@ -286,7 +283,6 @@ tr:last-child td{border-bottom:none}
   </div>
   <div style="margin-top:14px;font-size:10px;color:rgba(255,255,255,.2);text-align:center">Admin: admin123 | Partner: partner123</div>
 </div>
-
 <!-- APP -->
 <div id="app" style="display:none">
   <div class="anni-bar">
@@ -295,10 +291,7 @@ tr:last-child td{border-bottom:none}
   <div class="hdr">
     <div class="hdr-in">
       <div class="hdr-l">
-        <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
-          alt="Ganesh Ji"
-          style="width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(212,160,23,.6));flex-shrink:0"
-          onerror="this.outerHTML='<span style=\'font-size:24px\'>🐘</span>'">
+        <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png" alt="Ganesh Ji" style="width:42px;height:42px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(212,160,23,.6))">🐘</span>'">
         <div><div class="hdr-t">શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div><div class="hdr-s">ગણેશ મહોત્સવ હિસાબ</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:7px">
@@ -331,10 +324,7 @@ tr:last-child td{border-bottom:none}
     <div style="height:11px"></div>
     <div class="mah-header" id="mah-header">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px">
-        <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
-          alt="Ganesh Ji"
-          style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(212,160,23,.5));flex-shrink:0"
-          onerror="this.outerHTML='<span style=\'font-size:36px\'>🐘</span>'">
+        <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png" alt="Ganesh Ji" style="width:65px;height:65px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(212,160,23,.5))">🐘</span>'">
         <div>
           <div class="mah-h-title">🐘 ગણેશ મહોત્સવ ૨૦૨૫</div>
           <div class="mah-h-dates" id="mah-dates">Dates not configured</div>
