@@ -2,756 +2,711 @@
 <html lang="gu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --orange: #e65c00;
-    --orange-light: #fff3eb;
-    --orange-mid: #ff8c42;
-    --gold: #f4a400;
-    --green: #1a7a4a;
-    --green-light: #eaf7f0;
-    --red: #c0392b;
-    --red-light: #fdecea;
-    --blue: #1a5fa8;
-    --blue-light: #e8f1fb;
-    --amber: #b5620a;
-    --amber-light: #fef3e2;
-    --gray: #6b7280;
-    --gray-light: #f8f8f8;
-    --border: #e5e7eb;
-    --text: #1a1a1a;
-    --text2: #555;
-    --white: #fff;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --shadow: 0 1px 4px rgba(0,0,0,0.08);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f5f3ef; color: var(--text); min-height: 100vh; }
+:root{
+  --gold:#d4a017;--gold2:#f0c040;--gold3:#fff8e7;--gold4:#6b4a00;
+  --deep:#1a0a2e;--deep2:#2d1154;--deep3:#3d1a6e;
+  --saff:#e8621a;--saff2:#ff8c42;--saff3:#fff3eb;
+  --gr:#1a7a4a;--grl:#e6f7ef;
+  --re:#c0392b;--rel:#fdecea;
+  --bl:#1a5fa8;--bll:#e8f1fb;
+  --am:#b5620a;--aml:#fef3e2;
+  --pu:#6d28d9;--pul:#ede9fe;
+  --gy:#6b7280;--gyl:#f5f5f4;--bd:#e5e7eb;
+  --tx:#1a1a1a;--wh:#fff;
+  --r:12px;--rs:8px;--sh:0 2px 8px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Poppins',sans-serif;background:#f7f3ee;color:var(--tx);min-height:100vh;padding-bottom:80px}
 
-  /* HEADER */
-  .app-header {
-    background: linear-gradient(135deg, #8B1A1A 0%, #c0392b 40%, #e65c00 100%);
-    color: #fff;
-    text-align: center;
-    padding: 18px 16px 14px;
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-  }
-  .app-header .om { font-size: 22px; letter-spacing: 2px; opacity: .9; margin-bottom: 3px; }
-  .app-header h1 { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
-  .app-header .sub { font-size: 12px; opacity: .85; margin-top: 3px; letter-spacing: .5px; }
+/* LOGIN */
+#ls{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#1a0a2e 0%,#3d1a6e 50%,#7a2a00 100%)}
+.l-om{font-size:44px;margin-bottom:5px}
+.l-title{font-size:19px;font-weight:700;color:var(--gold2);text-align:center;line-height:1.4}
+.l-sub{font-size:11px;color:rgba(255,255,255,.5);text-align:center;margin-top:2px;letter-spacing:.5px}
+.l-25{font-size:54px;font-weight:700;color:var(--gold2);letter-spacing:2px;margin:14px 0 2px}
+.l-anni{font-size:11px;color:var(--gold);letter-spacing:3px;margin-bottom:20px}
+.l-card{background:rgba(255,255,255,.07);border:1px solid rgba(212,160,23,.25);border-radius:16px;padding:22px 18px;width:100%;max-width:340px}
+.l-lbl{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:5px;font-weight:500}
+.l-inp{width:100%;padding:10px 13px;background:rgba(255,255,255,.1);border:1.5px solid rgba(212,160,23,.28);border-radius:var(--rs);color:#fff;font-size:14px;font-family:'Poppins',sans-serif;outline:none;margin-bottom:12px}
+.l-inp:focus{border-color:var(--gold2)}
+.l-inp::placeholder{color:rgba(255,255,255,.3)}
+.l-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:var(--rs);font-size:15px;font-weight:700;color:var(--deep);cursor:pointer;font-family:'Poppins',sans-serif}
+.l-btn:active{opacity:.88}
+.l-err{color:#ffaaaa;font-size:12px;text-align:center;margin-top:8px;display:none}
+.apanel{background:rgba(255,255,255,.05);border:1px solid rgba(212,160,23,.18);border-radius:12px;padding:16px;margin-top:14px;width:100%;max-width:340px}
+.apanel-title{font-size:12px;font-weight:600;color:var(--gold);margin-bottom:12px}
+.arow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.a-lbl{font-size:10px;color:rgba(255,255,255,.5);margin-bottom:3px}
+.a-inp{width:100%;padding:8px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(212,160,23,.2);border-radius:6px;color:#fff;font-size:13px;font-family:'Poppins',sans-serif;outline:none}
+.a-inp:focus{border-color:var(--gold2)}
+.a-btn{padding:8px 14px;background:rgba(212,160,23,.2);border:1px solid rgba(212,160,23,.35);border-radius:6px;color:var(--gold2);font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;width:100%;margin-top:4px}
+.a-ok{color:#7fffb8;font-size:11px;text-align:center;margin-top:6px;display:none}
 
-  /* TABS */
-  .tabs { display: flex; background: #fff; border-bottom: 1.5px solid var(--border); overflow-x: auto; }
-  .tab-btn {
-    flex: 1; min-width: 70px; padding: 11px 8px 10px;
-    border: none; background: none; cursor: pointer;
-    font-size: 12px; color: var(--gray); font-weight: 500;
-    border-bottom: 2.5px solid transparent; transition: all .15s;
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-  }
-  .tab-btn .ti { font-size: 17px; }
-  .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); background: #fff8f4; }
-  .tab-btn:hover:not(.active) { background: #f9f9f9; color: var(--text); }
+/* ANNI BAR */
+.anni-bar{background:linear-gradient(90deg,var(--deep),var(--deep3),var(--deep));padding:6px 16px;display:flex;align-items:center;justify-content:center;gap:9px;border-bottom:1px solid rgba(212,160,23,.15)}
+.anni-bar span{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.4px}
+.anni-bar .an{font-size:12px;font-weight:700;color:var(--gold2)}
 
-  /* PAGES */
-  .page { display: none; padding: 14px; max-width: 900px; margin: 0 auto; }
-  .page.active { display: block; }
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--deep) 0%,var(--deep3) 55%,#4a1500 100%);color:#fff;padding:11px 14px 10px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.hdr-in{max-width:580px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hdr-l{display:flex;align-items:center;gap:9px}
+.hdr-t{font-size:12px;font-weight:700;color:var(--gold2);line-height:1.3}
+.hdr-s{font-size:10px;color:rgba(255,255,255,.5)}
+.hdr-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--deep);font-size:10px;font-weight:700;padding:3px 8px;border-radius:16px;white-space:nowrap}
+.hdr-un{font-size:10px;color:rgba(255,255,255,.6);margin-bottom:2px}
+.lout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:10px;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:'Poppins',sans-serif}
 
-  /* METRIC CARDS */
-  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 10px; margin-bottom: 14px; }
-  .metric {
-    background: var(--white); border-radius: var(--radius); padding: 13px 14px;
-    border: 1px solid var(--border); box-shadow: var(--shadow);
-  }
-  .metric-label { font-size: 11px; color: var(--gray); margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-  .metric-value { font-size: 20px; font-weight: 700; }
-  .metric-value.green { color: var(--green); }
-  .metric-value.red { color: var(--red); }
-  .metric-value.blue { color: var(--blue); }
-  .metric-value.amber { color: var(--amber); }
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--deep);border-top:1px solid rgba(212,160,23,.15);display:flex;box-shadow:0 -2px 12px rgba(0,0,0,.2)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 2px 9px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,.35);font-size:10px;font-weight:500;gap:2px;font-family:'Poppins',sans-serif;transition:color .15s}
+.nb .ic{font-size:18px;line-height:1}
+.nb.active{color:var(--gold2)}
 
-  /* CARDS */
-  .card {
-    background: var(--white); border-radius: var(--radius);
-    border: 1px solid var(--border); box-shadow: var(--shadow);
-    padding: 14px 16px; margin-bottom: 12px;
-  }
-  .card-title {
-    font-size: 14px; font-weight: 600; color: var(--text);
-    margin-bottom: 12px; display: flex; align-items: center; gap: 7px;
-    padding-bottom: 9px; border-bottom: 1px solid var(--border);
-  }
-  .card-title .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    display: inline-block;
-  }
-  .dot-green { background: var(--green); }
-  .dot-red { background: var(--red); }
-  .dot-amber { background: var(--amber); }
-  .dot-blue { background: var(--blue); }
+/* PAGES */
+.page{display:none;padding:12px;max-width:580px;margin:0 auto}
+.page.active{display:block}
 
-  /* FORM */
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
-  .form-row.full { grid-template-columns: 1fr; }
-  .form-group label {
-    display: block; font-size: 12px; color: var(--gray);
-    margin-bottom: 4px; font-weight: 500;
-  }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 8px 10px; font-size: 13px;
-    border: 1px solid var(--border); border-radius: var(--radius-sm);
-    background: #fff; color: var(--text); outline: none;
-    transition: border .15s;
-  }
-  .form-group input:focus, .form-group select:focus {
-    border-color: var(--orange-mid); box-shadow: 0 0 0 2px rgba(230,92,0,.1);
-  }
-  .combo-wrap { position: relative; }
-  .combo-list {
-    position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
-    background: #fff; border: 1px solid var(--border);
-    border-radius: var(--radius-sm); max-height: 170px;
-    overflow-y: auto; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  .combo-item { padding: 8px 11px; font-size: 13px; cursor: pointer; color: var(--text); }
-  .combo-item:hover { background: var(--orange-light); color: var(--orange); }
+/* SUMMARY BOXES */
+.sum-box{background:linear-gradient(135deg,var(--deep),var(--deep3));border-radius:var(--r);padding:14px 15px;margin-bottom:10px;border:1px solid rgba(212,160,23,.2);position:relative;overflow:hidden}
+.sum-box::after{content:'25';position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:68px;font-weight:700;color:rgba(212,160,23,.07);line-height:1;pointer-events:none}
+.sum-ttl{font-size:10px;color:rgba(255,255,255,.45);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase}
+.sum-g4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.s-lbl{font-size:10px;color:rgba(255,255,255,.42);margin-bottom:2px}
+.s-val{font-size:18px;font-weight:700}
 
-  /* BUTTONS */
-  .btn {
-    padding: 8px 16px; font-size: 13px; font-weight: 600;
-    border-radius: var(--radius-sm); cursor: pointer;
-    border: none; transition: all .15s; display: inline-flex;
-    align-items: center; gap: 6px;
-  }
-  .btn-primary { background: var(--orange); color: #fff; }
-  .btn-primary:hover { background: #c94e00; }
-  .btn-export { background: var(--blue); color: #fff; font-size: 12px; padding: 7px 13px; }
-  .btn-export:hover { background: #144e8a; }
-  .btn-export.green { background: var(--green); }
-  .btn-export.green:hover { background: #145a38; }
-  .btn-success { background: var(--green); color: #fff; font-size: 12px; padding: 5px 11px; }
-  .btn-success:hover { background: #145a38; }
-  .btn-del { background: none; border: none; cursor: pointer; color: #bbb; padding: 3px 5px; font-size: 15px; }
-  .btn-del:hover { color: var(--red); }
-  .btn-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+/* PERSONAL BOX */
+.my-box{border-radius:var(--r);padding:14px 15px;margin-bottom:10px;border:1.5px solid}
+.my-box.u1{background:linear-gradient(135deg,rgba(26,95,168,.1),rgba(26,95,168,.04));border-color:rgba(26,95,168,.28)}
+.my-box.u2{background:linear-gradient(135deg,rgba(181,98,10,.1),rgba(181,98,10,.04));border-color:rgba(181,98,10,.28)}
+.my-ttl{font-size:11px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.my-g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.my-lbl{font-size:10px;color:var(--gy);margin-bottom:2px}
+.my-val{font-size:15px;font-weight:700}
 
-  /* TABLE */
-  .tbl-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 7px 10px; font-size: 11px; font-weight: 600; color: var(--gray); background: var(--gray-light); border-bottom: 1px solid var(--border); white-space: nowrap; }
-  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; color: var(--text); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafafa; }
+/* USER COMPARISON */
+.ucomp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.ubox{border-radius:var(--r);padding:13px 14px;border:1.5px solid}
+.ubox1{background:rgba(26,95,168,.06);border-color:rgba(26,95,168,.22)}
+.ubox2{background:rgba(181,98,10,.06);border-color:rgba(181,98,10,.22)}
+.ubox-nm{font-size:12px;font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.ubox-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.ubox-lbl{font-size:10px;color:var(--gy)}
+.ubox-val{font-size:13px;font-weight:700}
 
-  /* BADGES */
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-  .badge-green { background: var(--green-light); color: var(--green); }
-  .badge-red { background: var(--red-light); color: var(--red); }
-  .badge-amber { background: var(--amber-light); color: var(--amber); }
-  .badge-blue { background: var(--blue-light); color: var(--blue); }
-  .badge-gray { background: var(--gray-light); color: var(--gray); }
+/* TRANSFER BOX */
+.transfer-box{background:linear-gradient(135deg,rgba(109,40,217,.08),rgba(109,40,217,.03));border-radius:var(--r);border:1.5px solid rgba(109,40,217,.22);padding:14px 15px;margin-bottom:10px}
+.transfer-ttl{font-size:12px;font-weight:700;color:var(--pu);margin-bottom:11px;display:flex;align-items:center;gap:6px}
+.transfer-arrow{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 12px;font-size:13px;color:var(--gy)}
+.transfer-from{background:var(--bll);color:var(--bl);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.transfer-to{background:var(--aml);color:var(--am);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
 
-  /* AGENCY ROW */
-  .agency-row {
-    background: var(--gray-light); border-radius: var(--radius-sm);
-    padding: 11px 13px; margin-bottom: 9px;
-    border: 1px solid var(--border);
-  }
-  .agency-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 9px; }
-  .agency-3col .col-label { font-size: 10px; color: var(--gray); margin-bottom: 2px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
-  .agency-3col .col-val { font-size: 14px; font-weight: 700; }
+/* CARDS */
+.card{background:var(--wh);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);padding:13px 14px;margin-bottom:11px}
+.ctitle{font-size:13px;font-weight:600;margin-bottom:11px;display:flex;align-items:center;gap:7px;padding-bottom:9px;border-bottom:1px solid var(--bd)}
+.cdot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dg{background:var(--gr)}.dr{background:var(--re)}.da{background:var(--am)}.db{background:var(--bl)}.dpu{background:var(--pu)}
 
-  /* MISC */
-  .empty { text-align: center; padding: 26px; color: var(--gray); font-size: 13px; }
-  .section-head { font-size: 11px; font-weight: 700; color: var(--gray); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: .05em; }
-  .flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-  .flex-gap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .export-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
-  .loading { text-align: center; padding: 30px; color: var(--gray); font-size: 14px; }
-  .toast {
-    position: fixed; bottom: 20px; right: 20px; z-index: 999;
-    background: #222; color: #fff; padding: 10px 18px;
-    border-radius: var(--radius-sm); font-size: 13px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: opacity .3s; opacity: 0; pointer-events: none;
-  }
-  .toast.show { opacity: 1; }
-  .toast.success { background: var(--green); }
-  .toast.error { background: var(--red); }
+/* FORM */
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.frow.f1{grid-template-columns:1fr}
+.frow.f3{grid-template-columns:1fr 1fr 1fr}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--gy);margin-bottom:3px}
+.fg input,.fg select{width:100%;padding:10px 12px;font-size:14px;border:1.5px solid var(--bd);border-radius:var(--rs);background:#fff;color:var(--tx);outline:none;transition:border .15s;-webkit-appearance:none;font-family:'Poppins',sans-serif}
+.fg input:focus,.fg select:focus{border-color:var(--saff);box-shadow:0 0 0 3px rgba(232,98,26,.1)}
 
-  @media (max-width: 500px) {
-    .form-row { grid-template-columns: 1fr; }
-    .form-row.three { grid-template-columns: 1fr 1fr; }
-    .agency-3col { grid-template-columns: 1fr 1fr; }
-    .metric-grid { grid-template-columns: 1fr 1fr; }
-  }
+/* COMBO */
+.cwrap{position:relative}
+.clist{position:absolute;top:calc(100%+2px);left:0;right:0;z-index:100;background:#fff;border:1.5px solid var(--saff);border-radius:var(--rs);max-height:170px;overflow-y:auto;display:none;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.citem{padding:9px 12px;font-size:14px;cursor:pointer;border-bottom:1px solid #f5f5f5}
+.citem:last-child{border-bottom:none}
+.citem:hover,.citem:active{background:var(--saff3);color:var(--saff)}
+
+/* BUTTONS */
+.btn{padding:10px 16px;font-size:13px;font-weight:600;border-radius:var(--rs);cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px;touch-action:manipulation;font-family:'Poppins',sans-serif}
+.bp{background:linear-gradient(135deg,var(--saff),var(--saff2));color:#fff}.bp:active{opacity:.88;transform:scale(.97)}
+.bgold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--deep)}.bgold:active{opacity:.88}
+.bex{background:var(--bl);color:#fff}.bex:active{opacity:.88}
+.bpu{background:var(--pu);color:#fff}.bpu:active{opacity:.88;transform:scale(.97)}
+.bsuc{background:var(--gr);color:#fff;font-size:13px;padding:8px 13px;border-radius:var(--rs);border:none;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif}.bsuc:active{opacity:.88}
+.bedit{background:var(--bll);color:var(--bl);font-size:12px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-family:'Poppins',sans-serif}.bedit:active{opacity:.8}
+.bdel{background:var(--rel);color:var(--re);font-size:12px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-family:'Poppins',sans-serif}.bdel:active{opacity:.8}
+.bbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+
+/* TABLE */
+.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rs);border:1px solid var(--bd)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:7px 9px;font-size:10px;font-weight:600;color:var(--gy);background:#fafafa;border-bottom:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px 9px;border-bottom:1px solid #f5f5f5;vertical-align:middle;word-break:break-word}
+tr:last-child td{border-bottom:none}
+
+/* BADGES */
+.bdg{display:inline-block;padding:2px 8px;border-radius:18px;font-size:11px;font-weight:600;white-space:nowrap}
+.bdg-g{background:var(--grl);color:var(--gr)}
+.bdg-r{background:var(--rel);color:var(--re)}
+.bdg-a{background:var(--aml);color:var(--am)}
+.bdg-b{background:var(--bll);color:var(--bl)}
+.bdg-pu{background:var(--pul);color:var(--pu)}
+
+/* USER TAG */
+.utag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:12px;font-size:10px;font-weight:700;white-space:nowrap}
+.ut1{background:var(--bll);color:var(--bl)}.ut2{background:var(--aml);color:var(--am)}
+
+/* PENDING */
+.pitem{border-radius:var(--r);padding:12px 13px;margin-bottom:9px;border:1.5px solid}
+.pact{background:#fffbf4;border-color:#f0c87a}
+.pdone{background:var(--grl);border-color:#a8d8be;opacity:.72}
+.pname{font-size:15px;font-weight:600}
+.pname.cx{text-decoration:line-through;opacity:.5}
+.pmeta{font-size:12px;color:var(--gy);line-height:1.7;margin-top:5px}
+.pbtns{display:flex;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap}
+
+/* AGENCY */
+.aitem{background:#fafafa;border-radius:var(--r);padding:12px 13px;margin-bottom:9px;border:1px solid var(--bd)}
+.a3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:9px}
+.a3l{font-size:10px;color:var(--gy);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.a3v{font-size:15px;font-weight:700}
+
+/* EDIT MODAL */
+.mov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:500;display:none;align-items:flex-end;justify-content:center}
+.mov.open{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:18px 15px 32px;width:100%;max-width:580px;max-height:88vh;overflow-y:auto}
+.modal-hdr{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.mc-btn{background:var(--gyl);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+
+/* MISC */
+.ebar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:11px}
+.shead{font-size:10px;font-weight:700;color:var(--gy);margin:13px 0 7px;text-transform:uppercase;letter-spacing:.06em}
+.empty{text-align:center;padding:24px;color:var(--gy);font-size:13px}
+.info-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.22);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--gold4);font-weight:600;margin-bottom:10px}
+
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);z-index:999;background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:28px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.25);transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;max-width:86vw;text-align:center;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+.toast.ts{background:var(--gr)}.toast.te{background:var(--re)}.toast.tg{background:var(--gold4)}.toast.tpu{background:var(--pu)}
+
+.divider{height:1px;background:var(--bd);margin:12px 0}
+
+@media(max-width:380px){
+  .frow{grid-template-columns:1fr}.frow.f3{grid-template-columns:1fr 1fr}
+  .a3{grid-template-columns:1fr 1fr}.my-g3{grid-template-columns:1fr 1fr}
+  .ucomp{grid-template-columns:1fr}.sum-g4{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
 
-<div class="app-header">
-  <div class="om">🕉</div>
-  <h1>શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</h1>
-  <div class="sub">આયોજિત ૨૫મો ગણેશ મહોત્સવ — હિસાબ વ્યવસ્થાપન</div>
+<!-- LOGIN SCREEN -->
+<div id="ls">
+  <div class="l-om">🕉</div>
+  <div class="l-title">શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div>
+  <div class="l-sub">SHREE VISHVANATH MAHADEV GROUP</div>
+  <div class="l-25">25</div>
+  <div class="l-anni">✦ SILVER JUBILEE ✦ ૨૫મો ✦</div>
+  <div class="l-card">
+    <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:14px;text-align:center;font-weight:500">Login કરો</div>
+    <div class="l-lbl">Password</div>
+    <input class="l-inp" type="password" id="lp" placeholder="Password..." onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="l-btn" onclick="doLogin()">🚪 Login</button>
+    <div class="l-err" id="lerr">Password ખોટો છે!</div>
+  </div>
+  <div class="apanel" id="apanel" style="display:none">
+    <div class="apanel-title">⚙️ Admin Settings</div>
+    <div class="arow">
+      <div><div class="a-lbl">Admin નું નામ</div><input class="a-inp" id="s-u1n" placeholder="Admin..."></div>
+      <div><div class="a-lbl">Admin Password</div><input class="a-inp" type="password" id="s-u1p" placeholder="New pass..."></div>
+    </div>
+    <div class="arow">
+      <div><div class="a-lbl">Partner નું નામ</div><input class="a-inp" id="s-u2n" placeholder="Partner..."></div>
+      <div><div class="a-lbl">Partner Password</div><input class="a-inp" type="password" id="s-u2p" placeholder="New pass..."></div>
+    </div>
+    <button class="a-btn" onclick="saveSettings()">💾 Save Settings</button>
+    <div class="a-ok" id="a-ok">✓ Saved! Logout kari ne test karo.</div>
+  </div>
+  <div style="margin-top:14px;font-size:10px;color:rgba(255,255,255,.2);text-align:center">Admin: admin123 &nbsp;|&nbsp; Partner: partner123</div>
 </div>
 
-<div class="tabs">
-  <button class="tab-btn active" onclick="showTab('dashboard')">
-    <span style="font-size:17px">⊞</span><span>ડૅશબોર્ડ</span>
-  </button>
-  <button class="tab-btn" onclick="showTab('aavak')">
-    <span style="font-size:17px">↗</span><span>આવક</span>
-  </button>
-  <button class="tab-btn" onclick="showTab('javak')">
-    <span style="font-size:17px">↙</span><span>જાવક</span>
-  </button>
-  <button class="tab-btn" onclick="showTab('pending')">
-    <span style="font-size:17px">⏰</span><span>પેન્ડિંગ</span>
-  </button>
-  <button class="tab-btn" onclick="showTab('agency')">
-    <span style="font-size:17px">🏪</span><span>એજન્સી</span>
-  </button>
-</div>
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <div class="anni-bar">
+    <span>✦</span><span class="an">25th</span><span>GANESH MAHOTSAV</span><span>✦</span><span>SILVER JUBILEE</span><span>✦</span>
+  </div>
+  <div class="hdr">
+    <div class="hdr-in">
+      <div class="hdr-l">
+        <div style="font-size:22px">🕉</div>
+        <div><div class="hdr-t">શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div><div class="hdr-s">ગણેશ મહોત્સવ હિસાબ</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px">
+        <div class="hdr-badge">25th 🏆</div>
+        <div><div class="hdr-un" id="hun"></div><button class="lout" onclick="logout()">Logout</button></div>
+      </div>
+    </div>
+  </div>
 
-<!-- DASHBOARD -->
-<div id="page-dashboard" class="page active">
-  <div class="metric-grid" id="metrics">
-    <div class="loading">Loading...</div>
+  <!-- DASHBOARD -->
+  <div id="page-dashboard" class="page active">
+    <div style="height:11px"></div>
+    <div id="dash-content"></div>
+    <div class="ebar" id="exp-bar" style="display:none">
+      <button class="btn bgold" onclick="exportExcel('all')">📊 Full Excel</button>
+      <button class="btn bex" onclick="exportCSV()">📄 CSV</button>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dg"></span>Recent આવક <span id="d-inc-lbl" style="font-size:10px;color:var(--gy);font-weight:400;margin-left:4px"></span></div>
+      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>₹</th><th>કોણ</th></tr></thead><tbody id="di"></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dr"></span>Recent જાવક <span id="d-exp-lbl" style="font-size:10px;color:var(--gy);font-weight:400;margin-left:4px"></span></div>
+      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>વિવરણ</th><th>પ્રકાર</th><th>₹</th><th>કોણ</th></tr></thead><tbody id="de"></tbody></table></div>
+    </div>
   </div>
-  <div class="export-bar">
-    <span style="font-size:12px;color:var(--gray);font-weight:500">Export:</span>
-    <button class="btn btn-export green" onclick="exportExcel('all')">📊 Full Report Excel</button>
-    <button class="btn btn-export" onclick="exportCSV()">📄 CSV Download</button>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="dot dot-green"></span>આવક એન્ટ્રીઝ</div>
-    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>રકમ (₹)</th></tr></thead><tbody id="dash-inc"></tbody></table></div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="dot dot-red"></span>જાવક એન્ટ્રીઝ</div>
-    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>વિવરણ</th><th>પ્રકાર</th><th>રકમ (₹)</th></tr></thead><tbody id="dash-exp"></tbody></table></div>
-  </div>
-</div>
 
-<!-- AAVAK -->
-<div id="page-aavak" class="page">
-  <div class="card">
-    <div class="card-title"><span class="dot dot-green"></span>નવી આવક એન્ટ્રી</div>
-    <div class="form-row">
-      <div class="form-group"><label>તારીખ</label><input type="date" id="in-date"></div>
-      <div class="form-group"><label>પ્રકાર</label>
-        <div class="combo-wrap">
-          <input type="text" id="in-type" placeholder="પ્રકાર..." autocomplete="off"
-            oninput="showCombo('in-type','in-type-list',incomeTypes)"
-            onfocus="showCombo('in-type','in-type-list',incomeTypes)"
-            onblur="setTimeout(()=>hideCombo('in-type-list'),180)">
-          <div class="combo-list" id="in-type-list"></div>
+  <!-- AAVAK -->
+  <div id="page-aavak" class="page">
+    <div style="height:11px"></div>
+    <div class="info-tag">↗ Entry <span id="aavak-tag" style="margin:0 4px"></span> ના account માં ઉમેરાશે</div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dg"></span>નવી આવક</div>
+      <div class="frow">
+        <div class="fg"><label>તારીખ</label><input type="date" id="in-d"></div>
+        <div class="fg"><label>પ્રકાર</label><div class="cwrap"><input type="text" id="in-t" placeholder="પ્રકાર..." autocomplete="off" oninput="sc('in-t','intl',IT)" onfocus="sc('in-t','intl',IT)" onblur="setTimeout(()=>hc('intl'),200)"><div class="clist" id="intl"></div></div></div>
+      </div>
+      <div class="frow f1"><div class="fg"><label>દાતારનું નામ / Source</label><input type="text" id="in-n" placeholder="જેમ કે: રમેશ પટેલ, XYZ Company..."></div></div>
+      <div class="frow">
+        <div class="fg"><label>રકમ (₹)</label><input type="number" id="in-a" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>નોંધ</label><input type="text" id="in-no" placeholder="Optional..."></div>
+      </div>
+      <div class="bbar"><button class="btn bp" onclick="addI()">💾 સેવ</button><button class="btn bex" onclick="exportExcel('income')">📊 Excel</button></div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dg"></span>બધી આવક</div>
+      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>₹</th><th>કોણ</th><th>Action</th></tr></thead><tbody id="itbl"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- JAVAK -->
+  <div id="page-javak" class="page">
+    <div style="height:11px"></div>
+    <div class="info-tag">↙ Entry <span id="javak-tag" style="margin:0 4px"></span> ના account માં ઉમેરાશે</div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dr"></span>નવી જાવક</div>
+      <div class="frow">
+        <div class="fg"><label>તારીખ</label><input type="date" id="ex-d"></div>
+        <div class="fg"><label>પ્રકાર</label><div class="cwrap"><input type="text" id="ex-t" placeholder="પ્રકાર..." autocomplete="off" oninput="sc('ex-t','extl',ET)" onfocus="sc('ex-t','extl',ET)" onblur="setTimeout(()=>hc('extl'),200)"><div class="clist" id="extl"></div></div></div>
+      </div>
+      <div class="frow f1"><div class="fg"><label>વિવરણ</label><input type="text" id="ex-desc" placeholder="DJ Advance, Decoration..."></div></div>
+      <div class="frow">
+        <div class="fg"><label>રકમ (₹)</label><input type="number" id="ex-a" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>નોંધ</label><input type="text" id="ex-no" placeholder="Optional..."></div>
+      </div>
+      <div class="bbar"><button class="btn bp" onclick="addE()">💾 સેવ</button><button class="btn bex" onclick="exportExcel('expense')">📊 Excel</button></div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dr"></span>બધી જાવક</div>
+      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>વિવરણ</th><th>પ્રકાર</th><th>₹</th><th>કોણ</th><th>Action</th></tr></thead><tbody id="etbl"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- TRANSFER (Internal) -->
+  <div id="page-transfer" class="page">
+    <div style="height:11px"></div>
+    <div class="transfer-box">
+      <div class="transfer-ttl">🔄 Internal Transfer — <span id="tr-from-lbl"></span> → <span id="tr-to-lbl"></span></div>
+      <div style="font-size:12px;color:var(--gy);margin-bottom:14px;line-height:1.7">
+        Jem ke: Admin e Partner ne ₹50,000 aapya — aa entry karva thi:<br>
+        • Admin ni <strong>Javak</strong> ma umeraashe<br>
+        • Partner ni <strong>Aavak</strong> ma automatically umeraashe
+      </div>
+      <div class="frow">
+        <div class="fg"><label>તારીખ</label><input type="date" id="tr-d"></div>
+        <div class="fg"><label>Transfer કોને?</label>
+          <select id="tr-to">
+            <option value="">-- Select --</option>
+          </select>
         </div>
       </div>
-    </div>
-    <div class="form-row full">
-      <div class="form-group"><label>દાતાર / Source નું નામ</label>
-        <input type="text" id="in-name" placeholder="જેમ કે: રમેશ પટેલ, XYZ Company...">
+      <div class="frow">
+        <div class="fg"><label>રકમ (₹)</label><input type="number" id="tr-a" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>નોંધ (Reason)</label><input type="text" id="tr-no" placeholder="Kem aapya..."></div>
       </div>
+      <div class="bbar"><button class="btn bpu" onclick="doTransfer()">🔄 Transfer Entry Karo</button></div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>રકમ (₹)</label><input type="number" id="in-amount" placeholder="0" min="0"></div>
-      <div class="form-group"><label>નોંધ (Optional)</label><input type="text" id="in-note" placeholder="..."></div>
-    </div>
-    <div class="btn-bar">
-      <button class="btn btn-primary" onclick="addIncome()">💾 સેવ કરો</button>
-      <button class="btn btn-export" onclick="exportExcel('income')">📊 Excel Export</button>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dpu"></span>Transfer History</div>
+      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>કોણે</th><th>કોને</th><th>₹</th><th>નોંધ</th></tr></thead><tbody id="tr-tbl"></tbody></table></div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title"><span class="dot dot-green"></span>બધી આવક એન્ટ્રીઝ</div>
-    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>રકમ (₹)</th><th>નોંધ</th><th></th></tr></thead><tbody id="income-tbody"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody></table></div>
+
+  <!-- PENDING -->
+  <div id="page-pending" class="page">
+    <div style="height:11px"></div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot da"></span>નવી પેન્ડિંગ</div>
+      <div class="frow f1"><div class="fg"><label>નામ</label><input type="text" id="pe-n" placeholder="જેની પાસેથી રકમ આવવાની છે..."></div></div>
+      <div class="frow">
+        <div class="fg"><label>રકમ (₹)</label><input type="number" id="pe-a" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>પ્રકાર</label><div class="cwrap"><input type="text" id="pe-t" placeholder="પ્રકાર..." autocomplete="off" oninput="sc('pe-t','petl',PT)" onfocus="sc('pe-t','petl',PT)" onblur="setTimeout(()=>hc('petl'),200)"><div class="clist" id="petl"></div></div></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>તારીખ</label><input type="date" id="pe-d"></div>
+        <div class="fg"><label>નોંધ</label><input type="text" id="pe-no" placeholder="Optional..."></div>
+      </div>
+      <div class="bbar"><button class="btn bp" onclick="addP()">💾 સેવ</button><button class="btn bex" onclick="exportExcel('pending')">📊 Excel</button></div>
+    </div>
+    <div class="card"><div class="ctitle"><span class="cdot da"></span>પેન્ડિંગ List</div><div id="plst"><div class="empty">Loading...</div></div></div>
   </div>
+
+  <!-- AGENCY -->
+  <div id="page-agency" class="page">
+    <div style="height:11px"></div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot db"></span>Agency / Vendor</div>
+      <div class="frow">
+        <div class="fg"><label>Agency નું નામ</label><input type="text" id="ag-n" placeholder="DJ, Decoration..."></div>
+        <div class="fg"><label>સેવા પ્રકાર</label><div class="cwrap"><input type="text" id="ag-t" placeholder="પ્રકાર..." autocomplete="off" oninput="sc('ag-t','agtl',AT)" onfocus="sc('ag-t','agtl',AT)" onblur="setTimeout(()=>hc('agtl'),200)"><div class="clist" id="agtl"></div></div></div>
+      </div>
+      <div class="frow f3">
+        <div class="fg"><label>Date</label><input type="date" id="ag-d"></div>
+        <div class="fg"><label>Total (₹)</label><input type="number" id="ag-tot" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>Advance (₹)</label><input type="number" id="ag-adv" placeholder="0" inputmode="numeric"></div>
+      </div>
+      <div class="frow f1"><div class="fg"><label>નોંધ</label><input type="text" id="ag-no" placeholder="Optional..."></div></div>
+      <div class="bbar"><button class="btn bp" onclick="addA()">💾 સેવ</button><button class="btn bex" onclick="exportExcel('agency')">📊 Excel</button></div>
+    </div>
+    <div class="card"><div class="ctitle"><span class="cdot db"></span>Agency List</div><div id="alst"><div class="empty">Loading...</div></div></div>
+  </div>
+
+  <nav class="bnav">
+    <button class="nb active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="ic">⊞</span><span>ડૅશ</span></button>
+    <button class="nb" onclick="showTab('aavak')" id="nav-aavak"><span class="ic">↗</span><span>આવક</span></button>
+    <button class="nb" onclick="showTab('javak')" id="nav-javak"><span class="ic">↙</span><span>જાવક</span></button>
+    <button class="nb" onclick="showTab('transfer')" id="nav-transfer"><span class="ic">🔄</span><span>Transfer</span></button>
+    <button class="nb" onclick="showTab('pending')" id="nav-pending"><span class="ic">⏰</span><span>પેન્ડિંગ</span></button>
+    <button class="nb" onclick="showTab('agency')" id="nav-agency"><span class="ic">🏪</span><span>Agency</span></button>
+  </nav>
 </div>
 
-<!-- JAVAK -->
-<div id="page-javak" class="page">
-  <div class="card">
-    <div class="card-title"><span class="dot dot-red"></span>નવી જાવક એન્ટ્રી</div>
-    <div class="form-row">
-      <div class="form-group"><label>તારીખ</label><input type="date" id="ex-date"></div>
-      <div class="form-group"><label>પ્રકાર</label>
-        <div class="combo-wrap">
-          <input type="text" id="ex-type" placeholder="પ્રકાર..."
-            oninput="showCombo('ex-type','ex-type-list',expenseTypes)"
-            onfocus="showCombo('ex-type','ex-type-list',expenseTypes)"
-            onblur="setTimeout(()=>hideCombo('ex-type-list'),180)">
-          <div class="combo-list" id="ex-type-list"></div>
-        </div>
-      </div>
+<!-- EDIT MODAL -->
+<div class="mov" id="emod">
+  <div class="modal">
+    <div class="modal-hdr"><span id="etitle">Edit</span><button class="mc-btn" onclick="cmod()">✕</button></div>
+    <div id="ebody"></div>
+    <div class="bbar" style="margin-top:14px">
+      <button class="btn bp" onclick="svEdit()">💾 Save</button>
+      <button class="btn" style="background:var(--gyl)" onclick="cmod()">Cancel</button>
     </div>
-    <div class="form-row full">
-      <div class="form-group"><label>વિવરણ</label><input type="text" id="ex-desc" placeholder="શું ખર્ચ થયો..."></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>રકમ (₹)</label><input type="number" id="ex-amount" placeholder="0" min="0"></div>
-      <div class="form-group"><label>નોંધ (Optional)</label><input type="text" id="ex-note" placeholder="..."></div>
-    </div>
-    <div class="btn-bar">
-      <button class="btn btn-primary" onclick="addExpense()">💾 સેવ કરો</button>
-      <button class="btn btn-export" onclick="exportExcel('expense')">📊 Excel Export</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="dot dot-red"></span>બધી જાવક એન્ટ્રીઝ</div>
-    <div class="tbl-wrap"><table><thead><tr><th>તારીખ</th><th>વિવરણ</th><th>પ્રકાર</th><th>રકમ (₹)</th><th>નોંધ</th><th></th></tr></thead><tbody id="expense-tbody"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody></table></div>
-  </div>
-</div>
-
-<!-- PENDING -->
-<div id="page-pending" class="page">
-  <div class="card">
-    <div class="card-title"><span class="dot dot-amber"></span>પેન્ડિંગ Amount એન્ટ્રી</div>
-    <div class="form-row full">
-      <div class="form-group"><label>નામ</label><input type="text" id="pend-name" placeholder="જેની પાસે રકમ આવવાની છે..."></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>પેન્ડિંગ રકમ (₹)</label><input type="number" id="pend-amount" placeholder="0" min="0"></div>
-      <div class="form-group"><label>પ્રકાર</label>
-        <div class="combo-wrap">
-          <input type="text" id="pend-type" placeholder="પ્રકાર..."
-            oninput="showCombo('pend-type','pend-type-list',pendingTypes)"
-            onfocus="showCombo('pend-type','pend-type-list',pendingTypes)"
-            onblur="setTimeout(()=>hideCombo('pend-type-list'),180)">
-          <div class="combo-list" id="pend-type-list"></div>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Date</label><input type="date" id="pend-date"></div>
-      <div class="form-group"><label>નોંધ</label><input type="text" id="pend-note" placeholder="..."></div>
-    </div>
-    <div class="btn-bar">
-      <button class="btn btn-primary" onclick="addPending()">💾 સેવ કરો</button>
-      <button class="btn btn-export" onclick="exportExcel('pending')">📊 Excel Export</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="dot dot-amber"></span>પેન્ડિંગ List</div>
-    <div id="pending-list"><div class="empty">Loading...</div></div>
-  </div>
-</div>
-
-<!-- AGENCY -->
-<div id="page-agency" class="page">
-  <div class="card">
-    <div class="card-title"><span class="dot dot-blue"></span>Agency / Vendor Final એન્ટ્રી</div>
-    <div class="form-row">
-      <div class="form-group"><label>Agency / Vendor નું નામ</label><input type="text" id="ag-name" placeholder="DJ Sound, Decoration Wala..."></div>
-      <div class="form-group"><label>સેવા પ્રકાર</label>
-        <div class="combo-wrap">
-          <input type="text" id="ag-type" placeholder="પ્રકાર..."
-            oninput="showCombo('ag-type','ag-type-list',agencyTypes)"
-            onfocus="showCombo('ag-type','ag-type-list',agencyTypes)"
-            onblur="setTimeout(()=>hideCombo('ag-type-list'),180)">
-          <div class="combo-list" id="ag-type-list"></div>
-        </div>
-      </div>
-    </div>
-    <div class="form-row three">
-      <div class="form-group"><label>Final Date</label><input type="date" id="ag-date"></div>
-      <div class="form-group"><label>Total Final રકમ (₹)</label><input type="number" id="ag-total" placeholder="0" min="0"></div>
-      <div class="form-group"><label>Advance આપ્યું (₹)</label><input type="number" id="ag-advance" placeholder="0" min="0"></div>
-    </div>
-    <div class="form-row full">
-      <div class="form-group"><label>નોંધ</label><input type="text" id="ag-note" placeholder="કોઈ શરત, detail..."></div>
-    </div>
-    <div class="btn-bar">
-      <button class="btn btn-primary" onclick="addAgency()">💾 સેવ કરો</button>
-      <button class="btn btn-export" onclick="exportExcel('agency')">📊 Excel Export</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="dot dot-blue"></span>Agency / Vendor List</div>
-    <div id="agency-list"><div class="empty">Loading...</div></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://dplgawjfwevhhpymohqr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwbGdhd2pmd2V2aGhweW1vaHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMjk2MTIsImV4cCI6MjA5NjkwNTYxMn0.mWGHj27iKEnBY7FLlG81VC4qGtcUW4yLoXCL9ZjNaVE';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SU='https://dplgawjfwevhhpymohqr.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwbGdhd2pmd2V2aGhweW1vaHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMjk2MTIsImV4cCI6MjA5NjkwNTYxMn0.mWGHj27iKEnBY7FLlG81VC4qGtcUW4yLoXCL9ZjNaVE';
+const sb=supabase.createClient(SU,SK);
 
-const incomeTypes  = ['દાન / Donation','Sponsorship','Stall કિરાયો','Ticket','Last Year બાકી','ભેટ','Other'];
-const expenseTypes = ['DJ','Decoration','પ્રસાદ','Light / વીજળી','Sound','Pandal','મૂર્તિ','Printing','ભોજ / જમણ','Puja Samagri','Transport','Other'];
-const pendingTypes = ['Last Year બાકી','Daan Promised','Sponsor','Other'];
-const agencyTypes  = ['DJ','Decoration','Light','Sound','Pandal','Catering','Photography','Tent House','Flower','Other'];
+function cfg(){return{an:localStorage.getItem('gm_an')||'Admin (Hiren)',ap:localStorage.getItem('gm_ap')||'admin123',pn:localStorage.getItem('gm_pn')||'Partner',pp:localStorage.getItem('gm_pp')||'partner123'};}
 
-let income=[], expense=[], pending=[], agencies=[];
+const IT=['દાન / Donation','Sponsorship','Stall કિરાયો','Ticket','Last Year બાકી','ભેટ','Other'];
+const ET=['DJ','Decoration','પ્રસાદ','Light / વીજળી','Sound','Pandal','મૂર્તિ','Printing','ભોજ / જમણ','Puja Samagri','Transport','Other'];
+const PT=['Last Year બાકી','Daan Promised','Sponsor','Other'];
+const AT=['DJ','Decoration','Light','Sound','Pandal','Catering','Photography','Tent House','Flower','Other'];
 
-function showCombo(inputId, listId, items){
-  const val = document.getElementById(inputId).value.toLowerCase();
-  const list = document.getElementById(listId);
-  const filtered = items.filter(i => i.toLowerCase().includes(val));
-  if(!filtered.length){ list.style.display='none'; return; }
-  list.innerHTML = filtered.map(i =>
-    `<div class="combo-item" onmousedown="pickCombo('${inputId}','${listId}','${i.replace(/'/g,"\\'")}')">${i}</div>`
-  ).join('');
-  list.style.display = 'block';
+let inc=[],exp=[],pend=[],agn=[],transfers=[];
+let cu=null,es={type:null,id:null};
+
+function doLogin(){
+  const pass=document.getElementById('lp').value,c=cfg();
+  if(pass===c.ap){cu=1;go();}
+  else if(pass===c.pp){cu=2;go();}
+  else{document.getElementById('lerr').style.display='block';}
 }
-function hideCombo(listId){ document.getElementById(listId).style.display='none'; }
-function pickCombo(inputId, listId, val){ document.getElementById(inputId).value=val; hideCombo(listId); }
-
-function toast(msg, type='success'){
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast show ${type}`;
-  setTimeout(()=>{ el.classList.remove('show'); }, 2500);
+function go(){
+  document.getElementById('lerr').style.display='none';
+  document.getElementById('ls').style.display='none';
+  document.getElementById('app').style.display='block';
+  const c=cfg();
+  document.getElementById('hun').textContent=(cu===1?'👑 ':' 👤 ')+un(cu);
+  document.getElementById('exp-bar').style.display=cu===1?'flex':'none';
+  // Setup transfer dropdown
+  const sel=document.getElementById('tr-to');
+  sel.innerHTML=cu===1?`<option value="2">${c.pn} ને આપ્યા</option>`:`<option value="1">${c.an} ને આપ્યા</option>`;
+  document.getElementById('tr-from-lbl').textContent=un(cu);
+  document.getElementById('tr-to-lbl').textContent=un(cu===1?2:1);
+  // Nav: 6 tabs — need horizontal scroll
+  setTd();loadAll();
 }
+function logout(){cu=null;document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('lp').value='';document.getElementById('apanel').style.display='none';}
+function openSettingsFromApp(){logout();const c=cfg();document.getElementById('apanel').style.display='block';document.getElementById('s-u1n').value=c.an;document.getElementById('s-u2n').value=c.pn;}
+function saveSettings(){const n1=document.getElementById('s-u1n').value.trim(),p1=document.getElementById('s-u1p').value.trim(),n2=document.getElementById('s-u2n').value.trim(),p2=document.getElementById('s-u2p').value.trim();if(n1)localStorage.setItem('gm_an',n1);if(p1)localStorage.setItem('gm_ap',p1);if(n2)localStorage.setItem('gm_pn',n2);if(p2)localStorage.setItem('gm_pp',p2);document.getElementById('a-ok').style.display='block';setTimeout(()=>document.getElementById('a-ok').style.display='none',3000);}
 
-function fmt(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
-function fmtD(d){ if(!d) return '-'; const p=d.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
+function sc(ii,li,items){const v=document.getElementById(ii).value.toLowerCase(),l=document.getElementById(li),f=items.filter(i=>i.toLowerCase().includes(v));if(!f.length){l.style.display='none';return;}l.innerHTML=f.map(i=>`<div class="citem" onmousedown="pc('${ii}','${li}','${i.replace(/'/g,"\\'")}')">${i}</div>`).join('');l.style.display='block';}
+function hc(li){const l=document.getElementById(li);if(l)l.style.display='none';}
+function pc(ii,li,v){document.getElementById(ii).value=v;hc(li);}
+function toast(m,t='ts'){const el=document.getElementById('toast');el.textContent=m;el.className=`toast show ${t}`;setTimeout(()=>el.classList.remove('show'),2800);}
+function fmt(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
+function fD(d){if(!d)return '-';const p=d.split('-');return `${p[2]}/${p[1]}/${p[0]}`;}
+function un(id){const c=cfg();return id==1?c.an:c.pn;}
+function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
+function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
 
-function setToday(){
-  const t = new Date().toISOString().split('T')[0];
-  ['in-date','ex-date','pend-date','ag-date'].forEach(id=>{
-    const el=document.getElementById(id); if(el && !el.value) el.value=t;
+function showTab(n){
+  ['dashboard','aavak','javak','transfer','pending','agency'].forEach(x=>{
+    document.getElementById('page-'+x).classList.remove('active');
+    document.getElementById('nav-'+x).classList.remove('active');
   });
+  document.getElementById('page-'+n).classList.add('active');
+  document.getElementById('nav-'+n).classList.add('active');
+  window.scrollTo(0,0);
+  if(n==='aavak'){document.getElementById('aavak-tag').innerHTML=utag(cu);}
+  if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
 }
 
-function showTab(name){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const idx = ['dashboard','aavak','javak','pending','agency'].indexOf(name);
-  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
-  document.getElementById('page-'+name).classList.add('active');
-}
-
-/* ── LOAD ALL ── */
 async function loadAll(){
-  const [r1,r2,r3,r4] = await Promise.all([
-    sb.from('income').select('*').order('entry_date', {ascending:false}),
-    sb.from('expense').select('*').order('entry_date', {ascending:false}),
-    sb.from('pending_amount').select('*').order('created_at', {ascending:false}),
-    sb.from('agency').select('*').order('final_date', {ascending:false})
+  const [r1,r2,r3,r4,r5]=await Promise.all([
+    sb.from('income').select('*').order('entry_date',{ascending:false}),
+    sb.from('expense').select('*').order('entry_date',{ascending:false}),
+    sb.from('pending_amount').select('*').order('created_at',{ascending:false}),
+    sb.from('agency').select('*').order('final_date',{ascending:false}),
+    sb.from('transfers').select('*').order('transfer_date',{ascending:false})
   ]);
-  income   = r1.data || [];
-  expense  = r2.data || [];
-  pending  = r3.data || [];
-  agencies = r4.data || [];
+  inc=r1.data||[];exp=r2.data||[];pend=r3.data||[];agn=r4.data||[];
+  transfers=r5.data||[];
   render();
 }
 
-/* ── ADD INCOME ── */
-async function addIncome(){
-  const date   = document.getElementById('in-date').value;
-  const type   = document.getElementById('in-type').value.trim() || 'Other';
-  const name   = document.getElementById('in-name').value.trim();
-  const amount = parseFloat(document.getElementById('in-amount').value)||0;
-  const note   = document.getElementById('in-note').value.trim();
-  if(!name || !amount){ toast('નામ અને રકમ ફરજિયાત છે!','error'); return; }
-  const {error} = await sb.from('income').insert({entry_date:date, type, name, amount, note});
-  if(error){ toast('Error: '+error.message,'error'); return; }
-  toast('આવક સેવ થઈ ✓');
-  document.getElementById('in-name').value='';
-  document.getElementById('in-amount').value='';
-  document.getElementById('in-note').value='';
+async function addI(){
+  const d=document.getElementById('in-d').value,t=document.getElementById('in-t').value.trim()||'Other',n=document.getElementById('in-n').value.trim(),a=parseFloat(document.getElementById('in-a').value)||0,no=document.getElementById('in-no').value.trim();
+  if(!n||!a){toast('નામ અને રકમ ફરજિયાત!','te');return;}
+  const {error}=await sb.from('income').insert({entry_date:d,type:t,name:n,amount:a,note:no,user_id:cu});
+  if(error){toast('Error: '+error.message,'te');return;}
+  toast('✓ '+un(cu)+' ની આવક સેવ');['in-n','in-a','in-no'].forEach(id=>document.getElementById(id).value='');await loadAll();
+}
+async function addE(){
+  const d=document.getElementById('ex-d').value,t=document.getElementById('ex-t').value.trim()||'Other',ds=document.getElementById('ex-desc').value.trim(),a=parseFloat(document.getElementById('ex-a').value)||0,no=document.getElementById('ex-no').value.trim();
+  if(!ds||!a){toast('વિવરણ અને રકમ ફરજિયાત!','te');return;}
+  const {error}=await sb.from('expense').insert({entry_date:d,type:t,description:ds,amount:a,note:no,user_id:cu});
+  if(error){toast('Error: '+error.message,'te');return;}
+  toast('✓ '+un(cu)+' ની જાવક સેવ');['ex-desc','ex-a','ex-no'].forEach(id=>document.getElementById(id).value='');await loadAll();
+}
+
+// INTERNAL TRANSFER
+async function doTransfer(){
+  const d=document.getElementById('tr-d').value;
+  const toUser=parseInt(document.getElementById('tr-to').value);
+  const a=parseFloat(document.getElementById('tr-a').value)||0;
+  const no=document.getElementById('tr-no').value.trim();
+  if(!a){toast('રકમ ફરજિયાત!','te');return;}
+  if(!toUser){toast('Transfer કોને? Select karo','te');return;}
+
+  const fromUser=cu;
+  const note_from=`Transfer → ${un(toUser)}${no?' ('+no+')':''}`;
+  const note_to=`Transfer ← ${un(fromUser)}${no?' ('+no+')':''}`;
+
+  // 1) From user javak
+  await sb.from('expense').insert({entry_date:d,type:'Internal Transfer',description:note_from,amount:a,note:no,user_id:fromUser});
+  // 2) To user aavak
+  await sb.from('income').insert({entry_date:d,type:'Internal Transfer',name:note_to,amount:a,note:no,user_id:toUser});
+  // 3) Transfer record
+  await sb.from('transfers').insert({transfer_date:d,from_user:fromUser,to_user:toUser,amount:a,note:no});
+
+  toast('✓ Transfer done — '+un(fromUser)+' → '+un(toUser)+' '+fmt(a),'tpu');
+  document.getElementById('tr-a').value='';document.getElementById('tr-no').value='';
   await loadAll();
 }
 
-/* ── ADD EXPENSE ── */
-async function addExpense(){
-  const date   = document.getElementById('ex-date').value;
-  const type   = document.getElementById('ex-type').value.trim() || 'Other';
-  const desc   = document.getElementById('ex-desc').value.trim();
-  const amount = parseFloat(document.getElementById('ex-amount').value)||0;
-  const note   = document.getElementById('ex-note').value.trim();
-  if(!desc || !amount){ toast('વિવરણ અને રકમ ફરજિયાત છે!','error'); return; }
-  const {error} = await sb.from('expense').insert({entry_date:date, type, description:desc, amount, note});
-  if(error){ toast('Error: '+error.message,'error'); return; }
-  toast('જાવક સેવ થઈ ✓');
-  document.getElementById('ex-desc').value='';
-  document.getElementById('ex-amount').value='';
-  document.getElementById('ex-note').value='';
-  await loadAll();
+async function addP(){
+  const n=document.getElementById('pe-n').value.trim(),a=parseFloat(document.getElementById('pe-a').value)||0,t=document.getElementById('pe-t').value.trim()||'Other',d=document.getElementById('pe-d').value,no=document.getElementById('pe-no').value.trim();
+  if(!n||!a){toast('નામ અને રકમ ફરજિયાત!','te');return;}
+  const {error}=await sb.from('pending_amount').insert({name:n,amount:a,type:t,entry_date:d,note:no,received:false,user_id:cu});
+  if(error){toast('Error: '+error.message,'te');return;}
+  toast('✓ પેન્ડિંગ સેવ');['pe-n','pe-a','pe-no'].forEach(id=>document.getElementById(id).value='');await loadAll();
+}
+async function addA(){
+  const n=document.getElementById('ag-n').value.trim(),t=document.getElementById('ag-t').value.trim()||'Other',d=document.getElementById('ag-d').value,tot=parseFloat(document.getElementById('ag-tot').value)||0,adv=parseFloat(document.getElementById('ag-adv').value)||0,no=document.getElementById('ag-no').value.trim();
+  if(!n||!tot){toast('નામ અને Total ફરજિયાત!','te');return;}
+  const {error}=await sb.from('agency').insert({name:n,type:t,final_date:d,total_amount:tot,advance_amount:adv,note:no,user_id:cu});
+  if(error){toast('Error: '+error.message,'te');return;}
+  toast('✓ Agency સેવ');['ag-n','ag-tot','ag-adv','ag-no'].forEach(id=>document.getElementById(id).value='');await loadAll();
 }
 
-/* ── ADD PENDING ── */
-async function addPending(){
-  const name   = document.getElementById('pend-name').value.trim();
-  const amount = parseFloat(document.getElementById('pend-amount').value)||0;
-  const type   = document.getElementById('pend-type').value.trim() || 'Other';
-  const date   = document.getElementById('pend-date').value;
-  const note   = document.getElementById('pend-note').value.trim();
-  if(!name || !amount){ toast('નામ અને રકમ ફરજિયાત છે!','error'); return; }
-  const {error} = await sb.from('pending_amount').insert({name, amount, type, entry_date:date, note, received:false});
-  if(error){ toast('Error: '+error.message,'error'); return; }
-  toast('પેન્ડિંગ સેવ થઈ ✓');
-  document.getElementById('pend-name').value='';
-  document.getElementById('pend-amount').value='';
-  document.getElementById('pend-note').value='';
-  await loadAll();
-}
-
-/* ── ADD AGENCY ── */
-async function addAgency(){
-  const name    = document.getElementById('ag-name').value.trim();
-  const type    = document.getElementById('ag-type').value.trim() || 'Other';
-  const date    = document.getElementById('ag-date').value;
-  const total   = parseFloat(document.getElementById('ag-total').value)||0;
-  const advance = parseFloat(document.getElementById('ag-advance').value)||0;
-  const note    = document.getElementById('ag-note').value.trim();
-  if(!name || !total){ toast('નામ અને Total ફરજિયાત છે!','error'); return; }
-  const {error} = await sb.from('agency').insert({name, type, final_date:date, total_amount:total, advance_amount:advance, note});
-  if(error){ toast('Error: '+error.message,'error'); return; }
-  toast('Agency સેવ થઈ ✓');
-  document.getElementById('ag-name').value='';
-  document.getElementById('ag-total').value='';
-  document.getElementById('ag-advance').value='';
-  document.getElementById('ag-note').value='';
-  await loadAll();
-}
-
-/* ── DELETE ── */
-async function delIncome(id){
-  if(!confirm('Delete કરવું?')) return;
-  await sb.from('income').delete().eq('id',id);
-  toast('Delete થઈ ✓'); await loadAll();
-}
-async function delExpense(id){
-  if(!confirm('Delete કરવું?')) return;
-  await sb.from('expense').delete().eq('id',id);
-  toast('Delete થઈ ✓'); await loadAll();
-}
-async function delPending(id){
-  if(!confirm('Delete કરવું?')) return;
-  await sb.from('pending_amount').delete().eq('id',id);
-  toast('Delete થઈ ✓'); await loadAll();
-}
-async function delAgency(id){
-  if(!confirm('Delete કરવું?')) return;
-  await sb.from('agency').delete().eq('id',id);
-  toast('Delete થઈ ✓'); await loadAll();
-}
-
-/* ── MARK RECEIVED ── */
-async function markReceived(id){
-  const p = pending.find(x=>x.id===id);
-  if(!p) return;
+async function dI(id){if(!confirm('Delete?'))return;await sb.from('income').delete().eq('id',id);toast('✓ Delete');await loadAll();}
+async function dE(id){if(!confirm('Delete?'))return;await sb.from('expense').delete().eq('id',id);toast('✓ Delete');await loadAll();}
+async function dP(id){if(!confirm('Delete?'))return;await sb.from('pending_amount').delete().eq('id',id);toast('✓ Delete');await loadAll();}
+async function dA(id){if(!confirm('Delete?'))return;await sb.from('agency').delete().eq('id',id);toast('✓ Delete');await loadAll();}
+async function mRec(id){
+  const p=pend.find(x=>x.id===id);if(!p)return;
   await sb.from('pending_amount').update({received:true}).eq('id',id);
-  const today = new Date().toISOString().split('T')[0];
-  await sb.from('income').insert({entry_date:today, type:'Pending Recovery', name:p.name, amount:p.amount, note:'Pending recover થયો'});
-  toast('પેન્ડિંગ recover — આવક માં ઉમેરાઈ ✓');
-  await loadAll();
+  await sb.from('income').insert({entry_date:new Date().toISOString().split('T')[0],type:'Pending Recovery',name:p.name,amount:p.amount,note:'Pending recover',user_id:p.user_id||cu});
+  toast('✓ '+p.name+' ની રકમ મળી');await loadAll();
 }
 
-/* ── RENDER ── */
+function oEdit(type,id){
+  es={type,id};
+  const mb=document.getElementById('ebody'),mt=document.getElementById('etitle');
+  let x,h='';
+  if(type==='income'){x=inc.find(i=>i.id===id);mt.textContent='આવક Edit';h=`<div class="frow"><div class="fg"><label>તારીખ</label><input type="date" id="ed" value="${x.entry_date||''}"></div><div class="fg"><label>પ્રકાર</label><input type="text" id="et" value="${x.type||''}"></div></div><div class="frow f1"><div class="fg"><label>નામ</label><input type="text" id="en" value="${x.name||''}"></div></div><div class="frow"><div class="fg"><label>રકમ (₹)</label><input type="number" id="ea" value="${x.amount||0}" inputmode="numeric"></div><div class="fg"><label>નોંધ</label><input type="text" id="eno" value="${x.note||''}"></div></div>`;}
+  else if(type==='expense'){x=exp.find(i=>i.id===id);mt.textContent='જાવક Edit';h=`<div class="frow"><div class="fg"><label>તારીખ</label><input type="date" id="ed" value="${x.entry_date||''}"></div><div class="fg"><label>પ્રકાર</label><input type="text" id="et" value="${x.type||''}"></div></div><div class="frow f1"><div class="fg"><label>વિવરણ</label><input type="text" id="eds" value="${x.description||''}"></div></div><div class="frow"><div class="fg"><label>રકમ (₹)</label><input type="number" id="ea" value="${x.amount||0}" inputmode="numeric"></div><div class="fg"><label>નોંધ</label><input type="text" id="eno" value="${x.note||''}"></div></div>`;}
+  else if(type==='pending'){x=pend.find(i=>i.id===id);mt.textContent='પેન્ડિંગ Edit';h=`<div class="frow f1"><div class="fg"><label>નામ</label><input type="text" id="en" value="${x.name||''}"></div></div><div class="frow"><div class="fg"><label>રકમ (₹)</label><input type="number" id="ea" value="${x.amount||0}" inputmode="numeric"></div><div class="fg"><label>પ્રકાર</label><input type="text" id="et" value="${x.type||''}"></div></div><div class="frow"><div class="fg"><label>તારીખ</label><input type="date" id="ed" value="${x.entry_date||''}"></div><div class="fg"><label>નોંધ</label><input type="text" id="eno" value="${x.note||''}"></div></div>`;}
+  else if(type==='agency'){x=agn.find(i=>i.id===id);mt.textContent='Agency Edit';h=`<div class="frow"><div class="fg"><label>નામ</label><input type="text" id="en" value="${x.name||''}"></div><div class="fg"><label>પ્રકાર</label><input type="text" id="et" value="${x.type||''}"></div></div><div class="frow f3"><div class="fg"><label>Date</label><input type="date" id="ed" value="${x.final_date||''}"></div><div class="fg"><label>Total (₹)</label><input type="number" id="etot" value="${x.total_amount||0}" inputmode="numeric"></div><div class="fg"><label>Advance (₹)</label><input type="number" id="eadv" value="${x.advance_amount||0}" inputmode="numeric"></div></div><div class="frow f1"><div class="fg"><label>નોંધ</label><input type="text" id="eno" value="${x.note||''}"></div></div>`;}
+  mb.innerHTML=h;document.getElementById('emod').classList.add('open');
+}
+function cmod(){document.getElementById('emod').classList.remove('open');}
+async function svEdit(){
+  const {type,id}=es;let pl={};
+  if(type==='income'){pl={entry_date:document.getElementById('ed').value,type:document.getElementById('et').value,name:document.getElementById('en').value,amount:parseFloat(document.getElementById('ea').value)||0,note:document.getElementById('eno').value};await sb.from('income').update(pl).eq('id',id);}
+  else if(type==='expense'){pl={entry_date:document.getElementById('ed').value,type:document.getElementById('et').value,description:document.getElementById('eds').value,amount:parseFloat(document.getElementById('ea').value)||0,note:document.getElementById('eno').value};await sb.from('expense').update(pl).eq('id',id);}
+  else if(type==='pending'){pl={name:document.getElementById('en').value,amount:parseFloat(document.getElementById('ea').value)||0,type:document.getElementById('et').value,entry_date:document.getElementById('ed').value,note:document.getElementById('eno').value};await sb.from('pending_amount').update(pl).eq('id',id);}
+  else if(type==='agency'){pl={name:document.getElementById('en').value,type:document.getElementById('et').value,final_date:document.getElementById('ed').value,total_amount:parseFloat(document.getElementById('etot').value)||0,advance_amount:parseFloat(document.getElementById('eadv').value)||0,note:document.getElementById('eno').value};await sb.from('agency').update(pl).eq('id',id);}
+  toast('✓ Update','tg');cmod();await loadAll();
+}
+
 function render(){
-  const ti  = income.reduce((s,x)=>s+parseFloat(x.amount||0),0);
-  const tad = agencies.reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
-  const te  = expense.reduce((s,x)=>s+parseFloat(x.amount||0),0) + tad;
-  const tp  = pending.filter(x=>!x.received).reduce((s,x)=>s+parseFloat(x.amount||0),0);
-  const bal = ti - te;
+  const c=cfg();
+  // Totals excluding internal transfers for "real" on-hand calculation
+  const incReal=inc.filter(x=>x.type!=='Internal Transfer');
+  const expReal=exp.filter(x=>x.type!=='Internal Transfer');
 
-  document.getElementById('metrics').innerHTML = `
-    <div class="metric">
-      <div class="metric-label">↗ કુલ આવક</div>
-      <div class="metric-value green">${fmt(ti)}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">↙ કુલ જાવક</div>
-      <div class="metric-value red">${fmt(te)}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">💰 હાથ માં બાકી</div>
-      <div class="metric-value ${bal>=0?'blue':'red'}">${fmt(bal)}</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">⏰ પેન્ડિંગ આવની</div>
-      <div class="metric-value amber">${fmt(tp)}</div>
-    </div>
-  `;
+  const ti=inc.reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const tad=agn.reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+  const te=exp.reduce((s,x)=>s+parseFloat(x.amount||0),0)+tad;
+  const tp=pend.filter(x=>!x.received).reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const bal=ti-te;
 
-  // Dashboard income
-  const di = document.getElementById('dash-inc');
-  di.innerHTML = income.length
-    ? [...income].map(x=>`<tr><td>${fmtD(x.entry_date)}</td><td>${x.name}</td><td><span class="badge badge-green">${x.type}</span></td><td style="font-weight:700;color:var(--green)">${fmt(x.amount)}</td></tr>`).join('')
-    : '<tr><td colspan="4" class="empty">કોઈ આવક નથી</td></tr>';
+  // Personal stats (include transfers as they show what each person actually has)
+  const u1i=inc.filter(x=>x.user_id==1).reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const u2i=inc.filter(x=>x.user_id==2).reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const u1e=exp.filter(x=>x.user_id==1).reduce((s,x)=>s+parseFloat(x.amount||0),0)+agn.filter(x=>x.user_id==1).reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+  const u2e=exp.filter(x=>x.user_id==2).reduce((s,x)=>s+parseFloat(x.amount||0),0)+agn.filter(x=>x.user_id==2).reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
 
-  // Dashboard expense (expense + agency advances combined)
-  const allExp = [
-    ...expense.map(x=>({date:x.entry_date, desc:x.description, type:x.type, amount:x.amount})),
-    ...agencies.map(x=>({date:x.final_date, desc:x.name+' (Advance)', type:x.type, amount:x.advance_amount}))
-  ].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  const de = document.getElementById('dash-exp');
-  de.innerHTML = allExp.length
-    ? allExp.map(x=>`<tr><td>${fmtD(x.date)}</td><td>${x.desc}</td><td><span class="badge badge-red">${x.type}</span></td><td style="font-weight:700;color:var(--red)">${fmt(x.amount)}</td></tr>`).join('')
-    : '<tr><td colspan="4" class="empty">કોઈ જાવક નથી</td></tr>';
+  // Combined real totals (no double-counting transfers)
+  const tiReal=incReal.reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const teReal=expReal.reduce((s,x)=>s+parseFloat(x.amount||0),0)+tad;
+  const balReal=tiReal-teReal;
+
+  const mi=cu==1?u1i:u2i, me=cu==1?u1e:u2e;
+
+  const dc=document.getElementById('dash-content');
+  if(cu===1){
+    // ADMIN: combined + per-user comparison
+    document.getElementById('d-inc-lbl').textContent='(બધા)';
+    document.getElementById('d-exp-lbl').textContent='(બધા)';
+    dc.innerHTML=`
+      <div class="sum-box">
+        <div class="sum-ttl">👑 Overall — Mahotsav Combined</div>
+        <div class="sum-g4">
+          <div><div class="s-lbl">↗ કુલ આવક</div><div class="s-val" style="color:#7fffb8">${fmt(tiReal)}</div></div>
+          <div><div class="s-lbl">↙ કુલ જાવક</div><div class="s-val" style="color:#ffaaaa">${fmt(teReal)}</div></div>
+          <div><div class="s-lbl">💰 Total Balance</div><div class="s-val" style="color:${balReal>=0?'#fff':'#ffaaaa'}">${fmt(balReal)}</div></div>
+          <div><div class="s-lbl">⏰ Pending</div><div class="s-val" style="color:var(--gold2)">${fmt(tp)}</div></div>
+        </div>
+      </div>
+      <div class="ucomp">
+        <div class="ubox ubox1">
+          <div class="ubox-nm">👑 ${c.an}</div>
+          <div class="ubox-row"><span class="ubox-lbl">↗ આવક</span><span class="ubox-val" style="color:var(--gr)">${fmt(u1i)}</span></div>
+          <div class="ubox-row"><span class="ubox-lbl">↙ ખર્ચ</span><span class="ubox-val" style="color:var(--re)">${fmt(u1e)}</span></div>
+          <div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--bd)">
+            <div class="ubox-row"><span class="ubox-lbl" style="font-weight:700">💰 On Hand</span><span class="ubox-val" style="color:${(u1i-u1e)>=0?'var(--bl)':'var(--re)'};">${fmt(u1i-u1e)}</span></div>
+          </div>
+        </div>
+        <div class="ubox ubox2">
+          <div class="ubox-nm">👤 ${c.pn}</div>
+          <div class="ubox-row"><span class="ubox-lbl">↗ આવક</span><span class="ubox-val" style="color:var(--gr)">${fmt(u2i)}</span></div>
+          <div class="ubox-row"><span class="ubox-lbl">↙ ખર્ચ</span><span class="ubox-val" style="color:var(--re)">${fmt(u2e)}</span></div>
+          <div style="margin-top:7px;padding-top:7px;border-top:1px solid var(--bd)">
+            <div class="ubox-row"><span class="ubox-lbl" style="font-weight:700">💰 On Hand</span><span class="ubox-val" style="color:${(u2i-u2e)>=0?'var(--am)':'var(--re)'};">${fmt(u2i-u2e)}</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:right;margin-bottom:10px">
+        <button onclick="openSettingsFromApp()" style="background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.22);color:var(--gold4);font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif">⚙️ Names / Passwords</button>
+      </div>`;
+  } else {
+    // PARTNER: own summary only
+    document.getElementById('d-inc-lbl').textContent='('+un(cu)+')';
+    document.getElementById('d-exp-lbl').textContent='('+un(cu)+')';
+    dc.innerHTML=`
+      <div class="my-box u2">
+        <div class="my-ttl">👤 ${un(cu)} — મારો Personal હિસાબ</div>
+        <div class="my-g3">
+          <div><div class="my-lbl">↗ મારી આવક</div><div class="my-val" style="color:var(--gr)">${fmt(mi)}</div></div>
+          <div><div class="my-lbl">↙ મારો ખર્ચ</div><div class="my-val" style="color:var(--re)">${fmt(me)}</div></div>
+          <div><div class="my-lbl">💰 On Hand</div><div class="my-val" style="color:${(mi-me)>=0?'var(--am)':'var(--re)'}">${fmt(mi-me)}</div></div>
+        </div>
+      </div>`;
+  }
+
+  // Dashboard tables
+  const showAll=cu===1;
+  const incD=showAll?inc:inc.filter(x=>x.user_id==cu);
+  const expD=showAll?exp:exp.filter(x=>x.user_id==cu);
+  const allExpD=[...expD.map(x=>({d:x.entry_date,ds:x.description,t:x.type,a:x.amount,u:x.user_id})),...(showAll?agn:agn.filter(x=>x.user_id==cu)).map(x=>({d:x.final_date,ds:x.name+' (Adv)',t:x.type,a:x.advance_amount,u:x.user_id}))].sort((a,b)=>(b.d||'').localeCompare(a.d||''));
+
+  document.getElementById('di').innerHTML=incD.length?incD.slice(0,10).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄 Transfer':x.type}</span></td><td style="font-weight:700;color:var(--gr)">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
+  document.getElementById('de').innerHTML=allExpD.length?allExpD.slice(0,10).map(x=>`<tr><td>${fD(x.d)}</td><td>${x.ds}</td><td><span class="bdg ${x.t==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.t==='Internal Transfer'?'🔄 Transfer':x.t}</span></td><td style="font-weight:700;color:var(--re)">${fmt(x.a)}</td><td>${utag(x.u)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
 
   // Income table
-  const itb = document.getElementById('income-tbody');
-  itb.innerHTML = income.length
-    ? income.map(x=>`<tr><td>${fmtD(x.entry_date)}</td><td>${x.name}</td><td><span class="badge badge-green">${x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td style="color:var(--gray);font-size:12px">${x.note||'-'}</td><td><button class="btn-del" onclick="delIncome(${x.id})" title="Delete">🗑</button></td></tr>`).join('')
-    : '<tr><td colspan="6" class="empty">કોઈ એન્ટ્રી નથી</td></tr>';
+  document.getElementById('itbl').innerHTML=(showAll?inc:inc.filter(x=>x.user_id==cu)).length?(showAll?inc:inc.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('income',${x.id})">✏️</button> <button class="bdel" onclick="dI(${x.id})">🗑</button></td></tr>`).join(''):'<tr><td colspan="6" class="empty">—</td></tr>';
 
   // Expense table
-  const etb = document.getElementById('expense-tbody');
-  etb.innerHTML = expense.length
-    ? expense.map(x=>`<tr><td>${fmtD(x.entry_date)}</td><td>${x.description}</td><td><span class="badge badge-red">${x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td style="color:var(--gray);font-size:12px">${x.note||'-'}</td><td><button class="btn-del" onclick="delExpense(${x.id})" title="Delete">🗑</button></td></tr>`).join('')
-    : '<tr><td colspan="6" class="empty">કોઈ એન્ટ્રી નથી</td></tr>';
+  document.getElementById('etbl').innerHTML=(showAll?exp:exp.filter(x=>x.user_id==cu)).length?(showAll?exp:exp.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.description}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('expense',${x.id})">✏️</button> <button class="bdel" onclick="dE(${x.id})">🗑</button></td></tr>`).join(''):'<tr><td colspan="6" class="empty">—</td></tr>';
 
-  // Pending list
-  const pl = document.getElementById('pending-list');
-  const ap = pending.filter(x=>!x.received);
-  const dp = pending.filter(x=>x.received);
-  if(!pending.length){ pl.innerHTML='<div class="empty">કોઈ પેન્ડિંગ એન્ટ્રી નથી</div>'; }
-  else {
-    let h = '';
-    if(ap.length){
-      h += '<div class="section-head">⏳ બાકી પેન્ડિંગ</div>';
-      ap.forEach(x=>{
-        h += `<div class="agency-row">
-          <div class="flex-between">
-            <div><strong>${x.name}</strong><span class="badge badge-amber" style="margin-left:8px">${x.type}</span></div>
-            <span style="font-size:16px;font-weight:700;color:var(--amber)">${fmt(x.amount)}</span>
-          </div>
-          <div class="flex-between" style="margin-top:8px">
-            <span style="font-size:12px;color:var(--gray)">📅 ${fmtD(x.entry_date)}${x.note?' · '+x.note:''}</span>
-            <div class="flex-gap">
-              <button class="btn btn-success" onclick="markReceived(${x.id})">✓ મળી ગઈ</button>
-              <button class="btn-del" onclick="delPending(${x.id})">🗑</button>
-            </div>
-          </div>
-        </div>`;
-      });
-    }
-    if(dp.length){
-      h += '<div class="section-head" style="margin-top:16px">✅ Recover થઈ ગઈ</div>';
-      dp.forEach(x=>{
-        h += `<div class="agency-row" style="opacity:.55">
-          <div class="flex-between">
-            <div><strong>${x.name}</strong><span class="badge badge-green" style="margin-left:8px">Received</span></div>
-            <span style="font-size:14px;font-weight:700">${fmt(x.amount)}</span>
-          </div>
-        </div>`;
-      });
-    }
-    pl.innerHTML = h;
-  }
+  // Transfer history
+  const trData=showAll?transfers:transfers.filter(x=>x.from_user==cu||x.to_user==cu);
+  document.getElementById('tr-tbl').innerHTML=trData.length?trData.map(x=>`<tr><td>${fD(x.transfer_date)}</td><td>${utag(x.from_user)}</td><td>${utag(x.to_user)}</td><td style="font-weight:700;color:var(--pu)">${fmt(x.amount)}</td><td style="color:var(--gy);font-size:11px">${x.note||'—'}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">કોઈ transfer નથી</td></tr>';
 
-  // Agency list
-  const al = document.getElementById('agency-list');
-  if(!agencies.length){ al.innerHTML='<div class="empty">કોઈ agency entry નથી</div>'; }
-  else {
-    al.innerHTML = agencies.map(x=>{
-      const baki = parseFloat(x.total_amount||0) - parseFloat(x.advance_amount||0);
-      return `<div class="agency-row">
-        <div class="flex-between">
-          <div><strong>${x.name}</strong><span class="badge badge-blue" style="margin-left:8px">${x.type}</span></div>
-          <button class="btn-del" onclick="delAgency(${x.id})">🗑</button>
-        </div>
-        <div class="agency-3col">
-          <div><div class="col-label">Total Final</div><div class="col-val">${fmt(x.total_amount)}</div></div>
-          <div><div class="col-label">Advance આપ્યું</div><div class="col-val" style="color:var(--red)">${fmt(x.advance_amount)}</div></div>
-          <div><div class="col-label">બાકી આપવું</div><div class="col-val" style="color:var(--amber)">${fmt(baki)}</div></div>
-        </div>
-        <div style="font-size:12px;color:var(--gray);margin-top:7px">📅 ${fmtD(x.final_date)}${x.note?' · '+x.note:''}</div>
-      </div>`;
-    }).join('');
-  }
+  // Pending
+  const pl=document.getElementById('plst');
+  const pendD=showAll?pend:pend.filter(x=>x.user_id==cu);
+  const ap=pendD.filter(x=>!x.received),dp=pendD.filter(x=>x.received);
+  if(!pendD.length){pl.innerHTML='<div class="empty">કોઈ પેન્ડિંગ નથી</div>';}
+  else{let h='';if(ap.length){h+=`<div class="shead">⏳ બાકી — ${ap.length} · ${fmt(ap.reduce((s,x)=>s+parseFloat(x.amount||0),0))}</div>`;ap.forEach(x=>{h+=`<div class="pitem pact"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div><div class="pname">${x.name}</div><div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap"><span class="bdg bdg-a">${x.type}</span>${utag(x.user_id)}</div></div><div style="font-size:17px;font-weight:800;color:var(--am);flex-shrink:0">${fmt(x.amount)}</div></div><div class="pmeta">📅 ${fD(x.entry_date)}${x.note?' · '+x.note:''}</div><div class="pbtns"><button class="bsuc" onclick="mRec(${x.id})">✅ મળી ગઈ</button><button class="bedit" onclick="oEdit('pending',${x.id})">✏️</button><button class="bdel" onclick="dP(${x.id})">🗑</button></div></div>`;});}if(dp.length){h+=`<div class="shead" style="margin-top:14px">✅ મળી ગઈ — ${dp.length}</div>`;dp.forEach(x=>{h+=`<div class="pitem pdone"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div><div class="pname cx">${x.name}</div><span class="bdg bdg-g" style="margin-top:4px;display:inline-block">✓ Paid</span></div><div style="font-size:15px;font-weight:700;color:var(--gr)">${fmt(x.amount)}</div></div></div>`;});}pl.innerHTML=h;}
+
+  // Agency
+  const al=document.getElementById('alst');
+  const agnD=showAll?agn:agn.filter(x=>x.user_id==cu);
+  if(!agnD.length){al.innerHTML='<div class="empty">કોઈ agency entry નથી</div>';return;}
+  al.innerHTML=agnD.map(x=>{const bk=parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0);return`<div class="aitem"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div><div style="font-size:14px;font-weight:700">${x.name}</div><div style="margin-top:4px;display:flex;gap:6px"><span class="bdg bdg-b">${x.type}</span>${utag(x.user_id)}</div></div><div style="display:flex;gap:5px"><button class="bedit" onclick="oEdit('agency',${x.id})">✏️</button><button class="bdel" onclick="dA(${x.id})">🗑</button></div></div><div class="a3"><div><div class="a3l">Total</div><div class="a3v">${fmt(x.total_amount)}</div></div><div><div class="a3l">Advance</div><div class="a3v" style="color:var(--re)">${fmt(x.advance_amount)}</div></div><div><div class="a3l">બાકી</div><div class="a3v" style="color:var(--am)">${fmt(bk)}</div></div></div><div style="font-size:11px;color:var(--gy);margin-top:7px">📅 ${fD(x.final_date)}${x.note?' · '+x.note:''}</div></div>`;}).join('');
 }
 
-/* ── EXCEL EXPORT ── */
 function exportExcel(type){
-  const wb = XLSX.utils.book_new();
-  const H = 'Shree Vishvanath Mahadev Group — 25th Ganesh Mahotsav';
-
-  if(type==='income'||type==='all'){
-    const rows = [[H],['Aavak (Income) Report'],[''],
-      ['Tarikh','Naam','Prakar','Rakam (Rs)','Nondh'],
-      ...income.map(x=>[fmtD(x.entry_date),x.name,x.type,x.amount,x.note||''])
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:12},{wch:28},{wch:20},{wch:14},{wch:24}];
-    XLSX.utils.book_append_sheet(wb, ws, 'Aavak');
-  }
-  if(type==='expense'||type==='all'){
-    const rows = [[H],['Javak (Expense) Report'],[''],
-      ['Tarikh','Vivaran','Prakar','Rakam (Rs)','Nondh'],
-      ...expense.map(x=>[fmtD(x.entry_date),x.description,x.type,x.amount,x.note||''])
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:12},{wch:28},{wch:20},{wch:14},{wch:24}];
-    XLSX.utils.book_append_sheet(wb, ws, 'Javak');
-  }
-  if(type==='pending'||type==='all'){
-    const rows = [[H],['Pending Amount Report'],[''],
-      ['Naam','Rakam (Rs)','Prakar','Date','Nondh','Status'],
-      ...pending.map(x=>[x.name,x.amount,x.type,fmtD(x.entry_date),x.note||'',x.received?'Recover Thayo':'Baaki'])
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:24},{wch:14},{wch:20},{wch:12},{wch:24},{wch:14}];
-    XLSX.utils.book_append_sheet(wb, ws, 'Pending');
-  }
-  if(type==='agency'||type==='all'){
-    const rows = [[H],['Agency / Vendor Report'],[''],
-      ['Naam','Seva Prakar','Final Date','Total (Rs)','Advance (Rs)','Baaki (Rs)','Nondh'],
-      ...agencies.map(x=>[x.name,x.type,fmtD(x.final_date),x.total_amount,x.advance_amount,(x.total_amount-x.advance_amount),x.note||''])
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:24},{wch:16},{wch:12},{wch:12},{wch:13},{wch:12},{wch:24}];
-    XLSX.utils.book_append_sheet(wb, ws, 'Agency');
-  }
+  if(cu!==1){toast('Admin access required','te');return;}
+  const wb=XLSX.utils.book_new(),H='Shree Vishvanath Mahadev Group — 25th Ganesh Mahotsav',c=cfg();
+  if(type==='income'||type==='all'){const ws=XLSX.utils.aoa_to_sheet([[H],['Aavak'],[''],['Tarikh','Naam','Prakar','Rakam','Kone','Nondh'],...inc.map(x=>[fD(x.entry_date),x.name,x.type,x.amount,un(x.user_id),x.note||''])]);XLSX.utils.book_append_sheet(wb,ws,'Aavak');}
+  if(type==='expense'||type==='all'){const ws=XLSX.utils.aoa_to_sheet([[H],['Javak'],[''],['Tarikh','Vivaran','Prakar','Rakam','Kone','Nondh'],...exp.map(x=>[fD(x.entry_date),x.description,x.type,x.amount,un(x.user_id),x.note||''])]);XLSX.utils.book_append_sheet(wb,ws,'Javak');}
+  if(type==='pending'||type==='all'){const ws=XLSX.utils.aoa_to_sheet([[H],['Pending'],[''],['Naam','Rakam','Prakar','Date','User','Status'],...pend.map(x=>[x.name,x.amount,x.type,fD(x.entry_date),un(x.user_id),x.received?'Meli Gayi':'Baaki'])]);XLSX.utils.book_append_sheet(wb,ws,'Pending');}
+  if(type==='agency'||type==='all'){const ws=XLSX.utils.aoa_to_sheet([[H],['Agency'],[''],['Naam','Prakar','Date','Total','Advance','Baaki','User','Nondh'],...agn.map(x=>[x.name,x.type,fD(x.final_date),x.total_amount,x.advance_amount,parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0),un(x.user_id),x.note||''])]);XLSX.utils.book_append_sheet(wb,ws,'Agency');}
   if(type==='all'){
-    const ti  = income.reduce((s,x)=>s+parseFloat(x.amount||0),0);
-    const tad = agencies.reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
-    const te  = expense.reduce((s,x)=>s+parseFloat(x.amount||0),0)+tad;
-    const tp  = pending.filter(x=>!x.received).reduce((s,x)=>s+parseFloat(x.amount||0),0);
-    const rows = [[H],['Summary Report'],[''],
-      ['Vivaran','Rakam (Rs)'],
-      ['Kul Aavak', ti],
-      ['Kul Javak (+ Agency Advance)', te],
-      ['Haath Ma Bakee', ti-te],
-      ['Pending Aavani', tp],
-      ['Agency — Total Final', agencies.reduce((s,x)=>s+parseFloat(x.total_amount||0),0)],
-      ['Agency — Total Advance', tad],
-      ['Agency — Baaki Aapvu', agencies.reduce((s,x)=>s+(parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0)),0)]
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:32},{wch:16}];
-    XLSX.utils.book_append_sheet(wb, ws, 'Summary');
+    const u1i=inc.filter(x=>x.user_id==1&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0);
+    const u2i=inc.filter(x=>x.user_id==2&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0);
+    const u1e=exp.filter(x=>x.user_id==1&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0)+agn.filter(x=>x.user_id==1).reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+    const u2e=exp.filter(x=>x.user_id==2&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0)+agn.filter(x=>x.user_id==2).reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+    const trSum=transfers.reduce((s,x)=>s+parseFloat(x.amount||0),0);
+    const ws=XLSX.utils.aoa_to_sheet([[H],['Summary — 25th Ganesh Mahotsav'],[''],['Vivaran','Rakam'],['Kul Aavak (External)',u1i+u2i],['Kul Javak (External)',u1e+u2e],['Balance',u1i+u2i-u1e-u2e],['Internal Transfers',trSum],[''],[c.an+' Aavak',u1i],[c.an+' Kharcho',u1e],[c.an+' On Hand',u1i-u1e],[''],[c.pn+' Aavak',u2i],[c.pn+' Kharcho',u2e],[c.pn+' On Hand',u2i-u2e]]);
+    XLSX.utils.book_append_sheet(wb,ws,'Summary');
+    // Transfers sheet
+    if(transfers.length){const ws2=XLSX.utils.aoa_to_sheet([[H],['Internal Transfers'],[''],['Date','From','To','Amount','Note'],...transfers.map(x=>[fD(x.transfer_date),un(x.from_user),un(x.to_user),x.amount,x.note||''])]);XLSX.utils.book_append_sheet(wb,ws2,'Transfers');}
   }
-  XLSX.writeFile(wb, type==='all' ? 'Ganesh_Mahotsav_Full_Report.xlsx' : `Ganesh_Mahotsav_${type}.xlsx`);
+  XLSX.writeFile(wb,type==='all'?'Ganesh_Mahotsav_25th_Full.xlsx':`GM_${type}.xlsx`);
 }
-
 function exportCSV(){
-  let rows = [];
-  rows.push(['Shree Vishvanath Mahadev Group — 25th Ganesh Mahotsav']);
-  rows.push([]);
-  rows.push(['--- AAVAK ---']);
-  rows.push(['Tarikh','Naam','Prakar','Rakam','Nondh']);
-  income.forEach(x=>rows.push([fmtD(x.entry_date),x.name,x.type,x.amount,x.note||'']));
-  rows.push([]);
-  rows.push(['--- JAVAK ---']);
-  rows.push(['Tarikh','Vivaran','Prakar','Rakam','Nondh']);
-  expense.forEach(x=>rows.push([fmtD(x.entry_date),x.description,x.type,x.amount,x.note||'']));
-  rows.push([]);
-  rows.push(['--- AGENCY ---']);
-  rows.push(['Naam','Prakar','Date','Total','Advance','Baaki','Nondh']);
-  agencies.forEach(x=>rows.push([x.name,x.type,fmtD(x.final_date),x.total_amount,x.advance_amount,x.total_amount-x.advance_amount,x.note||'']));
-  const csv = rows.map(r=>r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='Ganesh_Mahotsav.csv'; a.click();
+  if(cu!==1)return;
+  const rows=[[`Shree Vishvanath Mahadev Group 25th Ganesh Mahotsav`],[],['AAVAK'],['Tarikh','Naam','Prakar','Rakam','User'],...inc.map(x=>[fD(x.entry_date),x.name,x.type,x.amount,un(x.user_id)]),[],'JAVAK',['Tarikh','Vivaran','Prakar','Rakam','User'],...exp.map(x=>[fD(x.entry_date),x.description,x.type,x.amount,un(x.user_id)])];
+  const csv=rows.map(r=>Array.isArray(r)?r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(','):r).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='GM25.csv';a.click();
 }
 
-/* ── INIT ── */
-setToday();
-loadAll();
+// Show settings panel when admin password typed
+document.getElementById('lp').addEventListener('input',function(){
+  if(this.value===cfg().ap){const c=cfg();document.getElementById('apanel').style.display='block';document.getElementById('s-u1n').value=c.an;document.getElementById('s-u2n').value=c.pn;}
+});
 </script>
 </body>
 </html>
