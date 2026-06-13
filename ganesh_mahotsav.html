@@ -28,6 +28,7 @@ body{font-family:'Poppins',sans-serif;background:#f7f3ee;color:var(--tx);min-hei
 /* LOGIN */
 #ls{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#1a0a2e 0%,#3d1a6e 50%,#7a2a00 100%)}
 .l-om{font-size:44px;margin-bottom:5px}
+
 .l-title{font-size:19px;font-weight:700;color:var(--gold2);text-align:center;line-height:1.4}
 .l-sub{font-size:11px;color:rgba(255,255,255,.5);text-align:center;margin-top:2px;letter-spacing:.5px}
 .l-25{font-size:54px;font-weight:700;color:var(--gold2);letter-spacing:2px;margin:14px 0 2px}
@@ -245,7 +246,16 @@ tr:last-child td{border-bottom:none}
 
 <!-- LOGIN -->
 <div id="ls">
-  <div class="l-om">🕉</div>
+  <!-- Ganesh Ji - Login -->
+  <div style="position:relative;margin-bottom:10px;text-align:center">
+    <div style="display:inline-block;position:relative">
+      <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
+        alt="Shree Ganesh Ji"
+        style="width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(212,160,23,.6)) drop-shadow(0 0 40px rgba(212,160,23,.3))"
+        onerror="this.style.display='none';document.getElementById('gfb').style.display='block'">
+      <div id="gfb" style="display:none;width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,#1a0a2e,#3d1a6e);display:flex;align-items:center;justify-content:center;font-size:80px">🐘</div>
+    </div>
+  </div>  </div>
   <div class="l-title">શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div>
   <div class="l-sub">SHREE VISHVANATH MAHADEV GROUP</div>
   <div class="l-25">25</div>
@@ -285,7 +295,10 @@ tr:last-child td{border-bottom:none}
   <div class="hdr">
     <div class="hdr-in">
       <div class="hdr-l">
-        <div style="font-size:22px">🕉</div>
+        <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
+          alt="Ganesh Ji"
+          style="width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 0 6px rgba(212,160,23,.6));flex-shrink:0"
+          onerror="this.outerHTML='<span style=\'font-size:24px\'>🐘</span>'">
         <div><div class="hdr-t">શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div><div class="hdr-s">ગણેશ મહોત્સવ હિસાબ</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:7px">
@@ -317,9 +330,17 @@ tr:last-child td{border-bottom:none}
   <div id="page-mahotsav" class="page">
     <div style="height:11px"></div>
     <div class="mah-header" id="mah-header">
-      <div class="mah-h-title">🐘 ગણેશ મહોત્સવ ૨૦૨૫</div>
-      <div class="mah-h-dates" id="mah-dates">Dates not configured</div>
-      <div class="mah-h-days" id="mah-days">Admin Settings ma dates set karo</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px">
+        <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
+          alt="Ganesh Ji"
+          style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(212,160,23,.5));flex-shrink:0"
+          onerror="this.outerHTML='<span style=\'font-size:36px\'>🐘</span>'">
+        <div>
+          <div class="mah-h-title">🐘 ગણેશ મહોત્સવ ૨૦૨૫</div>
+          <div class="mah-h-dates" id="mah-dates">Dates not configured</div>
+          <div class="mah-h-days" id="mah-days">Admin Settings ma dates set karo</div>
+        </div>
+      </div>
     </div>
 
     <!-- Day Strip -->
@@ -509,6 +530,8 @@ tr:last-child td{border-bottom:none}
     <button class="nb" onclick="showTab('transfer')" id="nav-transfer"><span class="ic">🔄</span><span>Transfer</span></button>
     <button class="nb" onclick="showTab('pending')" id="nav-pending"><span class="ic">⏰</span><span>Pending</span></button>
     <button class="nb" onclick="showTab('agency')" id="nav-agency"><span class="ic">🏪</span><span>Agency</span></button>
+    <button class="nb" onclick="showTab('reports')" id="nav-reports"><span class="ic">🖨️</span><span>Reports</span></button>
+    <button class="nb" onclick="showTab('checklist')" id="nav-checklist"><span class="ic">📋</span><span>Checklist</span></button>
   </nav>
 </div>
 
@@ -524,7 +547,70 @@ tr:last-child td{border-bottom:none}
   </div>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- REPORTS PAGE -->
+  <div id="page-reports" class="page">
+    <div style="height:11px"></div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot" style="background:var(--saff)"></span>🏪 Agency — Pending Payment</div>
+      <div id="agency-pending-summary"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot db"></span>🖨️ Print / Export Reports</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">
+        <button class="btn bp" onclick="printReport('full')" style="flex-direction:column;padding:14px 10px;gap:5px;height:80px;justify-content:center"><span style="font-size:24px">📄</span><span style="font-size:11px;text-align:center">Full Hisab Report</span></button>
+        <button class="btn bte" onclick="printReport('agency')" style="flex-direction:column;padding:14px 10px;gap:5px;height:80px;justify-content:center"><span style="font-size:24px">🏪</span><span style="font-size:11px;text-align:center">Agency Receipts</span></button>
+        <button class="btn bgold" onclick="printReport('summary')" style="flex-direction:column;padding:14px 10px;gap:5px;height:80px;justify-content:center"><span style="font-size:24px">📊</span><span style="font-size:11px;text-align:center">Committee Summary</span></button>
+        <button class="btn bpu" onclick="printReport('pending')" style="flex-direction:column;padding:14px 10px;gap:5px;height:80px;justify-content:center"><span style="font-size:24px">⏰</span><span style="font-size:11px;text-align:center">Pending Report</span></button>
+      </div>
+      <div style="font-size:11px;color:var(--gy);margin-top:10px;line-height:1.6">💡 Button dabaata Print preview khulse. Browser ma <strong>Save as PDF</strong> select karo PDF banava.</div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST PAGE -->
+  <div id="page-checklist" class="page">
+    <div style="height:11px"></div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dg"></span>📋 Navi Item ઉમેરો</div>
+      <div class="frow f1"><div class="fg"><label>કામ / Item</label><input type="text" id="cl-text" placeholder="Jem ke: DJ booking confirm, Banner print..." onkeydown="if(event.key==='Enter')addChecklist()"></div></div>
+      <div class="frow">
+        <div class="fg"><label>Category</label>
+          <select id="cl-cat">
+            <option value="Pre-Mahotsav">Pre-Mahotsav</option>
+            <option value="Agency">Agency/Vendor</option>
+            <option value="Decoration">Decoration</option>
+            <option value="Prasad">Prasad/Bhoj</option>
+            <option value="Daily">Daily Task</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="fg"><label>Priority</label>
+          <select id="cl-pri">
+            <option value="High">🔴 High</option>
+            <option value="Medium">🟡 Medium</option>
+            <option value="Low">🟢 Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Due Date</label><input type="date" id="cl-date"></div>
+        <div class="fg"><label>Assign To</label><input type="text" id="cl-assign" placeholder="Optional..."></div>
+      </div>
+      <div class="bbar"><button class="btn bp" onclick="addChecklist()">+ ઉમેરો</button></div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dg"></span>📋 Checklist
+        <span style="margin-left:auto;display:flex;gap:5px">
+          <button onclick="filterCL('all')" id="clf-all" style="padding:3px 9px;font-size:11px;background:var(--saff);color:#fff;border:none;border-radius:5px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600">બધા</button>
+          <button onclick="filterCL('pending')" id="clf-pend" style="padding:3px 9px;font-size:11px;background:var(--gyl);color:var(--tx);border:1px solid var(--bd);border-radius:5px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600">Pending</button>
+          <button onclick="filterCL('done')" id="clf-done" style="padding:3px 9px;font-size:11px;background:var(--gyl);color:var(--tx);border:1px solid var(--bd);border-radius:5px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600">Done</button>
+        </span>
+      </div>
+      <div id="cl-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"></div>
+      <div id="cl-list"><div class="empty">Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
 <div class="mov" id="emod">
   <div class="modal">
     <div class="modal-hdr"><span id="etitle">Edit</span><button class="mc-btn" onclick="cmod()">✕</button></div>
@@ -597,16 +683,237 @@ function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
 function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
 function showTab(n){
-  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
+  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
   document.getElementById('page-'+n).classList.add('active');
   document.getElementById('nav-'+n).classList.add('active');
   window.scrollTo(0,0);
   if(n==='aavak'){document.getElementById('aavak-tag').innerHTML=utag(cu);}
+  if(n==='reports'){renderAgencyPending();}
+  if(n==='checklist'){renderChecklist();}
   if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
   if(n==='mahotsav'){renderMahotsav();}
 }
 
 // -------- LOAD --------
+// ---- CHECKLIST (Supabase) ----
+let clFilter='all';
+let clItems=[];
+
+async function loadChecklist(){
+  const {data}=await sb.from('checklist').select('*').order('created_at',{ascending:false});
+  clItems=data||[];renderChecklist();
+}
+async function addChecklist(){
+  const text=document.getElementById('cl-text').value.trim();
+  if(!text){toast('Item ફરજિયાત!','te');return;}
+  const {error}=await sb.from('checklist').insert({
+    text,
+    cat:document.getElementById('cl-cat').value,
+    priority:document.getElementById('cl-pri').value,
+    due_date:document.getElementById('cl-date').value||null,
+    assigned_to:document.getElementById('cl-assign').value.trim()||null,
+    done:false,
+    user_id:cu
+  });
+  if(error){toast('Error: '+error.message,'te');return;}
+  document.getElementById('cl-text').value='';document.getElementById('cl-assign').value='';document.getElementById('cl-date').value='';
+  toast('✓ Item ઉમેરાઈ','ts');await loadChecklist();
+}
+async function toggleCL(id){
+  const item=clItems.find(x=>x.id===id);if(!item)return;
+  await sb.from('checklist').update({done:!item.done}).eq('id',id);
+  await loadChecklist();
+}
+async function deleteCL(id){
+  if(!confirm('Delete?'))return;
+  await sb.from('checklist').delete().eq('id',id);
+  toast('✓ Delete');await loadChecklist();
+}
+function filterCL(f){
+  clFilter=f;
+  document.getElementById('clf-all').style.background=f==='all'?'var(--saff)':'var(--gyl)';document.getElementById('clf-all').style.color=f==='all'?'#fff':'var(--tx)';
+  document.getElementById('clf-pend').style.background=f==='pending'?'var(--saff)':'var(--gyl)';document.getElementById('clf-pend').style.color=f==='pending'?'#fff':'var(--tx)';
+  document.getElementById('clf-done').style.background=f==='done'?'var(--saff)':'var(--gyl)';document.getElementById('clf-done').style.color=f==='done'?'#fff':'var(--tx)';
+  renderChecklist();
+}
+function renderChecklist(){
+  const all=clItems;
+  const total=all.length,done=all.filter(x=>x.done).length,pending=total-done;
+  const stats=document.getElementById('cl-stats');
+  if(stats)stats.innerHTML=`
+    <div style="background:var(--gyl);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--saff)">${total}</div><div style="font-size:10px;color:var(--gy)">Total</div></div>
+    <div style="background:var(--rel);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--re)">${pending}</div><div style="font-size:10px;color:var(--gy)">Pending</div></div>
+    <div style="background:var(--grl);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--gr)">${done}</div><div style="font-size:10px;color:var(--gy)">Done ✓</div></div>
+  `;
+  const filtered=all.filter(x=>clFilter==='all'?true:clFilter==='done'?x.done:!x.done);
+  const priOrder={High:0,Medium:1,Low:2};
+  filtered.sort((a,b)=>(a.done?1:0)-(b.done?1:0)||(priOrder[a.priority]||1)-(priOrder[b.priority]||1));
+  const cl=document.getElementById('cl-list');
+  if(!cl)return;
+  if(!filtered.length){cl.innerHTML='<div class="empty">કોઈ item નથી</div>';return;}
+  // Group by category
+  const cats=[...new Set(filtered.map(x=>x.cat))];
+  cl.innerHTML=cats.map(cat=>{
+    const catItems=filtered.filter(x=>x.cat===cat);
+    return`<div style="margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--gy);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">${cat}</div>
+      ${catItems.map(item=>{
+        const priColor=item.priority==='High'?'var(--re)':item.priority==='Medium'?'var(--am)':'var(--gr)';
+        const priDot=item.priority==='High'?'🔴':item.priority==='Medium'?'🟡':'🟢';
+        const today2=new Date();const todayStr=`${today2.getFullYear()}-${String(today2.getMonth()+1).padStart(2,'0')}-${String(today2.getDate()).padStart(2,'0')}`;const overdue=item.due_date&&item.due_date<todayStr&&!item.done;
+        return`<div style="background:${item.done?'var(--grl)':'var(--wh)'};border:1.5px solid ${item.done?'#a8d8be':'var(--bd)'};border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px;opacity:${item.done?'.7':'1'}">
+          <input type="checkbox" ${item.done?'checked':''} onchange="toggleCL(${item.id})" style="margin-top:3px;width:17px;height:17px;cursor:pointer;accent-color:var(--gr);flex-shrink:0">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600;${item.done?'text-decoration:line-through;color:var(--gy)':'color:var(--tx)'}">${item.text}</div>
+            <div style="font-size:11px;color:var(--gy);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap">
+              ${priDot} ${item.pri}
+              ${item.due_date?`<span style="${overdue?'color:var(--re);font-weight:700':''}">📅 ${fD(item.due_date)}${overdue?' ⚠️ Overdue':''}</span>`:''}
+              ${item.assigned_to?`<span>👤 ${item.assigned_to}</span>`:''}
+            </div>
+          </div>
+          <button onclick="deleteCL(${item.id})" class="bdel" style="flex-shrink:0">🗑</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ---- AGENCY PENDING ----
+function renderAgencyPending(){
+  const el=document.getElementById('agency-pending-summary');
+  if(!el)return;
+  const pending=agn.filter(x=>parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0)>0);
+  if(!pending.length){el.innerHTML='<div class="empty" style="padding:14px">✅ બધી agencies ને payment complete chhe!</div>';return;}
+  const total=pending.reduce((s,x)=>s+(parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0)),0);
+  el.innerHTML=`
+    <div style="background:var(--rel);border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-size:11px;color:var(--re);font-weight:600">કુલ Pending Payment</div><div style="font-size:20px;font-weight:700;color:var(--re)">${fmt(total)}</div></div>
+      <div style="font-size:11px;color:var(--gy)">${pending.length} agencies</div>
+    </div>
+    ${pending.map(x=>{
+      const baki=parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0);
+      const pct=Math.round((parseFloat(x.advance_amount||0)/parseFloat(x.total_amount||1))*100);
+      return`<div style="background:var(--wh);border:1.5px solid var(--bd);border-radius:10px;padding:12px 13px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div>
+            <div style="font-size:14px;font-weight:700">${x.name}</div>
+            <span class="bdg bdg-b" style="margin-top:4px;display:inline-block">${x.type}</span>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:15px;font-weight:800;color:var(--re)">${fmt(baki)} બાકી</div>
+            <div style="font-size:11px;color:var(--gy)">Total: ${fmt(x.total_amount)}</div>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gy);margin-bottom:4px">
+            <span>Advance આપ્યું: <strong style="color:var(--gr)">${fmt(x.advance_amount)}</strong></span>
+            <span>${pct}% paid</span>
+          </div>
+          <div style="height:6px;background:var(--gyl);border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--gr),#2dd4a0);border-radius:4px;transition:width .3s"></div>
+          </div>
+        </div>
+        ${x.note?`<div style="font-size:11px;color:var(--gy);margin-top:6px">📝 ${x.note}</div>`:''}
+      </div>`;
+    }).join('')}
+  `;
+}
+
+// ---- PRINT REPORTS ----
+function printReport(type){
+  const c=cfg();
+  const u1i=inc.filter(x=>x.user_id==1&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const u2i=inc.filter(x=>x.user_id==2&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const u1e=exp.filter(x=>x.user_id==1&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0)+agn.filter(x=>x.user_id==1).reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+  const u2e=exp.filter(x=>x.user_id==2&&x.type!=='Internal Transfer').reduce((s,x)=>s+parseFloat(x.amount||0),0)+agn.filter(x=>x.user_id==2).reduce((s,x)=>s+parseFloat(x.advance_amount||0),0);
+  const tia=u1i+u2i,tea=u1e+u2e;
+  const tp=pend.filter(x=>!x.received).reduce((s,x)=>s+parseFloat(x.amount||0),0);
+  const now=new Date().toLocaleDateString('gu-IN');
+
+  const headerHTML=`<div style="text-align:center;margin-bottom:20px;border-bottom:2px solid #d4a017;padding-bottom:16px">
+    <div style="font-size:11px;color:#888;letter-spacing:2px">🕉 SHREE VISHVANATH MAHADEV GROUP 🕉</div>
+    <h1 style="font-size:22px;font-weight:700;color:#1a0a2e;margin:6px 0">૨૫મો ગણેશ મહોત્સવ — Silver Jubilee</h1>
+    <div style="font-size:13px;color:#666">Print Date: ${now}</div>
+  </div>`;
+
+  let body='';
+
+  if(type==='summary'){
+    body=`${headerHTML}
+    <h2 style="font-size:16px;color:#1a0a2e;margin:16px 0 10px">📊 Committee Summary Report</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px">
+      <tr style="background:#1a0a2e;color:#f0c040"><th style="padding:8px 10px;text-align:left">વિવરણ</th><th style="padding:8px 10px;text-align:right">રકમ (₹)</th></tr>
+      <tr style="background:#e6f7ef"><td style="padding:8px 10px;font-weight:600">↗ કુલ આવક</td><td style="padding:8px 10px;text-align:right;font-weight:700;color:#1a7a4a">${fmt(tia)}</td></tr>
+      <tr><td style="padding:8px 10px;font-weight:600">↙ કુલ જાવક</td><td style="padding:8px 10px;text-align:right;font-weight:700;color:#c0392b">${fmt(tea)}</td></tr>
+      <tr style="background:${(tia-tea)>=0?'#e8f1fb':'#fdecea'}"><td style="padding:8px 10px;font-weight:700">💰 Balance (On Hand)</td><td style="padding:8px 10px;text-align:right;font-weight:700;color:${(tia-tea)>=0?'#1a5fa8':'#c0392b'}">${fmt(tia-tea)}</td></tr>
+      <tr style="background:#fef3e2"><td style="padding:8px 10px;font-weight:600">⏰ Pending Aavani</td><td style="padding:8px 10px;text-align:right;font-weight:700;color:#b5620a">${fmt(tp)}</td></tr>
+    </table>
+    <h3 style="font-size:14px;color:#1a0a2e;margin:16px 0 8px">👥 User-wise Breakdown</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px">
+      <tr style="background:#f5f5f4"><th style="padding:8px;text-align:left;border:1px solid #e5e7eb">User</th><th style="padding:8px;text-align:right;border:1px solid #e5e7eb">આવક</th><th style="padding:8px;text-align:right;border:1px solid #e5e7eb">ખર્ચ</th><th style="padding:8px;text-align:right;border:1px solid #e5e7eb">On Hand</th></tr>
+      <tr><td style="padding:8px;border:1px solid #e5e7eb;font-weight:600">👑 ${c.an}</td><td style="padding:8px;text-align:right;border:1px solid #e5e7eb;color:#1a7a4a;font-weight:600">${fmt(u1i)}</td><td style="padding:8px;text-align:right;border:1px solid #e5e7eb;color:#c0392b;font-weight:600">${fmt(u1e)}</td><td style="padding:8px;text-align:right;border:1px solid #e5e7eb;font-weight:700">${fmt(u1i-u1e)}</td></tr>
+      <tr style="background:#fafafa"><td style="padding:8px;border:1px solid #e5e7eb;font-weight:600">👤 ${c.pn}</td><td style="padding:8px;text-align:right;border:1px solid #e5e7eb;color:#1a7a4a;font-weight:600">${fmt(u2i)}</td><td style="padding:8px;text-align:right;border:1px solid #e5e7eb;color:#c0392b;font-weight:600">${fmt(u2e)}</td><td style="padding:8px;text-align:right;border:1px solid #e5e7eb;font-weight:700">${fmt(u2i-u2e)}</td></tr>
+    </table>`;
+  } else if(type==='agency'){
+    body=`${headerHTML}<h2 style="font-size:16px;color:#1a0a2e;margin:16px 0 10px">🏪 Agency / Vendor Payment Status</h2>`;
+    agn.forEach(x=>{
+      const baki=parseFloat(x.total_amount||0)-parseFloat(x.advance_amount||0);
+      const pct=Math.round((parseFloat(x.advance_amount||0)/parseFloat(x.total_amount||1))*100);
+      body+=`<div style="border:1.5px solid #e5e7eb;border-radius:10px;padding:14px;margin-bottom:12px;page-break-inside:avoid">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div><strong style="font-size:15px">${x.name}</strong><span style="background:#e8f1fb;color:#1a5fa8;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;margin-left:8px">${x.type}</span></div>
+          <div style="font-size:11px;color:#666">Date: ${fD(x.final_date)}</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <tr><td style="padding:5px 0;color:#666">Total Final Amount:</td><td style="text-align:right;font-weight:700">${fmt(x.total_amount)}</td></tr>
+          <tr><td style="padding:5px 0;color:#1a7a4a;font-weight:600">✓ Advance Paid:</td><td style="text-align:right;font-weight:700;color:#1a7a4a">${fmt(x.advance_amount)}</td></tr>
+          <tr style="border-top:1.5px solid #e5e7eb"><td style="padding:7px 0 0;color:${baki>0?'#c0392b':'#1a7a4a'};font-weight:700">${baki>0?'⚠️ Remaining Due:':'✅ Fully Paid'}</td><td style="text-align:right;font-weight:700;color:${baki>0?'#c0392b':'#1a7a4a'};padding-top:7px">${fmt(baki)}</td></tr>
+        </table>
+        <div style="background:#f5f5f4;border-radius:5px;height:8px;margin-top:10px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#1a7a4a,#2dd4a0)"></div></div>
+        <div style="font-size:11px;color:#888;margin-top:4px">${pct}% Paid</div>
+        ${x.note?`<div style="font-size:12px;color:#666;margin-top:6px;font-style:italic">Note: ${x.note}</div>`:''}
+      </div>`;
+    });
+    if(!agn.length)body+='<div style="text-align:center;color:#888;padding:20px">No agency entries</div>';
+  } else if(type==='pending'){
+    body=`${headerHTML}<h2 style="font-size:16px;color:#1a0a2e;margin:16px 0 10px">⏰ Pending Amount Report</h2>`;
+    const ap=pend.filter(x=>!x.received);
+    if(ap.length){
+      body+=`<div style="background:#fef3e2;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px"><strong>કુલ Pending: ${fmt(ap.reduce((s,x)=>s+parseFloat(x.amount||0),0))}</strong> — ${ap.length} entries</div>`;
+      body+=`<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="background:#1a0a2e;color:#f0c040"><th style="padding:8px;text-align:left">નામ</th><th style="padding:8px;text-align:left">પ્રકાર</th><th style="padding:8px;text-align:left">Date</th><th style="padding:8px;text-align:right">રકમ</th></tr>`;
+      ap.forEach((x,i)=>{body+=`<tr style="background:${i%2?'#fafafa':'#fff'}"><td style="padding:7px 8px;border-bottom:1px solid #f0f0f0">${x.name}</td><td style="padding:7px 8px;border-bottom:1px solid #f0f0f0">${x.type}</td><td style="padding:7px 8px;border-bottom:1px solid #f0f0f0">${fD(x.entry_date)}</td><td style="padding:7px 8px;text-align:right;font-weight:700;color:#b5620a;border-bottom:1px solid #f0f0f0">${fmt(x.amount)}</td></tr>`;});
+      body+='</table>';
+    } else {body+='<div style="text-align:center;color:#1a7a4a;padding:20px;font-weight:600">✅ No pending amounts!</div>';}
+  } else { // full
+    body=`${headerHTML}
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+      <div style="background:#e6f7ef;border-radius:8px;padding:12px;text-align:center"><div style="font-size:11px;color:#666">કુલ આવક</div><div style="font-size:17px;font-weight:700;color:#1a7a4a">${fmt(tia)}</div></div>
+      <div style="background:#fdecea;border-radius:8px;padding:12px;text-align:center"><div style="font-size:11px;color:#666">કુલ જાવક</div><div style="font-size:17px;font-weight:700;color:#c0392b">${fmt(tea)}</div></div>
+      <div style="background:#e8f1fb;border-radius:8px;padding:12px;text-align:center"><div style="font-size:11px;color:#666">Balance</div><div style="font-size:17px;font-weight:700;color:#1a5fa8">${fmt(tia-tea)}</div></div>
+      <div style="background:#fef3e2;border-radius:8px;padding:12px;text-align:center"><div style="font-size:11px;color:#666">Pending</div><div style="font-size:17px;font-weight:700;color:#b5620a">${fmt(tp)}</div></div>
+    </div>
+    <h3 style="font-size:14px;margin:16px 0 8px;color:#1a0a2e">↗ આવક List</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px"><tr style="background:#1a0a2e;color:#f0c040"><th style="padding:7px 8px;text-align:left">Date</th><th style="padding:7px 8px;text-align:left">Name</th><th style="padding:7px 8px;text-align:left">Type</th><th style="padding:7px 8px;text-align:right">Amount</th><th style="padding:7px 8px">User</th></tr>
+    ${inc.filter(x=>x.type!=='Internal Transfer').map((x,i)=>`<tr style="background:${i%2?'#fafafa':'#fff'}"><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${fD(x.entry_date)}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${x.name}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${x.type}</td><td style="padding:6px 8px;text-align:right;font-weight:600;color:#1a7a4a;border-bottom:1px solid #f0f0f0">${fmt(x.amount)}</td><td style="padding:6px 8px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">${un(x.user_id)}</td></tr>`).join('')}
+    </table>
+    <h3 style="font-size:14px;margin:16px 0 8px;color:#1a0a2e">↙ જાવક List</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="background:#1a0a2e;color:#f0c040"><th style="padding:7px 8px;text-align:left">Date</th><th style="padding:7px 8px;text-align:left">Description</th><th style="padding:7px 8px;text-align:left">Type</th><th style="padding:7px 8px;text-align:right">Amount</th><th style="padding:7px 8px">User</th></tr>
+    ${exp.filter(x=>x.type!=='Internal Transfer').map((x,i)=>`<tr style="background:${i%2?'#fafafa':'#fff'}"><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${fD(x.entry_date)}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${x.description}</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0">${x.type}</td><td style="padding:6px 8px;text-align:right;font-weight:600;color:#c0392b;border-bottom:1px solid #f0f0f0">${fmt(x.amount)}</td><td style="padding:6px 8px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">${un(x.user_id)}</td></tr>`).join('')}
+    </table>`;
+  }
+
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ganesh Mahotsav Report</title>
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;padding:20px;color:#1a1a1a;max-width:900px;margin:0 auto}@media print{body{padding:10px}@page{margin:15mm}}</style>
+  </head><body>${body}
+  <div style="text-align:center;margin-top:30px;padding-top:15px;border-top:1px solid #e5e7eb;font-size:11px;color:#888">
+    🕉 શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ Silver Jubilee 🕉<br>
+    Generated: ${now}
+  </div>
+  <script>setTimeout(()=>window.print(),400);<\/script></body></html>`);
+  win.document.close();
+}
+
 async function loadAll(){
   const [r1,r2,r3,r4,r5,r6,r7]=await Promise.all([
     sb.from('income').select('*').order('entry_date',{ascending:false}),
@@ -619,7 +926,7 @@ async function loadAll(){
   ]);
   inc=r1.data||[];exp=r2.data||[];pend=r3.data||[];agn=r4.data||[];
   transfers=r5.data||[];aartis=r6.data||[];events=r7.data||[];
-  render();
+  render();await loadChecklist();
 }
 
 // -------- BILL UPLOAD --------
@@ -1011,6 +1318,8 @@ function render(){
   if(!pendD.length){pl.innerHTML='<div class="empty">કોઈ પેન્ડિંગ નથી</div>';}
   else{let h='';if(ap.length){h+=`<div class="shead">⏳ બાકી — ${ap.length} · ${fmt(ap.reduce((s,x)=>s+parseFloat(x.amount||0),0))}</div>`;ap.forEach(x=>{h+=`<div class="pitem pact"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><div><div class="pname">${x.name}</div><div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap"><span class="bdg bdg-a">${x.type}</span>${utag(x.user_id)}</div></div><div style="font-size:17px;font-weight:800;color:var(--am);flex-shrink:0">${fmt(x.amount)}</div></div><div class="pmeta">📅 ${fD(x.entry_date)}${x.note?' · '+x.note:''}</div><div class="pbtns"><button class="bsuc" onclick="mRec(${x.id})">✅ મળી ગઈ</button><button class="bedit" onclick="oEdit('pending',${x.id})">✏️</button><button class="bdel" onclick="dP(${x.id})">🗑</button></div></div>`;});}if(dp.length){h+=`<div class="shead" style="margin-top:14px">✅ મળી ગઈ — ${dp.length}</div>`;dp.forEach(x=>{h+=`<div class="pitem pdone"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div><div class="pname cx">${x.name}</div><span class="bdg bdg-g" style="margin-top:4px;display:inline-block">✓ Paid</span></div><div style="font-size:15px;font-weight:700;color:var(--gr)">${fmt(x.amount)}</div></div></div>`;});}pl.innerHTML=h;}
 
+  // Agency pending in reports tab
+  renderAgencyPending();
   // Agency
   const al=document.getElementById('alst');
   const agnD=showAll?agn:agn.filter(x=>x.user_id==cu);
