@@ -522,6 +522,7 @@ tr:last-child td{border-bottom:none}
     <button class="nb" onclick="showTab('agency')" id="nav-agency"><span class="ic">🏪</span><span>Agency</span></button>
     <button class="nb" onclick="showTab('reports')" id="nav-reports"><span class="ic">🖨️</span><span>Reports</span></button>
     <button class="nb" onclick="showTab('checklist')" id="nav-checklist"><span class="ic">📋</span><span>Checklist</span></button>
+    <button class="nb" onclick="showTab('trash')" id="nav-trash"><span class="ic">🗑</span><span>Trash</span></button>
   </nav>
 </div>
 
@@ -597,6 +598,22 @@ tr:last-child td{border-bottom:none}
       </div>
       <div id="cl-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"></div>
       <div id="cl-list"><div class="empty">Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- TRASH PAGE -->
+  <div id="page-trash" class="page">
+    <div style="height:11px"></div>
+    <div style="background:linear-gradient(135deg,#fdecea,#fff3eb);border-radius:var(--r);padding:14px 15px;margin-bottom:11px;border:1.5px solid #f5c6c0">
+      <div style="font-size:13px;font-weight:700;color:var(--re);margin-bottom:5px">🗑 Trash — Deleted Entries</div>
+      <div style="font-size:12px;color:var(--gy);line-height:1.6">
+        Deleted entries yahan dikhase. <strong>↩️ Recover</strong> button thi wapas la sako.<br>
+        <span style="color:var(--re)">⚠️ "Forever Delete" dabata pehla confirm karo — ae recover nahi thay!</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle"><span class="cdot dr"></span>Deleted Entries</div>
+      <div id="trash-content"><div class="empty">Loading...</div></div>
     </div>
   </div>
 
@@ -721,13 +738,14 @@ function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
 function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
 function showTab(n){
-  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
+  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
   document.getElementById('page-'+n).classList.add('active');
   document.getElementById('nav-'+n).classList.add('active');
   window.scrollTo(0,0);
   if(n==='aavak'){document.getElementById('aavak-tag').innerHTML=utag(cu);}
   if(n==='reports'){renderAgencyPending();}
   if(n==='checklist'){renderChecklist();}
+  if(n==='trash'){loadTrash();}
   if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
   if(n==='mahotsav'){renderMahotsav();}
 }
@@ -954,10 +972,10 @@ function printReport(type){
 
 async function loadAll(){
   const [r1,r2,r3,r4,r5,r6,r7]=await Promise.all([
-    sb.from('income').select('*').order('entry_date',{ascending:false}),
-    sb.from('expense').select('*').order('entry_date',{ascending:false}),
-    sb.from('pending_amount').select('*').order('created_at',{ascending:false}),
-    sb.from('agency').select('*').order('final_date',{ascending:false}),
+    sb.from('income').select('*').eq('is_deleted',false).order('entry_date',{ascending:false}),
+    sb.from('expense').select('*').eq('is_deleted',false).order('entry_date',{ascending:false}),
+    sb.from('pending_amount').select('*').eq('is_deleted',false).order('created_at',{ascending:false}),
+    sb.from('agency').select('*').eq('is_deleted',false).order('final_date',{ascending:false}),
     sb.from('transfers').select('*').order('transfer_date',{ascending:false}),
     sb.from('aarti_schedule').select('*').order('aarti_time',{ascending:true}),
     sb.from('day_events').select('*').order('event_time',{ascending:true})
@@ -1045,10 +1063,30 @@ async function addA(){
 }
 
 // -------- DELETE --------
-async function dI(id){if(!confirm('Delete?'))return;await sb.from('income').delete().eq('id',id);toast('✓ Delete');await loadAll();}
-async function dE(id){if(!confirm('Delete?'))return;await sb.from('expense').delete().eq('id',id);toast('✓ Delete');await loadAll();}
-async function dP(id){if(!confirm('Delete?'))return;await sb.from('pending_amount').delete().eq('id',id);toast('✓ Delete');await loadAll();}
-async function dA(id){if(!confirm('Delete?'))return;await sb.from('agency').delete().eq('id',id);toast('✓ Delete');await loadAll();}
+async function dI(id){
+  if(!confirm('Delete karvu? (Recover kari shakasho)'))return;
+  await sb.from('income').update({is_deleted:true}).eq('id',id);
+  toast('🗑 Delete thayo — Trash ma recover kari shako','tg');
+  await loadAll();
+}
+async function dE(id){
+  if(!confirm('Delete karvu? (Recover kari shakasho)'))return;
+  await sb.from('expense').update({is_deleted:true}).eq('id',id);
+  toast('🗑 Delete thayo — Trash ma recover kari shako','tg');
+  await loadAll();
+}
+async function dP(id){
+  if(!confirm('Delete karvu? (Recover kari shakasho)'))return;
+  await sb.from('pending_amount').update({is_deleted:true}).eq('id',id);
+  toast('🗑 Delete thayo — Trash ma recover kari shako','tg');
+  await loadAll();
+}
+async function dA(id){
+  if(!confirm('Delete karvu? (Recover kari shakasho)'))return;
+  await sb.from('agency').update({is_deleted:true}).eq('id',id);
+  toast('🗑 Delete thayo — Trash ma recover kari shako','tg');
+  await loadAll();
+}
 async function dAarti(id){if(!confirm('Delete?'))return;await sb.from('aarti_schedule').delete().eq('id',id);toast('✓ Delete');aartis=aartis.filter(x=>x.id!==id);renderDayDetail();}
 async function dEvent(id){if(!confirm('Delete?'))return;await sb.from('day_events').delete().eq('id',id);toast('✓ Delete');events=events.filter(x=>x.id!==id);renderDayDetail();}
 
@@ -1366,6 +1404,105 @@ function render(){
 }
 
 // -------- EXPORT --------
+
+// ---- TRASH / RECOVER ----
+let trashData={inc:[],exp:[],pend:[],agn:[]};
+
+async function loadTrash(){
+  const [r1,r2,r3,r4]=await Promise.all([
+    sb.from('income').select('*').eq('is_deleted',true).order('entry_date',{ascending:false}),
+    sb.from('expense').select('*').eq('is_deleted',true).order('entry_date',{ascending:false}),
+    sb.from('pending_amount').select('*').eq('is_deleted',true).order('created_at',{ascending:false}),
+    sb.from('agency').select('*').eq('is_deleted',true).order('final_date',{ascending:false})
+  ]);
+  trashData={inc:r1.data||[],exp:r2.data||[],pend:r3.data||[],agn:r4.data||[]};
+  renderTrash();
+}
+
+async function recoverEntry(table,id){
+  const tbl={inc:'income',exp:'expense',pend:'pending_amount',agn:'agency'}[table];
+  await sb.from(tbl).update({is_deleted:false}).eq('id',id);
+  toast('✓ Entry recover thayo!','ts');
+  await loadTrash();
+  await loadAll();
+}
+
+async function permanentDelete(table,id){
+  if(!confirm('PERMANENT DELETE? Data kabhi recover nahi hoga!'))return;
+  if(!confirm('Sure chho? Aa entry forever delete thashe!'))return;
+  const tbl={inc:'income',exp:'expense',pend:'pending_amount',agn:'agency'}[table];
+  await sb.from(tbl).delete().eq('id',id);
+  toast('🗑 Permanent delete thayo','te');
+  await loadTrash();
+}
+
+function renderTrash(){
+  const el=document.getElementById('trash-content');
+  if(!el)return;
+  const total=trashData.inc.length+trashData.exp.length+trashData.pend.length+trashData.agn.length;
+  if(!total){
+    el.innerHTML='<div class="empty" style="padding:30px"><div style="font-size:36px;margin-bottom:8px">✅</div><div>Trash khali chhe — koi deleted entry nathi</div></div>';
+    return;
+  }
+  let h='';
+  // Income deleted
+  if(trashData.inc.length){
+    h+=`<div class="shead">↗ Deleted આવક (${trashData.inc.length})</div>`;
+    trashData.inc.forEach(x=>{h+=`<div style="background:#fff;border:1.5px solid #fcd9b0;border-radius:10px;padding:11px 13px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div><div style="font-size:13px;font-weight:600">${x.name}</div>
+        <div style="font-size:11px;color:var(--gy);margin-top:2px">${fD(x.entry_date)} · <span class="bdg bdg-g" style="font-size:10px">${x.type}</span> · ${utag(x.user_id)}</div></div>
+        <div style="font-size:15px;font-weight:700;color:var(--gr);white-space:nowrap">${fmt(x.amount)}</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:9px">
+        <button onclick="recoverEntry('inc',${x.id})" class="bsuc" style="font-size:12px;padding:6px 12px">↩️ Recover</button>
+        <button onclick="permanentDelete('inc',${x.id})" class="bdel" style="font-size:12px;padding:6px 12px">🗑 Forever Delete</button>
+      </div></div>`;});
+  }
+  // Expense deleted
+  if(trashData.exp.length){
+    h+=`<div class="shead" style="margin-top:12px">↙ Deleted જાવક (${trashData.exp.length})</div>`;
+    trashData.exp.forEach(x=>{h+=`<div style="background:#fff;border:1.5px solid #fcd9b0;border-radius:10px;padding:11px 13px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div><div style="font-size:13px;font-weight:600">${x.description}</div>
+        <div style="font-size:11px;color:var(--gy);margin-top:2px">${fD(x.entry_date)} · <span class="bdg bdg-r" style="font-size:10px">${x.type}</span> · ${utag(x.user_id)}</div></div>
+        <div style="font-size:15px;font-weight:700;color:var(--re);white-space:nowrap">${fmt(x.amount)}</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:9px">
+        <button onclick="recoverEntry('exp',${x.id})" class="bsuc" style="font-size:12px;padding:6px 12px">↩️ Recover</button>
+        <button onclick="permanentDelete('exp',${x.id})" class="bdel" style="font-size:12px;padding:6px 12px">🗑 Forever Delete</button>
+      </div></div>`;});
+  }
+  // Pending deleted
+  if(trashData.pend.length){
+    h+=`<div class="shead" style="margin-top:12px">⏰ Deleted પેન્ડિંગ (${trashData.pend.length})</div>`;
+    trashData.pend.forEach(x=>{h+=`<div style="background:#fff;border:1.5px solid #fcd9b0;border-radius:10px;padding:11px 13px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div><div style="font-size:13px;font-weight:600">${x.name}</div>
+        <div style="font-size:11px;color:var(--gy);margin-top:2px">${fD(x.entry_date)} · ${utag(x.user_id)}</div></div>
+        <div style="font-size:15px;font-weight:700;color:var(--am);white-space:nowrap">${fmt(x.amount)}</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:9px">
+        <button onclick="recoverEntry('pend',${x.id})" class="bsuc" style="font-size:12px;padding:6px 12px">↩️ Recover</button>
+        <button onclick="permanentDelete('pend',${x.id})" class="bdel" style="font-size:12px;padding:6px 12px">🗑 Forever Delete</button>
+      </div></div>`;});
+  }
+  // Agency deleted
+  if(trashData.agn.length){
+    h+=`<div class="shead" style="margin-top:12px">🏪 Deleted Agency (${trashData.agn.length})</div>`;
+    trashData.agn.forEach(x=>{h+=`<div style="background:#fff;border:1.5px solid #fcd9b0;border-radius:10px;padding:11px 13px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div><div style="font-size:13px;font-weight:600">${x.name}</div>
+        <div style="font-size:11px;color:var(--gy);margin-top:2px">${fD(x.final_date)} · <span class="bdg bdg-b" style="font-size:10px">${x.type}</span> · ${utag(x.user_id)}</div></div>
+        <div style="font-size:15px;font-weight:700;white-space:nowrap">Total: ${fmt(x.total_amount)}</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:9px">
+        <button onclick="recoverEntry('agn',${x.id})" class="bsuc" style="font-size:12px;padding:6px 12px">↩️ Recover</button>
+        <button onclick="permanentDelete('agn',${x.id})" class="bdel" style="font-size:12px;padding:6px 12px">🗑 Forever Delete</button>
+      </div></div>`;});
+  }
+  el.innerHTML=h;
+}
 function exportExcel(type){
   if(cu!==1){toast('Admin access required','te');return;}
   const wb=XLSX.utils.book_new(),H='Shree Vishvanath Mahadev Group — 25th Ganesh Mahotsav',c=cfg();
