@@ -188,8 +188,8 @@ body{font-family:'Poppins',sans-serif;background:#f7f3ee;color:var(--tx);min-hei
 /* TABLE */
 .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rs);border:1px solid var(--bd)}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:7px 9px;font-size:10px;font-weight:600;color:var(--gy);background:#fafafa;border-bottom:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
-td{padding:8px 9px;border-bottom:1px solid #f5f5f5;vertical-align:middle;word-break:break-word}
+th{text-align:left;padding:6px 7px;font-size:10px;font-weight:600;color:var(--gy);background:#fafafa;border-bottom:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+td{padding:6px 8px;border-bottom:1px solid #f5f5f5;vertical-align:middle;word-break:break-word;font-size:12px}
 tr:last-child td{border-bottom:none}
 .bdg{display:inline-block;padding:2px 8px;border-radius:18px;font-size:11px;font-weight:600;white-space:nowrap}
 .bdg-g{background:var(--grl);color:var(--gr)}
@@ -619,7 +619,26 @@ const SU='https://dplgawjfwevhhpymohqr.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwbGdhd2pmd2V2aGhweW1vaHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMjk2MTIsImV4cCI6MjA5NjkwNTYxMn0.mWGHj27iKEnBY7FLlG81VC4qGtcUW4yLoXCL9ZjNaVE';
 const sb=supabase.createClient(SU,SK);
 
-function cfg(){return{an:localStorage.getItem('gm_an')||'Admin (Hiren)',ap:localStorage.getItem('gm_ap')||'admin123',pn:localStorage.getItem('gm_pn')||'Partner',pp:localStorage.getItem('gm_pp')||'partner123',start:localStorage.getItem('gm_start')||'',end:localStorage.getItem('gm_end')||''};}
+// Settings loaded from Supabase - cross device
+let _cfg={an:'Admin (Hiren)',ap:'admin123',pn:'Partner',pp:'partner123',start:'',end:''};
+function cfg(){return _cfg;}
+async function loadSettings(){
+  try{
+    const {data}=await sb.from('app_settings').select('*').limit(1).maybeSingle();
+    if(data){
+      _cfg={
+        an:data.admin_name||'Admin (Hiren)',
+        ap:data.admin_pass||'admin123',
+        pn:data.partner_name||'Partner',
+        pp:data.partner_pass||'partner123',
+        start:data.start_date||'',
+        end:data.end_date||''
+      };
+    }
+  }catch(e){console.log('Settings load error',e);}
+  // Update display names
+  document.getElementById('u1d-lbl') && (document.getElementById('u1d-lbl').textContent=_cfg.an);
+}
 
 const IT=['દાન / Donation','Sponsorship','Stall કિરાયો','Ticket','Last Year બાકી','ભેટ','Other'];
 const ET=['DJ','Decoration','પ્રસાદ','Light / વીજળી','Sound','Pandal','મૂર્તિ','Printing','ભોજ / જમણ','Puja Samagri','Transport','Other'];
@@ -654,11 +673,40 @@ function startApp(){
 }
 function logout(){cu=null;document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('lp').value='';document.getElementById('apanel').style.display='none';}
 function openSettingsFromApp(){logout();const c=cfg();document.getElementById('apanel').style.display='block';document.getElementById('s-u1n').value=c.an;document.getElementById('s-u2n').value=c.pn;document.getElementById('s-start').value=c.start;document.getElementById('s-end').value=c.end;}
-function saveSettings(){
-  const n1=document.getElementById('s-u1n').value.trim(),p1=document.getElementById('s-u1p').value.trim(),n2=document.getElementById('s-u2n').value.trim(),p2=document.getElementById('s-u2p').value.trim(),st=document.getElementById('s-start').value,en=document.getElementById('s-end').value;
-  if(n1)localStorage.setItem('gm_an',n1);if(p1)localStorage.setItem('gm_ap',p1);if(n2)localStorage.setItem('gm_pn',n2);if(p2)localStorage.setItem('gm_pp',p2);if(st)localStorage.setItem('gm_start',st);if(en)localStorage.setItem('gm_end',en);
-  document.getElementById('a-ok').style.display='block';setTimeout(()=>document.getElementById('a-ok').style.display='none',3000);
+async function saveSettings(){
+  const n1=document.getElementById('s-u1n').value.trim();
+  const p1=document.getElementById('s-u1p').value.trim();
+  const n2=document.getElementById('s-u2n').value.trim();
+  const p2=document.getElementById('s-u2p').value.trim();
+  const st=document.getElementById('s-start').value;
+  const en=document.getElementById('s-end').value;
+  // Update local config
+  if(n1)_cfg.an=n1; if(p1)_cfg.ap=p1;
+  if(n2)_cfg.pn=n2; if(p2)_cfg.pp=p2;
+  if(st)_cfg.start=st; if(en)_cfg.end=en;
+  // Save to Supabase
+  const payload={
+    admin_name:_cfg.an, admin_pass:_cfg.ap,
+    partner_name:_cfg.pn, partner_pass:_cfg.pp,
+    start_date:_cfg.start, end_date:_cfg.end,
+    id:1
+  };
+  const {error}=await sb.from('app_settings').upsert(payload,{onConflict:'id'});
+  if(error){toast('Save error: '+error.message,'te');return;}
+  document.getElementById('a-ok').style.display='block';
+  setTimeout(()=>document.getElementById('a-ok').style.display='none',3000);
 }
+// Load settings from Supabase when page loads
+window.addEventListener('load', async function(){
+  await loadSettings();
+  // Pre-fill settings panel if shown
+  const c=cfg();
+  if(document.getElementById('s-u1n'))document.getElementById('s-u1n').value=c.an;
+  if(document.getElementById('s-u2n'))document.getElementById('s-u2n').value=c.pn;
+  if(document.getElementById('s-start'))document.getElementById('s-start').value=c.start;
+  if(document.getElementById('s-end'))document.getElementById('s-end').value=c.end;
+});
+
 document.getElementById('lp').addEventListener('input',function(){if(this.value===cfg().ap){const c=cfg();document.getElementById('apanel').style.display='block';document.getElementById('s-u1n').value=c.an;document.getElementById('s-u2n').value=c.pn;document.getElementById('s-start').value=c.start;document.getElementById('s-end').value=c.end;}});
 
 // -------- UTILS --------
@@ -667,7 +715,7 @@ function hc(li){const l=document.getElementById(li);if(l)l.style.display='none';
 function pc(ii,li,v){document.getElementById(ii).value=v;hc(li);}
 function toast(m,t='ts'){const el=document.getElementById('toast');el.textContent=m;el.className=`toast show ${t}`;setTimeout(()=>el.classList.remove('show'),2800);}
 function fmt(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
-function fD(d){if(!d)return '-';const p=d.split('-');return `${p[2]}/${p[1]}/${p[0]}`;}
+function fD(d){if(!d)return '-';const p=d.split('-');return `${p[2]}/${p[1]}`;}  // short date for table
 function fDGu(d){if(!d)return '';const p=d.split('-').map(Number);const dt=new Date(p[0],p[1]-1,p[2]);return `${dt.getDate()} ${GU_MONTHS[dt.getMonth()]} (${GU_DAYS[dt.getDay()]})`;}
 function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
@@ -1291,11 +1339,11 @@ function render(){
   const expD=showAll?exp:exp.filter(x=>x.user_id==cu);
   const allE=[...expD.map(x=>({d:x.entry_date,ds:x.description,t:x.type,a:x.amount,u:x.user_id,bu:x.bill_url,bn:x.bill_name})),...(showAll?agn:agn.filter(x=>x.user_id==cu)).map(x=>({d:x.final_date,ds:x.name+' (Adv)',t:x.type,a:x.advance_amount,u:x.user_id,bu:null,bn:null}))].sort((a,b)=>(b.d||'').localeCompare(a.d||''));
 
-  document.getElementById('di').innerHTML=incD.length?incD.slice(0,10).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700;color:var(--gr)">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
-  document.getElementById('de').innerHTML=allE.length?allE.slice(0,10).map(x=>`<tr><td>${fD(x.d)}</td><td>${x.ds}</td><td><span class="bdg ${x.t==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.t==='Internal Transfer'?'🔄':x.t}</span></td><td style="font-weight:700;color:var(--re)">${fmt(x.a)}</td><td>${x.bu?`<a href="${x.bu}" target="_blank" style="color:var(--bl);font-size:11px;font-weight:600">📎 Bill</a>`:'—'}</td><td>${utag(x.u)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">—</td></tr>';
+  document.getElementById('di').innerHTML=incD.length?incD.slice(0,10).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700;color:var(--gr);white-space:nowrap">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
+  document.getElementById('de').innerHTML=allE.length?allE.slice(0,10).map(x=>`<tr><td>${fD(x.d)}</td><td>${x.ds}</td><td><span class="bdg ${x.t==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.t==='Internal Transfer'?'🔄':x.t}</span></td><td style="font-weight:700;color:var(--re);white-space:nowrap">${fmt(x.a)}</td><td>${x.bu?`<a href="${x.bu}" target="_blank" style="color:var(--bl);font-size:11px;font-weight:600">📎 Bill</a>`:'—'}</td><td>${utag(x.u)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">—</td></tr>';
 
-  document.getElementById('itbl').innerHTML=(showAll?inc:inc.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('income',${x.id})">✏️</button> <button class="bdel" onclick="dI(${x.id})">🗑</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">—</td></tr>';
-  document.getElementById('etbl').innerHTML=(showAll?exp:exp.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.description}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700">${fmt(x.amount)}</td><td>${x.bill_url?`<a href="${x.bill_url}" target="_blank" style="color:var(--bl);font-size:11px;font-weight:600">📎</a>`:'—'}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('expense',${x.id})">✏️</button> <button class="bdel" onclick="dE(${x.id})">🗑</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">—</td></tr>';
+  document.getElementById('itbl').innerHTML=(showAll?inc:inc.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700;white-space:nowrap">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('income',${x.id})">✏️</button> <button class="bdel" onclick="dI(${x.id})">🗑</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">—</td></tr>';
+  document.getElementById('etbl').innerHTML=(showAll?exp:exp.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.description}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700;white-space:nowrap">${fmt(x.amount)}</td><td>${x.bill_url?`<a href="${x.bill_url}" target="_blank" style="color:var(--bl);font-size:11px;font-weight:600">📎</a>`:'—'}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('expense',${x.id})">✏️</button> <button class="bdel" onclick="dE(${x.id})">🗑</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">—</td></tr>';
 
   // Transfer
   const trD=showAll?transfers:transfers.filter(x=>x.from_user==cu||x.to_user==cu);
