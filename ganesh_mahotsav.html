@@ -723,9 +723,12 @@ tr:last-child td{border-bottom:none}
 
         <!-- GROUP MEMBERS SECTION -->
         <div id="group-section" style="display:none;background:var(--pul);border-radius:var(--rs);padding:13px;margin-bottom:10px;border:1.5px solid rgba(109,40,217,.2)">
-          <div style="font-size:12px;font-weight:700;color:var(--pu);margin-bottom:10px">
-            👥 Group Members — બધા member ના નામ ભરો
-            <span style="font-size:10px;color:var(--gy);font-weight:400;display:block;margin-top:2px">દરેક member ને gift મળે — નામ ચોક્કસ ભરો</span>
+          <div style="font-size:12px;font-weight:700;color:var(--pu);margin-bottom:6px">
+            👥 Group Members — બાકીના members ઉમેરો
+          </div>
+          <div style="background:rgba(109,40,217,.08);border-radius:var(--rs);padding:8px 11px;margin-bottom:10px;font-size:11px;color:var(--pu);border-left:3px solid var(--pu)">
+            ✅ <strong>Member 1 = ઉપરના Main Balak</strong> — Count already included<br>
+            <span style="color:var(--gy)">નીચે બાકીના members ઉમેરો — દરેક member ને gift મળે</span>
           </div>
           <div id="group-members-list">
             <!-- First member auto added -->
@@ -2047,8 +2050,10 @@ async function addBalak(){
   }
 
   // Validate group members
+  // Note: Main balak (upar) = Member 1, group members = additional members
+  // So total = 1 (main) + groupMembers.length
   if(btype === 'Group'){
-    if(groupMembers.length < 2){ toast('Group ma ochhamama 2 members joie!','te'); return; }
+    if(groupMembers.length < 1){ toast('Group ma ochhamama ek vadu member joie!','te'); return; }
     const invalid = groupMembers.find(m=>!m.naam.trim()||!m.age);
     if(invalid){ toast('Group na badha members na naam ane umer bharo!','te'); return; }
   }
@@ -2067,8 +2072,13 @@ async function addBalak(){
     if(socEl) m.society=socEl.value.trim();
     if(shalaEl) m.shala=shalaEl.value.trim();
   });
-  const membersData = btype === 'Group' ? JSON.stringify(groupMembers.map(m=>({naam:m.naam,age:parseInt(m.age)||0,dob:m.dob||'',society:m.society||'',shala:m.shala||''}))) : null;
-  const totalMembers = btype === 'Group' ? groupMembers.length : 1;
+  // Include main balak as Member 1 in group
+  const allGroupMembers = btype === 'Group' ? [
+    {naam:naam, age:parseInt(age)||0, dob:dob, society:society, shala:shala, isLeader:true},
+    ...groupMembers.map(m=>({naam:m.naam,age:parseInt(m.age)||0,dob:m.dob||'',society:m.society||'',shala:m.shala||'',isLeader:false}))
+  ] : null;
+  const membersData = btype === 'Group' ? JSON.stringify(allGroupMembers) : null;
+  const totalMembers = btype === 'Group' ? allGroupMembers.length : 1;
 
   const {data, error} = await sb.from('balak_registration').insert({
     serial_no: nextSerial,
@@ -2088,7 +2098,7 @@ async function addBalak(){
 
   if(error){ toast('Error: '+error.message,'te'); return; }
   
-  const memberMsg = btype==='Group' ? ' (Group - '+totalMembers+' members)' : '';
+  const memberMsg = btype==='Group' ? ' — Group: '+totalMembers+' members (Leader included)' : '';
   toast('✓ Registration #'+nextSerial+' સફળ!'+memberMsg,'ts');
 
   ['b-naam','b-parent','b-dob','b-age','b-society','b-shala','b-mobile'].forEach(id=>document.getElementById(id).value='');
@@ -2142,7 +2152,7 @@ ${(()=>{
   if(entry.performance_type==='Group' && entry.group_members){
     try{
       const members = JSON.parse(entry.group_members);
-      return '\n👥 *Group Members:*\n'+members.map((m,i)=>`${i+1}. ${m.naam} (${m.age} વર્ષ)`).join('\n');
+      return '\n👥 *Group Members (Gift List):*\n'+members.map((m,i)=>`${i+1}. ${m.naam} (${m.age} વર્ષ)${m.isLeader?' 👑':''}`).join('\n');
     }catch(e){return '';}
   }
   return '';
