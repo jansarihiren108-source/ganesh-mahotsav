@@ -959,9 +959,19 @@ window.addEventListener('load', async function(){
 // Settings now inside app only
 
 // -------- UTILS --------
-function sc(ii,li,items){const v=document.getElementById(ii).value.toLowerCase(),l=document.getElementById(li),f=items.filter(i=>i.toLowerCase().includes(v));if(!f.length){l.style.display='none';return;}l.innerHTML=f.map(i=>`<div class="citem" onmousedown="pc('${ii}','${li}','${i.replace(/'/g,"\\'")}')">${i}</div>`).join('');l.style.display='block';}
+function sc(ii,li,items){
+  const v=document.getElementById(ii).value.toLowerCase();
+  const l=document.getElementById(li);
+  const f=items.filter(i=>i.toLowerCase().includes(v));
+  if(!f.length){l.style.display='none';return;}
+  l.innerHTML=f.map(i=>{
+    const enc=encodeURIComponent(i);
+    return `<div class="citem" onmousedown="pc('${ii}','${li}','${enc}')">${i}</div>`;
+  }).join('');
+  l.style.display='block';
+}
 function hc(li){const l=document.getElementById(li);if(l)l.style.display='none';}
-function pc(ii,li,v){document.getElementById(ii).value=v;hc(li);}
+function pc(ii,li,enc){document.getElementById(ii).value=decodeURIComponent(enc);hc(li);}
 function toast(m,t='ts'){const el=document.getElementById('toast');el.textContent=m;el.className=`toast show ${t}`;setTimeout(()=>el.classList.remove('show'),2800);}
 function fmt(n){return '₹'+Number(n||0).toLocaleString('en-IN');}
 function fD(d){if(!d)return '-';const p=d.split('-');return `${p[2]}/${p[1]}`;}  // short date for table
@@ -1865,7 +1875,7 @@ function updateMember(id, field, val){
 // SOCIETIES AND SCHOOLS
 const SOCS = [
   'શ્રી ભગવતી નગર સોસાયટી',
-  'શ્રી હરિદર્શ પાર્ક સોસાયટી',
+  'શ્રી હરિદર્શન પાર્ક સોસાયટી',
   'શ્રી ઉમિયા ટેનામેન્ટ',
   'શ્રી મુરલીધર ટેનામેન્ટ',
 ];
@@ -1883,12 +1893,15 @@ function scBalak(inputId, listId, items){
   if(!l) return;
   const f = items.filter(i=>i.toLowerCase().includes(v));
   if(!f.length){ l.style.display='none'; return; }
-  l.innerHTML = f.map(i=>`<div class="citem" onmousedown="document.getElementById('${inputId}').value='${i.replace(/'/g,"\'")}';document.getElementById('${listId}').style.display='none'">${i}</div>`).join('');
+  l.innerHTML = f.map(i=>{
+    const encoded = encodeURIComponent(i);
+    return `<div class="citem" onmousedown="pickBalakCombo('${inputId}','${listId}','${encoded}')">${i}</div>`;
+  }).join('');
   l.style.display = 'block';
 }
-function pickBalakCombo(inputId, listId, val){
+function pickBalakCombo(inputId, listId, encoded){
   const el = document.getElementById(inputId);
-  if(el) el.value = val;
+  if(el) el.value = decodeURIComponent(encoded);
   hc(listId);
 }
 
@@ -1899,10 +1912,14 @@ function scMember(id, type, val){
   if(!l) return;
   const f = items.filter(i=>i.toLowerCase().includes(val.toLowerCase()));
   if(!f.length){ l.style.display='none'; return; }
-  l.innerHTML = f.map(i=>{const safe=i.replace(/'/g,"\'");return`<div class="citem" onmousedown="pickMember(${id},'${type}','${safe}')">${i}</div>`;}).join('');
+  l.innerHTML = f.map(i=>{
+    const encoded = encodeURIComponent(i);
+    return `<div class="citem" onmousedown="pickMember(${id},'${type}','${encoded}')">${i}</div>`;
+  }).join('');
   l.style.display='block';
 }
-function pickMember(id, type, val){
+function pickMember(id, type, encoded){
+  const val = decodeURIComponent(encoded);
   const inputId = 'gm-'+type+'-'+id;
   const el = document.getElementById(inputId);
   if(el) el.value = val;
@@ -2116,27 +2133,24 @@ function sendWhatsApp(entry, serial, grpMembers){
   const now = new Date();
   const dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
 
-  // Format program date with Gujarati day
-  let progDateStr = '', progDayStr = '';
+  let progDateStr='', progDayStr='';
   if(c.prog_date){
-    const pd = new Date(c.prog_date+'T00:00:00');
+    const pd=new Date(c.prog_date+'T00:00:00');
     const guDays=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
     const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
-    progDateStr = pd.getDate()+' '+guM[pd.getMonth()]+' '+pd.getFullYear();
-    progDayStr = guDays[pd.getDay()];
+    progDateStr=pd.getDate()+' '+guM[pd.getMonth()]+' '+pd.getFullYear();
+    progDayStr=guDays[pd.getDay()];
   }
 
-  // Build member details block
-  let memberBlock = '';
-  const isGroup = entry.performance_type === 'Group';
-
+  let memberBlock='';
+  const isGroup=entry.performance_type==='Group';
   if(isGroup && entry.group_members){
     try{
-      const members = JSON.parse(entry.group_members);
-      memberBlock = members.map((m,i)=>{
-        const leader = m.isLeader ? ' 👑 (Leader)' : '';
+      const members=JSON.parse(entry.group_members);
+      memberBlock=members.map((m,i)=>{
+        const leader=m.isLeader?' 👑 (Leader)':'';
         return `👦 *${i+1}. ${m.naam}*${leader}
-   🎂 ઉંમર: ${m.age} વર્ષ   🏠 ${m.society||'—'}${m.shala?'
+   🎂 ${m.age} વર્ષ   🏠 ${m.society||'—'}${m.shala?'
    🏫 '+m.shala:''}`;
       }).join('
 
@@ -2144,23 +2158,29 @@ function sendWhatsApp(entry, serial, grpMembers){
     }catch(e){}
   }
 
-  // Single balak details (solo only)
-  const soloDetails = !isGroup ? `
+  const soloDetails=!isGroup?`
 👦 *બાળકનું નામ:* ${entry.balak_naam}
 👤 *Parent:* ${entry.parent_naam}
 🎂 *ઉંમર:* ${entry.umer} વર્ષ
 🏠 *સોસાયટી:* ${entry.society_naam}${entry.shala_naam?'
 🏫 *શાળા:* '+entry.shala_naam:''}
-📱 *Mobile:* ${entry.mobile_no}` : `
+📱 *Mobile:* ${entry.mobile_no}`:`
 📱 *Contact:* ${entry.mobile_no}`;
 
-  const progInfo = c.prog_date
-    ? `📅 *${progDateStr} (${progDayStr})*
+  const progInfo=c.prog_date
+    ?`📅 *${progDateStr} (${progDayStr})*
 ⏰ *સમય: ${c.prog_time||'9:15 AM - 12:30 PM'}*${c.prog_venue?'
 📍 *સ્થળ: '+c.prog_venue+'*':''}`
-    : `📅 Program date ane time alag thi janavvashe`;
+    :'📅 Program date alag thi janavvashe';
 
-  const msg =
+  const groupLine=isGroup?'
+
+👥 Group performance — બધા members સાથે આવે .':'';
+  const contactLine=c.prog_contact?'
+
+📞 *સંપર્ક: '+c.prog_contact+'*':'';
+
+  const msg=
 `🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*
 *યુવક મિત્ર મંડળ, અમરાઈવાડી*
 
@@ -2173,31 +2193,34 @@ function sendWhatsApp(entry, serial, grpMembers){
 🎭 *Program: ${entry.program_prakar}*
 ${isGroup?`👥 *${entry.total_members} Members Group Performance*`:'👤 *Solo Performance*'}
 ━━━━━━━━━━━━━━━━━━━━
-${isGroup && memberBlock ? `
+${isGroup && memberBlock?`
 👥 *Group Members:*
 
 ${memberBlock}
-` : soloDetails}
+`:soloDetails}
 ━━━━━━━━━━━━━━━━━━━━
 📆 *Performance Schedule:*
 ${progInfo}
 ━━━━━━━━━━━━━━━━━━━━
-📌 *મહત્વની સૂચનાઓ:*
-• Performance ના *30 મિનિટ પહેલા* હાજર રહેવું
-• યોગ્ય *Costume / Dress* ready રાખવો
-• Group હોય તો *બધા members સાથે* આવે
-• Stage પર perform કરનાર *દરેક balak ને Gift* અપાશે${c.prog_contact?'
+📋 *મહત્વની સૂચનાઓ અને નિયમો :-*
 
-📞 *સંપર્ક: '+c.prog_contact+'*':''}
+👦 આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે .
 
-━━━━━━━━━━━━━━━━━━━━
-${TERMS}
+⏰ Performance ના 30 મિનિટ પહેલા હાજર રહેવું .${groupLine}
+
+💾 જે બાળકને ગીત, ડાન્સ , મિમિકી કે અન્ય કાર્યક્રમ કરવાના હોય તે Pendrive માં આગાઉથી આપી દેવી .
+
+🎁 સ્ટેજ પર perform કરનાર દરેક બાળકને *Special Gift* આપવામાં આવશે .
+
+🚫 કાર્યક્રમ સંદર્ભી કોઈ તકરાર સાંભળવામાં આવશે નહી .
+
+⚖️ કોઈ અગમ્ય કારણોસર અડચણ આવે તો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા .${contactLine}
 
 ━━━━━━━━━━━━━━━━━━━━
 🙏 *ગણપતિ બાપ્પા મોર્યા!*
 🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺`;
 
-  window.open('https://wa.me/91' + entry.mobile_no + '?text=' + encodeURIComponent(msg), '_blank');
+  window.open('https://wa.me/91'+entry.mobile_no+'?text='+encodeURIComponent(msg),'_blank');
 }
 
 function resendWA(id){
@@ -2360,10 +2383,11 @@ function exportBalakExcel(mode){
     ['શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ — સાંસ્કૃતિક પ્રોગ્રામ 2026'],
     [],
     ['નોંધ :-'],
-    ['નોંધ :-'],
-    ['આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે.'],
+    ['મહત્વની સૂચનાઓ અને નિયમો :-'],
+    [],
+    ['👦  આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે.'],
     ['જે બાળકને પોતાનું જે પણ ગીત, ડાન્સ, મિમિક્રી કે અન્ય કાર્યક્રમ કરવાના હોય તે તમારે પેન્ડ્રાઈવ માં લઈને આયોજનકર્તા ભાઈઓ ને આગાઉથી આપી દેવી.'],
-    ['સ્ટેજ પર કાર્યક્રમ કરનાર દરેક બાળકને કોઈ એક Gift આપવામાં આવશે.'],
+    ['🎁  સ્ટેજ પર કાર્યક્રમ કરનાર દરેક બાળકને Special Gift આપવામાં આવશે .'],
     ['કાર્યક્રમ સંદર્ભી કોઈપણ તકરાર સાંભળવામાં આવશે નહીં.'],
     ['કોઈ અગમ્ય કે અન્ય કારણોસર કાર્યક્રમ માં અડચણ આવશે તો તેનો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા રહેશે.'],
   ];
