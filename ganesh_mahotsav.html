@@ -2112,67 +2112,90 @@ async function addBalak(){
 }
 
 function sendWhatsApp(entry, serial, grpMembers){
+  const c = cfg();
   const now = new Date();
   const dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
-  const c = cfg();
-  // Format program date with day name
-  let progDateStr = '';
-  let progDayStr = '';
+
+  // Format program date with Gujarati day
+  let progDateStr = '', progDayStr = '';
   if(c.prog_date){
-    const pd = new Date(c.prog_date + 'T00:00:00');
-    const guDays = ['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
-    const guMonths = ['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
-    progDateStr = pd.getDate()+' '+guMonths[pd.getMonth()]+' '+pd.getFullYear();
+    const pd = new Date(c.prog_date+'T00:00:00');
+    const guDays=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
+    const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
+    progDateStr = pd.getDate()+' '+guM[pd.getMonth()]+' '+pd.getFullYear();
     progDayStr = guDays[pd.getDay()];
   }
-  const progInfo = c.prog_date
-    ? `📅 *Performance Date: ${progDateStr} (${progDayStr})*
-⏰ *Time: ${c.prog_time||'9:15 AM - 12:30 PM'}*${c.prog_venue?'\n📍 *Venue: '+c.prog_venue+'*':''}`
-    : `📅 *Performance date ane time alag thi janavvashe*`;
 
-  const msg = `🕉 *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*
-*યુવક મિત્ર મંડળ*
+  // Build member details block
+  let memberBlock = '';
+  const isGroup = entry.performance_type === 'Group';
 
-🏆 *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026*
-🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅
-
-〰️〰️〰️〰️〰️〰️〰️〰️
-
-🔖 *Registration No: #${serial}*
-📝 *Registration Date: ${dateStr}*
-
-👦 *બાળકનું નામ:* ${entry.balak_naam}
-👤 *Parent નું નામ:* ${entry.parent_naam}
-🎭 *પ્રોગ્રામ:* ${entry.program_prakar}
-🏠 *સોસાયટી:* ${entry.society_naam}
-🎂 *ઉંમર:* ${entry.umer} વર્ષ
-📱 *Mobile:* ${entry.mobile_no}
-${entry.performance_type==='Group'?`👥 *Group Performance — ${entry.total_members} Members*`:'👤 *Solo Performance*'}
-${(()=>{
-  if(entry.performance_type==='Group' && entry.group_members){
+  if(isGroup && entry.group_members){
     try{
       const members = JSON.parse(entry.group_members);
-      return '\n👥 *Group Members (Gift List):*\n'+members.map((m,i)=>`${i+1}. ${m.naam} (${m.age} વર્ષ)${m.isLeader?' 👑':''}`).join('\n');
-    }catch(e){return '';}
+      memberBlock = members.map((m,i)=>{
+        const leader = m.isLeader ? ' 👑 (Leader)' : '';
+        return `👦 *${i+1}. ${m.naam}*${leader}
+   🎂 ઉંમર: ${m.age} વર્ષ   🏠 ${m.society||'—'}${m.shala?'
+   🏫 '+m.shala:''}`;
+      }).join('
+
+');
+    }catch(e){}
   }
-  return '';
-})()}
 
-〰️〰️〰️〰️〰️〰️〰️〰️
+  // Single balak details (solo only)
+  const soloDetails = !isGroup ? `
+👦 *બાળકનું નામ:* ${entry.balak_naam}
+👤 *Parent:* ${entry.parent_naam}
+🎂 *ઉંમર:* ${entry.umer} વર્ષ
+🏠 *સોસાયટી:* ${entry.society_naam}${entry.shala_naam?'
+🏫 *શાળા:* '+entry.shala_naam:''}
+📱 *Mobile:* ${entry.mobile_no}` : `
+📱 *Contact:* ${entry.mobile_no}`;
 
-🗓️ *Performance Schedule:*
+  const progInfo = c.prog_date
+    ? `📅 *${progDateStr} (${progDayStr})*
+⏰ *સમય: ${c.prog_time||'9:15 AM - 12:30 PM'}*${c.prog_venue?'
+📍 *સ્થળ: '+c.prog_venue+'*':''}`
+    : `📅 Program date ane time alag thi janavvashe`;
+
+  const msg =
+`🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*
+*યુવક મિત્ર મંડળ, અમરાઈવાડી*
+
+✨ *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026* ✨
+🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅
+
+━━━━━━━━━━━━━━━━━━━━
+🎫 *Registration No: #${serial}*
+📝 *Registration Date: ${dateStr}*
+🎭 *Program: ${entry.program_prakar}*
+${isGroup?`👥 *${entry.total_members} Members Group Performance*`:'👤 *Solo Performance*'}
+━━━━━━━━━━━━━━━━━━━━
+${isGroup && memberBlock ? `
+👥 *Group Members:*
+
+${memberBlock}
+` : soloDetails}
+━━━━━━━━━━━━━━━━━━━━
+📆 *Performance Schedule:*
 ${progInfo}
+━━━━━━━━━━━━━━━━━━━━
+📌 *મહત્વની સૂચનાઓ:*
+• Performance ના *30 મિનિટ પહેલા* હાજર રહેવું
+• યોગ્ય *Costume / Dress* ready રાખવો
+• Group હોય તો *બધા members સાથે* આવે
+• Stage પર perform કરનાર *દરેક balak ને Gift* અપાશે${c.prog_contact?'
 
-〰️〰️〰️〰️〰️〰️〰️〰️
+📞 *સંપર્ક: '+c.prog_contact+'*':''}
 
-📌 *મહત્વની નોંધ:*
-• Performance ના 30 મિનિટ પહેલા હાજર રહેવું
-• Group performance હોય તો બધા members સાથે આવે
-• Costume / dress ready રાખવો${c.prog_contact?'\n📞 Sampark: '+c.prog_contact:''}
+━━━━━━━━━━━━━━━━━━━━
+${TERMS}
 
+━━━━━━━━━━━━━━━━━━━━
 🙏 *ગણપતિ બાપ્પા મોર્યા!*
-🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺
-✨ *Silver Jubilee Ganesh Mahotsav 2026* ✨`;
+🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺`;
 
   window.open('https://wa.me/91' + entry.mobile_no + '?text=' + encodeURIComponent(msg), '_blank');
 }
@@ -2332,6 +2355,22 @@ function exportBalakExcel(mode){
       XLSX.utils.book_append_sheet(wb, pws, sname);
     });
   }
+  // Terms sheet
+  const terms_rows = [
+    ['શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ — સાંસ્કૃતિક પ્રોગ્રામ 2026'],
+    [],
+    ['નોંધ :-'],
+    ['નોંધ :-'],
+    ['આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે.'],
+    ['જે બાળકને પોતાનું જે પણ ગીત, ડાન્સ, મિમિક્રી કે અન્ય કાર્યક્રમ કરવાના હોય તે તમારે પેન્ડ્રાઈવ માં લઈને આયોજનકર્તા ભાઈઓ ને આગાઉથી આપી દેવી.'],
+    ['સ્ટેજ પર કાર્યક્રમ કરનાર દરેક બાળકને કોઈ એક Gift આપવામાં આવશે.'],
+    ['કાર્યક્રમ સંદર્ભી કોઈપણ તકરાર સાંભળવામાં આવશે નહીં.'],
+    ['કોઈ અગમ્ય કે અન્ય કારણોસર કાર્યક્રમ માં અડચણ આવશે તો તેનો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા રહેશે.'],
+  ];
+  const tws = XLSX.utils.aoa_to_sheet(terms_rows);
+  tws['!cols'] = [{wch:100}];
+  XLSX.utils.book_append_sheet(wb, tws, 'નોંધ (Terms)');
+
   XLSX.writeFile(wb, 'Balak_Registration_2026.xlsx');
   toast('✓ Excel download thayo!','ts');
 }
