@@ -264,32 +264,7 @@ tr:last-child td{border-bottom:none}
     <button class="l-btn" onclick="doLogin()">🚪 Login</button>
     <div class="l-err" id="lerr">Password ખોટો છે!</div>
   </div>
-  <div class="apanel" id="apanel" style="display:none">
-    <div class="apanel-title">⚙️ Admin Settings</div>
-    <div class="arow">
-      <div><div class="a-lbl">Admin નું નામ</div><input class="a-inp" id="s-u1n" placeholder="Admin..."></div>
-      <div><div class="a-lbl">Admin Password</div><input class="a-inp" type="password" id="s-u1p" placeholder="New pass..."></div>
-    </div>
-    <div class="arow">
-      <div><div class="a-lbl">Partner નું નામ</div><input class="a-inp" id="s-u2n" placeholder="Partner..."></div>
-      <div><div class="a-lbl">Partner Password</div><input class="a-inp" type="password" id="s-u2p" placeholder="New pass..."></div>
-    </div>
-    <div class="arow">
-      <div><div class="a-lbl">Mahotsav Start Date</div><input class="a-inp" type="date" id="s-start"></div>
-      <div><div class="a-lbl">Mahotsav End Date</div><input class="a-inp" type="date" id="s-end"></div>
-    </div>
-    <div class="arow">
-      <div><div class="a-lbl">🎭 Program Date</div><input class="a-inp" type="date" id="s-prog-date"></div>
-      <div><div class="a-lbl">Program Time (Jem ke: 9:15 AM - 12:30 PM)</div><input class="a-inp" type="text" id="s-prog-time" placeholder="9:15 AM - 12:30 PM"></div>
-    </div>
-    <div class="arow">
-      <div><div class="a-lbl">Venue / Sthal</div><input class="a-inp" type="text" id="s-prog-venue" placeholder="Jem ke: Vishvanath Mahadev Mandir..."></div>
-      <div><div class="a-lbl">Organizer Contact</div><input class="a-inp" type="text" id="s-prog-contact" placeholder="Mobile no..."></div>
-    </div>
-    <button class="a-btn" onclick="saveSettings()">💾 Save Settings</button>
-    <div class="a-ok" id="a-ok">✓ Saved!</div>
-  </div>
-  <div style="margin-top:14px;font-size:10px;color:rgba(255,255,255,.2);text-align:center">Admin: admin123 | Partner: partner123</div>
+  <div style="margin-top:14px;font-size:10px;color:rgba(255,255,255,.2);text-align:center">Shree Vishvanath Mahadev Group</div>
 </div>
 <!-- APP -->
 <div id="app" style="display:none">
@@ -702,8 +677,24 @@ tr:last-child td{border-bottom:none}
           <div class="fg"><label>ઉંમર (Auto)</label><input type="text" id="b-age" placeholder="Auto..." readonly style="background:var(--gyl);color:var(--gy)"></div>
         </div>
         <div class="frow">
-          <div class="fg"><label>સોસાયટીનું નામ *</label><input type="text" id="b-society" placeholder="સોસાયટી / વિસ્તાર..."></div>
-          <div class="fg"><label>શાળાનું નામ</label><input type="text" id="b-shala" placeholder="Optional..."></div>
+          <div class="fg"><label>સોસાયટીનું નામ *</label>
+            <div class="cwrap">
+              <input type="text" id="b-society" placeholder="સોસાયટી શોધો અથવા લખો..." autocomplete="off"
+                oninput="scBalak('b-society','soc-list',SOCS)"
+                onfocus="scBalak('b-society','soc-list',SOCS)"
+                onblur="setTimeout(()=>hc('soc-list'),220)">
+              <div class="clist" id="soc-list"></div>
+            </div>
+          </div>
+          <div class="fg"><label>શાળાનું નામ</label>
+            <div class="cwrap">
+              <input type="text" id="b-shala" placeholder="શાળા શોધો અથવા લખો..." autocomplete="off"
+                oninput="scBalak('b-shala','shala-list',SHALAS)"
+                onfocus="scBalak('b-shala','shala-list',SHALAS)"
+                onblur="setTimeout(()=>hc('shala-list'),220)">
+              <div class="clist" id="shala-list"></div>
+            </div>
+          </div>
         </div>
         <div class="frow">
           <div class="fg"><label>પ્રોગ્રામ પ્રકાર *</label>
@@ -723,12 +714,27 @@ tr:last-child td{border-bottom:none}
           <div class="fg"><label>Mobile (WhatsApp) *</label><input type="tel" id="b-mobile" placeholder="10 digit..." maxlength="10" inputmode="numeric"></div>
         </div>
         <div class="fg" style="margin-bottom:9px">
-          <label>Group / Solo</label>
-          <select id="b-type">
+          <label>Performance Type</label>
+          <select id="b-type" onchange="toggleGroupSection()">
             <option value="Solo">👤 Solo Performance</option>
             <option value="Group">👥 Group Performance</option>
           </select>
         </div>
+
+        <!-- GROUP MEMBERS SECTION -->
+        <div id="group-section" style="display:none;background:var(--pul);border-radius:var(--rs);padding:13px;margin-bottom:10px;border:1.5px solid rgba(109,40,217,.2)">
+          <div style="font-size:12px;font-weight:700;color:var(--pu);margin-bottom:10px">
+            👥 Group Members — બધા member ના નામ ભરો
+            <span style="font-size:10px;color:var(--gy);font-weight:400;display:block;margin-top:2px">દરેક member ને gift મળે — નામ ચોક્કસ ભરો</span>
+          </div>
+          <div id="group-members-list">
+            <!-- First member auto added -->
+          </div>
+          <button type="button" onclick="addGroupMember()" style="background:var(--pu);color:#fff;border:none;border-radius:var(--rs);padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;margin-top:6px;display:flex;align-items:center;gap:5px">
+            + Member ઉમેરો
+          </button>
+        </div>
+
         <div class="bbar">
           <button class="btn bp" onclick="addBalak()">💾 Register + WhatsApp</button>
         </div>
@@ -781,7 +787,43 @@ tr:last-child td{border-bottom:none}
   </div>
 
   
-  <!-- EDIT MODAL -->
+  <!-- SETTINGS MODAL -->
+<div class="mov" id="settings-modal">
+  <div class="modal" style="max-height:92vh">
+    <div class="modal-hdr">
+      <span style="display:flex;align-items:center;gap:7px"><span style="font-size:18px">⚙️</span> Admin Settings</span>
+      <button class="mc-btn" onclick="document.getElementById('settings-modal').classList.remove('open')">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div class="fg"><label>👑 Admin નું નામ</label><input type="text" id="s-u1n" placeholder="Admin..."></div>
+      <div class="fg"><label>Admin Password</label><input type="password" id="s-u1p" placeholder="New pass (khali rakho to same rahe)..."></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div class="fg"><label>👤 Partner નું નામ</label><input type="text" id="s-u2n" placeholder="Partner..."></div>
+      <div class="fg"><label>Partner Password</label><input type="password" id="s-u2p" placeholder="New pass (khali rakho to same rahe)..."></div>
+    </div>
+    <div style="height:1px;background:var(--bd);margin:12px 0"></div>
+    <div style="font-size:11px;font-weight:700;color:var(--gy);margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em">🐘 Mahotsav Dates</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div class="fg"><label>Start Date (Ganesh Chaturthi)</label><input type="date" id="s-start"></div>
+      <div class="fg"><label>End Date (Visarjan)</label><input type="date" id="s-end"></div>
+    </div>
+    <div style="height:1px;background:var(--bd);margin:12px 0"></div>
+    <div style="font-size:11px;font-weight:700;color:var(--gy);margin-bottom:9px;text-transform:uppercase;letter-spacing:.05em">🎭 Sanskrutik Program Details</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div class="fg"><label>Program Date</label><input type="date" id="s-prog-date"></div>
+      <div class="fg"><label>Time (Jem ke: 9:15 AM - 12:30 PM)</label><input type="text" id="s-prog-time" placeholder="9:15 AM - 12:30 PM"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
+      <div class="fg"><label>Venue / Sthal</label><input type="text" id="s-prog-venue" placeholder="Mandir, Hall..."></div>
+      <div class="fg"><label>Organizer Contact</label><input type="text" id="s-prog-contact" placeholder="Mobile no..." inputmode="numeric"></div>
+    </div>
+    <div id="a-ok" style="display:none;background:var(--grl);color:var(--gr);padding:9px 14px;border-radius:var(--rs);font-size:13px;font-weight:600;text-align:center;margin-bottom:10px">✓ Settings save thayo!</div>
+    <button class="btn bp" onclick="saveSettings()" style="width:100%;justify-content:center">💾 Save Settings</button>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
 <div class="mov" id="emod">
   <div class="modal">
     <div class="modal-hdr"><span id="etitle">Edit</span><button class="mc-btn" onclick="cmod()">✕</button></div>
@@ -856,17 +898,19 @@ function startApp(){
 }
 function logout(){cu=null;document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('lp').value='';document.getElementById('apanel').style.display='none';}
 function openSettingsFromApp(){
-  logout();
   const c=cfg();
-  document.getElementById('apanel').style.display='block';
   document.getElementById('s-u1n').value=c.an;
   document.getElementById('s-u2n').value=c.pn;
-  document.getElementById('s-start').value=c.start;
-  document.getElementById('s-end').value=c.end;
-  if(document.getElementById('s-prog-date'))document.getElementById('s-prog-date').value=c.prog_date||'';
-  if(document.getElementById('s-prog-time'))document.getElementById('s-prog-time').value=c.prog_time||'9:15 AM - 12:30 PM';
-  if(document.getElementById('s-prog-venue'))document.getElementById('s-prog-venue').value=c.prog_venue||'';
-  if(document.getElementById('s-prog-contact'))document.getElementById('s-prog-contact').value=c.prog_contact||'';
+  document.getElementById('s-u1p').value='';
+  document.getElementById('s-u2p').value='';
+  document.getElementById('s-start').value=c.start||'';
+  document.getElementById('s-end').value=c.end||'';
+  document.getElementById('s-prog-date').value=c.prog_date||'';
+  document.getElementById('s-prog-time').value=c.prog_time||'9:15 AM - 12:30 PM';
+  document.getElementById('s-prog-venue').value=c.prog_venue||'';
+  document.getElementById('s-prog-contact').value=c.prog_contact||'';
+  document.getElementById('a-ok').style.display='none';
+  document.getElementById('settings-modal').classList.add('open');
 }
 async function saveSettings(){
   const n1=document.getElementById('s-u1n').value.trim();
@@ -909,7 +953,7 @@ window.addEventListener('load', async function(){
   if(document.getElementById('s-end'))document.getElementById('s-end').value=c.end;
 });
 
-document.getElementById('lp').addEventListener('input',function(){if(this.value===cfg().ap){const c=cfg();document.getElementById('apanel').style.display='block';document.getElementById('s-u1n').value=c.an;document.getElementById('s-u2n').value=c.pn;document.getElementById('s-start').value=c.start;document.getElementById('s-end').value=c.end;}});
+// Settings now inside app only
 
 // -------- UTILS --------
 function sc(ii,li,items){const v=document.getElementById(ii).value.toLowerCase(),l=document.getElementById(li),f=items.filter(i=>i.toLowerCase().includes(v));if(!f.length){l.style.display='none';return;}l.innerHTML=f.map(i=>`<div class="citem" onmousedown="pc('${ii}','${li}','${i.replace(/'/g,"\\'")}')">${i}</div>`).join('');l.style.display='block';}
@@ -1728,6 +1772,157 @@ function switchBalakTab(tab){
   if(tab==='export') renderExportSummary();
 }
 
+// GROUP MEMBERS
+let groupMembers = [];
+
+function toggleGroupSection(){
+  const type = document.getElementById('b-type').value;
+  const sec = document.getElementById('group-section');
+  if(type === 'Group'){
+    sec.style.display = 'block';
+    if(groupMembers.length === 0) addGroupMember();
+    renderGroupMembers();
+  } else {
+    sec.style.display = 'none';
+    groupMembers = [];
+  }
+}
+
+function addGroupMember(){
+  groupMembers.push({id: Date.now(), naam: '', age: '', dob: ''});
+  renderGroupMembers();
+}
+
+function removeGroupMember(id){
+  if(groupMembers.length <= 1){ toast('Ochhamama ek member joie!','te'); return; }
+  groupMembers = groupMembers.filter(m=>m.id!==id);
+  renderGroupMembers();
+}
+
+function renderGroupMembers(){
+  const list = document.getElementById('group-members-list');
+  if(!list) return;
+  list.innerHTML = groupMembers.map((m,i)=>`
+    <div style="background:#fff;border-radius:var(--rs);padding:11px 13px;margin-bottom:9px;border:1.5px solid rgba(109,40,217,.18)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+        <div style="font-size:12px;font-weight:700;color:var(--pu);display:flex;align-items:center;gap:6px">
+          <span style="background:var(--pu);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px">${i+1}</span>
+          Member ${i+1}
+        </div>
+        ${groupMembers.length > 1 ? `<button onclick="removeGroupMember(${m.id})" style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600">✕</button>` : ''}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px">
+        <div class="fg"><label style="font-size:10px">બાળકનું નામ *</label>
+          <input type="text" id="gm-naam-${m.id}" value="${m.naam||''}" onchange="updateMember(${m.id},'naam',this.value)" placeholder="પૂરું નામ..." style="font-size:13px;padding:8px 10px">
+        </div>
+        <div class="fg"><label style="font-size:10px">જન્મ તારીખ *</label>
+          <input type="date" id="gm-dob-${m.id}" value="${m.dob||''}" onchange="updateMemberDOB(${m.id},this.value)" style="font-size:13px;padding:8px 10px">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px">
+        <div class="fg"><label style="font-size:10px">ઉંમર (Auto)</label>
+          <input type="text" id="gm-age-${m.id}" value="${m.age?m.age+' વર્ષ':''}" placeholder="DOB પરથી..." readonly style="font-size:13px;padding:8px 10px;background:var(--gyl);color:var(--gy)">
+        </div>
+        <div class="fg"><label style="font-size:10px">સોસાયટી *</label>
+          <div style="position:relative">
+            <input type="text" id="gm-soc-${m.id}" value="${m.society||''}" 
+              oninput="scMember(${m.id},'soc',this.value)" 
+              onfocus="scMember(${m.id},'soc',this.value)"
+              onblur="setTimeout(()=>document.getElementById('gml-soc-${m.id}').style.display='none',220)"
+              placeholder="સોસાયટી..." style="font-size:13px;padding:8px 10px">
+            <div id="gml-soc-${m.id}" class="clist"></div>
+          </div>
+        </div>
+      </div>
+      <div class="fg"><label style="font-size:10px">શાળાનું નામ</label>
+        <div style="position:relative">
+          <input type="text" id="gm-shala-${m.id}" value="${m.shala||''}"
+            oninput="scMember(${m.id},'shala',this.value)"
+            onfocus="scMember(${m.id},'shala',this.value)"
+            onblur="setTimeout(()=>document.getElementById('gml-shala-${m.id}').style.display='none',220)"
+            placeholder="શાળા..." style="font-size:13px;padding:8px 10px">
+          <div id="gml-shala-${m.id}" class="clist"></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function updateMember(id, field, val){
+  const m = groupMembers.find(x=>x.id===id);
+  if(m) m[field] = val;
+  // Also read current values from DOM
+  if(m){
+    const soc = document.getElementById('gm-soc-'+id);
+    const shala = document.getElementById('gm-shala-'+id);
+    if(soc) m.society = soc.value;
+    if(shala) m.shala = shala.value;
+  }
+}
+
+// SOCIETIES AND SCHOOLS
+const SOCS = [
+  'શ્રી ભગવતી નગર સોસાયટી',
+  'શ્રી હરિદર્શ પાર્ક સોસાયટી',
+  'શ્રી ઉમિયા ટેનામેન્ટ',
+  'શ્રી મુરલીધર ટેનામેન્ટ',
+];
+const SHALAS = [
+  'શ્રી મધુકાન્ત વિદ્યાલય',
+  'શ્રી શારદા બા વિદ્યાલય',
+  'શ્રી અંજલી વિદ્યાલય',
+  'ક્રિસ્ટલ ઇન્ટરનેશનલ પબ્લિક સ્કૂલ',
+  'શ્રી શંકર વિદ્યાલય',
+];
+
+function scBalak(inputId, listId, items){
+  const v = document.getElementById(inputId)?.value.toLowerCase()||'';
+  const l = document.getElementById(listId);
+  if(!l) return;
+  const f = items.filter(i=>i.toLowerCase().includes(v));
+  if(!f.length){ l.style.display='none'; return; }
+  l.innerHTML = f.map(i=>`<div class="citem" onmousedown="document.getElementById('${inputId}').value='${i.replace(/'/g,"\'")}';document.getElementById('${listId}').style.display='none'">${i}</div>`).join('');
+  l.style.display = 'block';
+}
+function pickBalakCombo(inputId, listId, val){
+  const el = document.getElementById(inputId);
+  if(el) el.value = val;
+  hc(listId);
+}
+
+function scMember(id, type, val){
+  const items = type==='soc' ? SOCS : SHALAS;
+  const listId = 'gml-'+type+'-'+id;
+  const l = document.getElementById(listId);
+  if(!l) return;
+  const f = items.filter(i=>i.toLowerCase().includes(val.toLowerCase()));
+  if(!f.length){ l.style.display='none'; return; }
+  l.innerHTML = f.map(i=>{const safe=i.replace(/'/g,"\'");return`<div class="citem" onmousedown="pickMember(${id},'${type}','${safe}')">${i}</div>`;}).join('');
+  l.style.display='block';
+}
+function pickMember(id, type, val){
+  const inputId = 'gm-'+type+'-'+id;
+  const el = document.getElementById(inputId);
+  if(el) el.value = val;
+  updateMember(id, type==='soc'?'society':'shala', val);
+  document.getElementById('gml-'+type+'-'+id).style.display='none';
+}
+
+function updateMemberDOB(id, dob){
+  const m = groupMembers.find(x=>x.id===id);
+  if(!m) return;
+  m.dob = dob;
+  if(dob){
+    const today = new Date();
+    const birth = new Date(dob+'T00:00:00');
+    let age = today.getFullYear()-birth.getFullYear();
+    const mo = today.getMonth()-birth.getMonth();
+    if(mo<0||(mo===0&&today.getDate()<birth.getDate())) age--;
+    m.age = age;
+    const ageEl = document.getElementById('gm-age-'+id);
+    if(ageEl) ageEl.value = age+' વર્ષ';
+  }
+}
+
 function calcAge(){
   const dob = document.getElementById('b-dob').value;
   if(!dob){ document.getElementById('b-age').value=''; return; }
@@ -1851,7 +2046,29 @@ async function addBalak(){
     toast('Mobile 10 digit નો હોવો જોઈએ!','te'); return;
   }
 
+  // Validate group members
+  if(btype === 'Group'){
+    if(groupMembers.length < 2){ toast('Group ma ochhamama 2 members joie!','te'); return; }
+    const invalid = groupMembers.find(m=>!m.naam.trim()||!m.age);
+    if(invalid){ toast('Group na badha members na naam ane umer bharo!','te'); return; }
+  }
+
   const nextSerial = balaks.length > 0 ? Math.max(...balaks.map(x=>x.serial_no||0)) + 1 : 1;
+
+  // Build group members JSON
+  // Capture latest values from DOM before saving
+  groupMembers.forEach(m=>{
+    const socEl=document.getElementById('gm-soc-'+m.id);
+    const shalaEl=document.getElementById('gm-shala-'+m.id);
+    const nameEl=document.getElementById('gm-naam-'+m.id);
+    const dobEl=document.getElementById('gm-dob-'+m.id);
+    if(nameEl) m.naam=nameEl.value.trim();
+    if(dobEl) m.dob=dobEl.value;
+    if(socEl) m.society=socEl.value.trim();
+    if(shalaEl) m.shala=shalaEl.value.trim();
+  });
+  const membersData = btype === 'Group' ? JSON.stringify(groupMembers.map(m=>({naam:m.naam,age:parseInt(m.age)||0,dob:m.dob||'',society:m.society||'',shala:m.shala||''}))) : null;
+  const totalMembers = btype === 'Group' ? groupMembers.length : 1;
 
   const {data, error} = await sb.from('balak_registration').insert({
     serial_no: nextSerial,
@@ -1863,21 +2080,28 @@ async function addBalak(){
     shala_naam: shala,
     program_prakar: prog,
     mobile_no: mobile,
+    performance_type: btype,
+    group_members: membersData,
+    total_members: totalMembers,
     entry_by: cu
   }).select().single();
 
   if(error){ toast('Error: '+error.message,'te'); return; }
-  toast('✓ Registration #'+nextSerial+' સફળ!','ts');
+  
+  const memberMsg = btype==='Group' ? ' (Group - '+totalMembers+' members)' : '';
+  toast('✓ Registration #'+nextSerial+' સફળ!'+memberMsg,'ts');
 
   ['b-naam','b-parent','b-dob','b-age','b-society','b-shala','b-mobile'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('b-prog').value='';
   document.getElementById('b-type').value='Solo';
+  document.getElementById('group-section').style.display='none';
+  groupMembers=[];
 
   await loadBalak();
-  sendWhatsApp(data, nextSerial);
+  sendWhatsApp(data, nextSerial, groupMembers);
 }
 
-function sendWhatsApp(entry, serial){
+function sendWhatsApp(entry, serial, grpMembers){
   const now = new Date();
   const dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
   const c = cfg();
@@ -1913,6 +2137,16 @@ function sendWhatsApp(entry, serial){
 🏠 *સોસાયટી:* ${entry.society_naam}
 🎂 *ઉંમર:* ${entry.umer} વર્ષ
 📱 *Mobile:* ${entry.mobile_no}
+${entry.performance_type==='Group'?`👥 *Group Performance — ${entry.total_members} Members*`:'👤 *Solo Performance*'}
+${(()=>{
+  if(entry.performance_type==='Group' && entry.group_members){
+    try{
+      const members = JSON.parse(entry.group_members);
+      return '\n👥 *Group Members:*\n'+members.map((m,i)=>`${i+1}. ${m.naam} (${m.age} વર્ષ)`).join('\n');
+    }catch(e){return '';}
+  }
+  return '';
+})()}
 
 〰️〰️〰️〰️〰️〰️〰️〰️
 
@@ -2032,9 +2266,10 @@ function renderBalak(){
           <div style="display:flex;align-items:center;gap:10px">
             <div style="background:linear-gradient(135deg,var(--pu),#8b5cf6);color:#fff;font-size:13px;font-weight:700;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">#${x.serial_no}</div>
             <div>
-              <div style="font-size:14px;font-weight:700">${x.balak_naam}</div>
+              <div style="font-size:14px;font-weight:700">${x.balak_naam} ${x.performance_type==='Group'?'<span style="background:var(--pul);color:var(--pu);font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:4px">👥 Group</span>':''}</div>
               <div style="font-size:11px;color:var(--gy);margin-top:2px">👤 ${x.parent_naam} &nbsp;•&nbsp; 🎂 ${x.umer} વર્ષ</div>
               <div style="font-size:11px;color:var(--gy)">🏠 ${x.society_naam}${x.shala_naam?' &nbsp;•&nbsp; 🏫 '+x.shala_naam:''}</div>
+              ${x.performance_type==='Group'&&x.group_members?`<div style="font-size:11px;color:var(--pu);margin-top:3px;font-weight:600">👥 Members: ${(()=>{try{return JSON.parse(x.group_members).map(m=>m.naam+'('+m.age+'yr)').join(', ');}catch(e){return 'N/A';}})()}</div>`:''}
               <div style="font-size:11px;color:var(--bl);margin-top:2px">📱 ${x.mobile_no} &nbsp;•&nbsp; ${utag(x.entry_by)}</div>
             </div>
           </div>
