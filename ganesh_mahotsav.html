@@ -278,6 +278,14 @@ tr:last-child td{border-bottom:none}
       <div><div class="a-lbl">Mahotsav Start Date</div><input class="a-inp" type="date" id="s-start"></div>
       <div><div class="a-lbl">Mahotsav End Date</div><input class="a-inp" type="date" id="s-end"></div>
     </div>
+    <div class="arow">
+      <div><div class="a-lbl">🎭 Program Date</div><input class="a-inp" type="date" id="s-prog-date"></div>
+      <div><div class="a-lbl">Program Time (Jem ke: 9:15 AM - 12:30 PM)</div><input class="a-inp" type="text" id="s-prog-time" placeholder="9:15 AM - 12:30 PM"></div>
+    </div>
+    <div class="arow">
+      <div><div class="a-lbl">Venue / Sthal</div><input class="a-inp" type="text" id="s-prog-venue" placeholder="Jem ke: Vishvanath Mahadev Mandir..."></div>
+      <div><div class="a-lbl">Organizer Contact</div><input class="a-inp" type="text" id="s-prog-contact" placeholder="Mobile no..."></div>
+    </div>
     <button class="a-btn" onclick="saveSettings()">💾 Save Settings</button>
     <div class="a-ok" id="a-ok">✓ Saved!</div>
   </div>
@@ -523,6 +531,7 @@ tr:last-child td{border-bottom:none}
     <button class="nb" onclick="showTab('reports')" id="nav-reports"><span class="ic">🖨️</span><span>Reports</span></button>
     <button class="nb" onclick="showTab('checklist')" id="nav-checklist"><span class="ic">📋</span><span>Checklist</span></button>
     <button class="nb" onclick="showTab('trash')" id="nav-trash"><span class="ic">🗑</span><span>Trash</span></button>
+    <button class="nb" onclick="showTab('balak')" id="nav-balak"><span class="ic">🎭</span><span>Program</span></button>
   </nav>
 </div>
 
@@ -617,6 +626,161 @@ tr:last-child td{border-bottom:none}
     </div>
   </div>
 
+  <!-- BALAK REGISTRATION PAGE -->
+  <div id="page-balak" class="page">
+    <div style="height:11px"></div>
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1a0a2e,#3d1a6e);border-radius:var(--r);padding:14px 16px;margin-bottom:11px;color:#fff;text-align:center;position:relative;overflow:hidden">
+      <div style="font-size:10px;color:rgba(255,255,255,.5);letter-spacing:2px;margin-bottom:3px">🕉 SHREE VISHVANATH MAHADEV GROUP 🕉</div>
+      <div style="font-size:15px;font-weight:700;color:var(--gold2)">સાંસ્કૃતિક પ્રોગ્રામ — ૨૦૨૬</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:2px">🏆 ૨૫મો ગણેશ મહોત્સવ — Silver Jubilee</div>
+    <div id="prog-date-badge" style="margin-top:8px;font-size:12px;color:var(--gold2);font-weight:600;display:none">
+      📅 <span id="prog-date-display"></span> &nbsp;⏰ <span id="prog-time-display"></span>
+    </div>
+    </div>
+
+    <!-- Sub tabs -->
+    <div style="display:flex;background:#fff;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin-bottom:12px;box-shadow:var(--sh)">
+      <button onclick="switchBalakTab('dashboard')" id="btab-dashboard"
+        style="flex:1;padding:10px 6px;border:none;background:linear-gradient(135deg,var(--pu),#8b5cf6);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:18px">📊</span><span>Dashboard</span>
+      </button>
+      <button onclick="switchBalakTab('entry')" id="btab-entry"
+        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:18px">✍️</span><span>Entry</span>
+      </button>
+      <button onclick="switchBalakTab('list')" id="btab-list"
+        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:18px">📋</span><span>List</span>
+      </button>
+      <button onclick="switchBalakTab('export')" id="btab-export"
+        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:18px">📊</span><span>Excel</span>
+      </button>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div id="bsec-dashboard">
+      <!-- Main stats -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div style="background:linear-gradient(135deg,var(--pu),#8b5cf6);border-radius:var(--r);padding:16px;color:#fff;text-align:center">
+          <div style="font-size:36px;font-weight:700" id="bd-total">0</div>
+          <div style="font-size:12px;opacity:.85;margin-top:3px">👦 કુલ બાળકો Registered</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--saff),var(--saff2));border-radius:var(--r);padding:16px;color:#fff;text-align:center">
+          <div style="font-size:36px;font-weight:700" id="bd-prog-count">0</div>
+          <div style="font-size:12px;opacity:.85;margin-top:3px">🎭 કુલ Performances</div>
+        </div>
+      </div>
+
+      <!-- Performance type breakdown - visual bars -->
+      <div class="card">
+        <div class="ctitle"><span class="cdot" style="background:var(--pu)"></span>🎭 Program-wise Breakdown</div>
+        <div id="bd-prog-breakdown">
+          <div class="empty">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Recent registrations -->
+      <div class="card">
+        <div class="ctitle"><span class="cdot dg"></span>🕐 Recent Registrations (Last 5)</div>
+        <div id="bd-recent"></div>
+      </div>
+    </div>
+
+    <!-- ENTRY TAB -->
+    <div id="bsec-entry" style="display:none">
+      <div class="card">
+        <div class="ctitle"><span class="cdot" style="background:var(--pu)"></span>🎭 નવી Entry — બાળક નોંધણી</div>
+        <div class="frow">
+          <div class="fg"><label>બાળકનું નામ *</label><input type="text" id="b-naam" placeholder="પૂરું નામ..."></div>
+          <div class="fg"><label>Parent / Guardian નામ *</label><input type="text" id="b-parent" placeholder="પિતા/માતાનું નામ..."></div>
+        </div>
+        <div class="frow">
+          <div class="fg"><label>જન્મ તારીખ *</label><input type="date" id="b-dob" onchange="calcAge()"></div>
+          <div class="fg"><label>ઉંમર (Auto)</label><input type="text" id="b-age" placeholder="Auto..." readonly style="background:var(--gyl);color:var(--gy)"></div>
+        </div>
+        <div class="frow">
+          <div class="fg"><label>સોસાયટીનું નામ *</label><input type="text" id="b-society" placeholder="સોસાયટી / વિસ્તાર..."></div>
+          <div class="fg"><label>શાળાનું નામ</label><input type="text" id="b-shala" placeholder="Optional..."></div>
+        </div>
+        <div class="frow">
+          <div class="fg"><label>પ્રોગ્રામ પ્રકાર *</label>
+            <select id="b-prog">
+              <option value="">-- પ્રકાર --</option>
+              <option value="નૃત્ય (Dance)">🕺 નૃત્ય (Dance)</option>
+              <option value="ગાયન (Singing)">🎤 ગાયન (Singing)</option>
+              <option value="નાટક (Natak)">🎭 નાટક (Natak)</option>
+              <option value="મિમિક્રી (Mimicry)">🎪 મિમિક્રી (Mimicry)</option>
+              <option value="શ્લોક (Shlok)">📿 શ્લોક (Shlok)</option>
+              <option value="પ્રાર્થના (Prayer)">🙏 પ્રાર્થના (Prayer)</option>
+              <option value="ભાષણ (Speech)">🎙️ ભાષણ (Speech)</option>
+              <option value="વાદ્યયંત્ર (Instrument)">🎶 વાદ્યયંત્ર (Instrument)</option>
+              <option value="અન્ય (Other)">✨ અન્ય (Other)</option>
+            </select>
+          </div>
+          <div class="fg"><label>Mobile (WhatsApp) *</label><input type="tel" id="b-mobile" placeholder="10 digit..." maxlength="10" inputmode="numeric"></div>
+        </div>
+        <div class="fg" style="margin-bottom:9px">
+          <label>Group / Solo</label>
+          <select id="b-type">
+            <option value="Solo">👤 Solo Performance</option>
+            <option value="Group">👥 Group Performance</option>
+          </select>
+        </div>
+        <div class="bbar">
+          <button class="btn bp" onclick="addBalak()">💾 Register + WhatsApp</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIST TAB -->
+    <div id="bsec-list" style="display:none">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+        <select id="prog-filter" onchange="renderBalak()" style="font-size:12px;padding:7px 10px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;flex:1">
+          <option value="">🔍 બધા Programs</option>
+          <option value="નૃત્ય (Dance)">🕺 Dance</option>
+          <option value="ગાયન (Singing)">🎤 Singing</option>
+          <option value="નાટક (Natak)">🎭 Natak</option>
+          <option value="મિમિક્રી (Mimicry)">🎪 Mimicry</option>
+          <option value="શ્લોક (Shlok)">📿 Shlok</option>
+          <option value="પ્રાર્થના (Prayer)">🙏 Prayer</option>
+          <option value="ભાષણ (Speech)">🎙️ Speech</option>
+          <option value="વાદ્યયંત્ર (Instrument)">🎶 Instrument</option>
+          <option value="અન્ય (Other)">✨ Other</option>
+        </select>
+      </div>
+      <div id="balak-list"><div class="empty">Loading...</div></div>
+    </div>
+
+    <!-- EXPORT TAB -->
+    <div id="bsec-export" style="display:none">
+      <div class="card">
+        <div class="ctitle"><span class="cdot dg"></span>📊 Excel Export Options</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button class="btn bgold" onclick="exportBalakExcel('all')" style="flex-direction:column;padding:16px 10px;gap:5px;height:90px;justify-content:center">
+            <span style="font-size:24px">📋</span>
+            <span style="font-size:11px;text-align:center">Full List<br>(All Programs)</span>
+          </button>
+          <button class="btn bpu" onclick="exportBalakExcel('progwise')" style="flex-direction:column;padding:16px 10px;gap:5px;height:90px;justify-content:center">
+            <span style="font-size:24px">🎭</span>
+            <span style="font-size:11px;text-align:center">Program-wise<br>Sheets</span>
+          </button>
+        </div>
+        <div style="font-size:11px;color:var(--gy);margin-top:12px;line-height:1.7">
+          💡 <strong>Full List</strong> — ek sheet ma badha balako serial order ma<br>
+          💡 <strong>Program-wise</strong> — dareek program na alag sheet (Dance, Singing...)
+        </div>
+      </div>
+      <div class="card" style="margin-top:2px">
+        <div class="ctitle"><span class="cdot" style="background:var(--pu)"></span>📊 Program Summary</div>
+        <div id="export-prog-summary"></div>
+      </div>
+    </div>
+  </div>
+
+  
   <!-- EDIT MODAL -->
 <div class="mov" id="emod">
   <div class="modal">
@@ -637,7 +801,7 @@ const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
 const sb=supabase.createClient(SU,SK);
 
 // Settings loaded from Supabase - cross device
-let _cfg={an:'Admin (Hiren)',ap:'admin123',pn:'Partner',pp:'partner123',start:'',end:''};
+let _cfg={an:'Admin (Hiren)',ap:'admin123',pn:'Partner',pp:'partner123',start:'',end:'',prog_date:'',prog_time:'9:15 AM - 12:30 PM',prog_venue:'',prog_contact:''};
 function cfg(){return _cfg;}
 async function loadSettings(){
   try{
@@ -649,12 +813,14 @@ async function loadSettings(){
         pn:data.partner_name||'Partner',
         pp:data.partner_pass||'partner123',
         start:data.start_date||'',
-        end:data.end_date||''
+        end:data.end_date||'',
+        prog_date:data.prog_date||'',
+        prog_time:data.prog_time||'9:15 AM - 12:30 PM',
+        prog_venue:data.prog_venue||'',
+        prog_contact:data.prog_contact||''
       };
     }
   }catch(e){console.log('Settings load error',e);}
-  // Update display names
-  document.getElementById('u1d-lbl') && (document.getElementById('u1d-lbl').textContent=_cfg.an);
 }
 
 const IT=['દાન / Donation','Sponsorship','Stall કિરાયો','Ticket','Last Year બાકી','ભેટ','Other'];
@@ -689,7 +855,19 @@ function startApp(){
   setTd();loadAll();
 }
 function logout(){cu=null;document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('lp').value='';document.getElementById('apanel').style.display='none';}
-function openSettingsFromApp(){logout();const c=cfg();document.getElementById('apanel').style.display='block';document.getElementById('s-u1n').value=c.an;document.getElementById('s-u2n').value=c.pn;document.getElementById('s-start').value=c.start;document.getElementById('s-end').value=c.end;}
+function openSettingsFromApp(){
+  logout();
+  const c=cfg();
+  document.getElementById('apanel').style.display='block';
+  document.getElementById('s-u1n').value=c.an;
+  document.getElementById('s-u2n').value=c.pn;
+  document.getElementById('s-start').value=c.start;
+  document.getElementById('s-end').value=c.end;
+  if(document.getElementById('s-prog-date'))document.getElementById('s-prog-date').value=c.prog_date||'';
+  if(document.getElementById('s-prog-time'))document.getElementById('s-prog-time').value=c.prog_time||'9:15 AM - 12:30 PM';
+  if(document.getElementById('s-prog-venue'))document.getElementById('s-prog-venue').value=c.prog_venue||'';
+  if(document.getElementById('s-prog-contact'))document.getElementById('s-prog-contact').value=c.prog_contact||'';
+}
 async function saveSettings(){
   const n1=document.getElementById('s-u1n').value.trim();
   const p1=document.getElementById('s-u1p').value.trim();
@@ -697,15 +875,22 @@ async function saveSettings(){
   const p2=document.getElementById('s-u2p').value.trim();
   const st=document.getElementById('s-start').value;
   const en=document.getElementById('s-end').value;
-  // Update local config
+  const pd=document.getElementById('s-prog-date')?.value||'';
+  const pt=document.getElementById('s-prog-time')?.value.trim()||'';
+  const pv=document.getElementById('s-prog-venue')?.value.trim()||'';
+  const pc=document.getElementById('s-prog-contact')?.value.trim()||'';
+  // Update local
   if(n1)_cfg.an=n1; if(p1)_cfg.ap=p1;
   if(n2)_cfg.pn=n2; if(p2)_cfg.pp=p2;
   if(st)_cfg.start=st; if(en)_cfg.end=en;
-  // Save to Supabase
+  if(pd)_cfg.prog_date=pd; if(pt)_cfg.prog_time=pt;
+  if(pv)_cfg.prog_venue=pv; if(pc)_cfg.prog_contact=pc;
   const payload={
     admin_name:_cfg.an, admin_pass:_cfg.ap,
     partner_name:_cfg.pn, partner_pass:_cfg.pp,
     start_date:_cfg.start, end_date:_cfg.end,
+    prog_date:_cfg.prog_date, prog_time:_cfg.prog_time,
+    prog_venue:_cfg.prog_venue, prog_contact:_cfg.prog_contact,
     id:1
   };
   const {error}=await sb.from('app_settings').upsert(payload,{onConflict:'id'});
@@ -738,7 +923,7 @@ function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
 function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
 function showTab(n){
-  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
+  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash','balak'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
   document.getElementById('page-'+n).classList.add('active');
   document.getElementById('nav-'+n).classList.add('active');
   window.scrollTo(0,0);
@@ -746,6 +931,7 @@ function showTab(n){
   if(n==='reports'){renderAgencyPending();}
   if(n==='checklist'){renderChecklist();}
   if(n==='trash'){loadTrash();}
+  if(n==='balak'){currentBalakTab='dashboard';switchBalakTab('dashboard');loadBalak();}
   if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
   if(n==='mahotsav'){renderMahotsav();}
 }
@@ -1503,6 +1689,409 @@ function renderTrash(){
   }
   el.innerHTML=h;
 }
+
+// ============================================================
+// BALAK REGISTRATION MODULE
+// ============================================================
+let balaks = [];
+let currentBalakTab = 'dashboard';
+
+function switchBalakTab(tab){
+  currentBalakTab = tab;
+  // Show program date in header
+  const c = cfg();
+  const badge = document.getElementById('prog-date-badge');
+  if(badge && c.prog_date){
+    const pd = new Date(c.prog_date+'T00:00:00');
+    const guDays=['રવિ','સોમ','મંગળ','બુધ','ગુરૂ','શુક્ર','શનિ'];
+    const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
+    document.getElementById('prog-date-display').textContent = pd.getDate()+' '+guM[pd.getMonth()]+' ('+guDays[pd.getDay()]+')';
+    document.getElementById('prog-time-display').textContent = c.prog_time||'9:15 AM - 12:30 PM';
+    badge.style.display='block';
+  }
+  ['dashboard','entry','list','export'].forEach(t=>{
+    const sec = document.getElementById('bsec-'+t);
+    const btn = document.getElementById('btab-'+t);
+    if(sec) sec.style.display = t===tab ? 'block' : 'none';
+    if(btn){
+      if(t===tab){
+        btn.style.background = 'linear-gradient(135deg,var(--pu),#8b5cf6)';
+        btn.style.color = '#fff';
+      } else {
+        btn.style.background = 'var(--gyl)';
+        btn.style.color = 'var(--gy)';
+      }
+    }
+  });
+  if(tab==='list') renderBalak();
+  if(tab==='dashboard') renderBalakDashboard();
+  if(tab==='export') renderExportSummary();
+}
+
+function calcAge(){
+  const dob = document.getElementById('b-dob').value;
+  if(!dob){ document.getElementById('b-age').value=''; return; }
+  const today = new Date();
+  const birth = new Date(dob+'T00:00:00');
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if(m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  document.getElementById('b-age').value = age + ' વર્ષ';
+}
+
+async function loadBalak(){
+  const {data} = await sb.from('balak_registration').select('*').eq('is_deleted',false).order('serial_no',{ascending:true});
+  balaks = data || [];
+  if(currentBalakTab==='dashboard') renderBalakDashboard();
+  else if(currentBalakTab==='list') renderBalak();
+  else if(currentBalakTab==='export') renderExportSummary();
+}
+
+function renderBalakDashboard(){
+  const progs = {};
+  balaks.forEach(x=>{ progs[x.program_prakar] = (progs[x.program_prakar]||0)+1; });
+  const totalProgs = Object.keys(progs).length;
+  const totalBalaks = balaks.length;
+  const maxCount = Math.max(...Object.values(progs), 1);
+
+  // Update main stats
+  const bdTotal = document.getElementById('bd-total');
+  const bdProgCount = document.getElementById('bd-prog-count');
+  if(bdTotal) bdTotal.textContent = totalBalaks;
+  if(bdProgCount) bdProgCount.textContent = totalProgs;
+
+  // Program breakdown with visual bars
+  const breakdown = document.getElementById('bd-prog-breakdown');
+  if(breakdown){
+    if(!Object.keys(progs).length){
+      breakdown.innerHTML = '<div class="empty">કોઈ registration નથી</div>';
+    } else {
+      const colors = ['#6d28d9','#e8621a','#1a7a4a','#1a5fa8','#b5620a','#c0392b','#0e7490','#7c3aed','#059669'];
+      breakdown.innerHTML = Object.entries(progs).sort((a,b)=>b[1]-a[1]).map(([prog,count],i)=>{
+        const pct = Math.round((count/totalBalaks)*100);
+        const barW = Math.round((count/maxCount)*100);
+        const color = colors[i%colors.length];
+        return `<div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+            <span style="font-size:13px;font-weight:600">${prog}</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:12px;color:var(--gy)">${pct}%</span>
+              <span style="background:${color};color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px">${count} બાળકો</span>
+            </div>
+          </div>
+          <div style="height:10px;background:var(--gyl);border-radius:6px;overflow:hidden">
+            <div style="height:100%;width:${barW}%;background:${color};border-radius:6px;transition:width .4s"></div>
+          </div>
+        </div>`;
+      }).join('') + `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;font-weight:700;color:var(--gy)">કુલ</span>
+        <span style="font-size:14px;font-weight:700;color:var(--pu)">${totalBalaks} બાળકો · ${totalProgs} Programs</span>
+      </div>`;
+    }
+  }
+
+  // Recent 5
+  const recent = document.getElementById('bd-recent');
+  if(recent){
+    const last5 = [...balaks].slice(-5).reverse();
+    if(!last5.length){
+      recent.innerHTML = '<div class="empty">કોઈ entry નથી</div>';
+    } else {
+      recent.innerHTML = last5.map(x=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5">
+          <div style="background:linear-gradient(135deg,var(--pu),#8b5cf6);color:#fff;font-size:12px;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">#${x.serial_no}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600">${x.balak_naam}</div>
+            <div style="font-size:11px;color:var(--gy)">${x.program_prakar} · ${x.society_naam}</div>
+          </div>
+          <span style="font-size:10px;color:var(--gy);white-space:nowrap">${utag(x.entry_by)}</span>
+        </div>`).join('');
+    }
+  }
+}
+
+function renderExportSummary(){
+  const el = document.getElementById('export-prog-summary');
+  if(!el) return;
+  const progs = {};
+  balaks.forEach(x=>{ progs[x.program_prakar] = (progs[x.program_prakar]||0)+1; });
+  if(!Object.keys(progs).length){
+    el.innerHTML = '<div class="empty">કોઈ registration નથી</div>';
+    return;
+  }
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
+    <tr style="background:var(--gyl)"><th style="padding:7px 10px;text-align:left;font-size:11px;color:var(--gy)">Program</th><th style="padding:7px 10px;text-align:right;font-size:11px;color:var(--gy)">બાળકો</th></tr>
+    ${Object.entries(progs).sort((a,b)=>b[1]-a[1]).map(([p,c],i)=>`
+    <tr style="background:${i%2?'#fafafa':'#fff'}">
+      <td style="padding:7px 10px;font-weight:600">${p}</td>
+      <td style="padding:7px 10px;text-align:right;font-weight:700;color:var(--pu)">${c}</td>
+    </tr>`).join('')}
+    <tr style="background:var(--pul);border-top:2px solid var(--pu)">
+      <td style="padding:8px 10px;font-weight:700;color:var(--pu)">કુલ</td>
+      <td style="padding:8px 10px;text-align:right;font-weight:700;color:var(--pu)">${balaks.length}</td>
+    </tr>
+  </table>`;
+}
+
+async function addBalak(){
+  const naam = document.getElementById('b-naam').value.trim();
+  const parent = document.getElementById('b-parent').value.trim();
+  const dob = document.getElementById('b-dob').value;
+  const age = document.getElementById('b-age').value;
+  const society = document.getElementById('b-society').value.trim();
+  const shala = document.getElementById('b-shala').value.trim();
+  const prog = document.getElementById('b-prog').value;
+  const mobile = document.getElementById('b-mobile').value.trim();
+  const btype = document.getElementById('b-type').value;
+
+  if(!naam||!parent||!dob||!society||!prog||!mobile){
+    toast('બધા * fields ભરો!','te'); return;
+  }
+  if(mobile.length !== 10){
+    toast('Mobile 10 digit નો હોવો જોઈએ!','te'); return;
+  }
+
+  const nextSerial = balaks.length > 0 ? Math.max(...balaks.map(x=>x.serial_no||0)) + 1 : 1;
+
+  const {data, error} = await sb.from('balak_registration').insert({
+    serial_no: nextSerial,
+    balak_naam: naam,
+    parent_naam: parent,
+    janm_tarikh: dob,
+    umer: parseInt(age)||0,
+    society_naam: society,
+    shala_naam: shala,
+    program_prakar: prog,
+    mobile_no: mobile,
+    entry_by: cu
+  }).select().single();
+
+  if(error){ toast('Error: '+error.message,'te'); return; }
+  toast('✓ Registration #'+nextSerial+' સફળ!','ts');
+
+  ['b-naam','b-parent','b-dob','b-age','b-society','b-shala','b-mobile'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('b-prog').value='';
+  document.getElementById('b-type').value='Solo';
+
+  await loadBalak();
+  sendWhatsApp(data, nextSerial);
+}
+
+function sendWhatsApp(entry, serial){
+  const now = new Date();
+  const dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+  const c = cfg();
+  // Format program date with day name
+  let progDateStr = '';
+  let progDayStr = '';
+  if(c.prog_date){
+    const pd = new Date(c.prog_date + 'T00:00:00');
+    const guDays = ['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
+    const guMonths = ['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
+    progDateStr = pd.getDate()+' '+guMonths[pd.getMonth()]+' '+pd.getFullYear();
+    progDayStr = guDays[pd.getDay()];
+  }
+  const progInfo = c.prog_date
+    ? `📅 *Performance Date: ${progDateStr} (${progDayStr})*
+⏰ *Time: ${c.prog_time||'9:15 AM - 12:30 PM'}*${c.prog_venue?'\n📍 *Venue: '+c.prog_venue+'*':''}`
+    : `📅 *Performance date ane time alag thi janavvashe*`;
+
+  const msg = `🕉 *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*
+*યુવક મિત્ર મંડળ*
+
+🏆 *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026*
+🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅
+
+〰️〰️〰️〰️〰️〰️〰️〰️
+
+🔖 *Registration No: #${serial}*
+📝 *Registration Date: ${dateStr}*
+
+👦 *બાળકનું નામ:* ${entry.balak_naam}
+👤 *Parent નું નામ:* ${entry.parent_naam}
+🎭 *પ્રોગ્રામ:* ${entry.program_prakar}
+🏠 *સોસાયટી:* ${entry.society_naam}
+🎂 *ઉંમર:* ${entry.umer} વર્ષ
+📱 *Mobile:* ${entry.mobile_no}
+
+〰️〰️〰️〰️〰️〰️〰️〰️
+
+🗓️ *Performance Schedule:*
+${progInfo}
+
+〰️〰️〰️〰️〰️〰️〰️〰️
+
+📌 *મહત્વની નોંધ:*
+• Performance ના 30 મિનિટ પહેલા હાજર રહેવું
+• Group performance હોય તો બધા members સાથે આવે
+• Costume / dress ready રાખવો${c.prog_contact?'\n📞 Sampark: '+c.prog_contact:''}
+
+🙏 *ગણપતિ બાપ્પા મોર્યા!*
+🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺
+✨ *Silver Jubilee Ganesh Mahotsav 2026* ✨`;
+
+  window.open('https://wa.me/91' + entry.mobile_no + '?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function resendWA(id){
+  const b = balaks.find(x=>x.id===id);
+  if(b) sendWhatsApp(b, b.serial_no);
+}
+
+// Edit balak entry
+function openEditBalak(id){
+  const b = balaks.find(x=>x.id===id);
+  if(!b) return;
+  const mb = document.getElementById('ebody');
+  const mt = document.getElementById('etitle');
+  mt.textContent = '✏️ Edit — ' + b.balak_naam + ' (#' + b.serial_no + ')';
+  mb.innerHTML = `
+    <div style="background:var(--pul);border-radius:var(--rs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--pu);font-weight:600">
+      Registration #${b.serial_no} — ${b.program_prakar}
+    </div>
+    <div class="frow">
+      <div class="fg"><label>બાળકનું નામ</label><input type="text" id="eb-naam" value="${b.balak_naam||''}"></div>
+      <div class="fg"><label>Parent નામ</label><input type="text" id="eb-parent" value="${b.parent_naam||''}"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>જન્મ તારીખ</label><input type="date" id="eb-dob" value="${b.janm_tarikh||''}"></div>
+      <div class="fg"><label>ઉંમર</label><input type="number" id="eb-age" value="${b.umer||0}"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>સોસાયટી</label><input type="text" id="eb-society" value="${b.society_naam||''}"></div>
+      <div class="fg"><label>શાળા</label><input type="text" id="eb-shala" value="${b.shala_naam||''}"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Program પ્રકાર</label>
+        <select id="eb-prog">
+          <option value="નૃત્ય (Dance)" ${b.program_prakar==='નૃત્ય (Dance)'?'selected':''}>🕺 નૃત્ય (Dance)</option>
+          <option value="ગાયન (Singing)" ${b.program_prakar==='ગાયન (Singing)'?'selected':''}>🎤 ગાયન (Singing)</option>
+          <option value="નાટક (Natak)" ${b.program_prakar==='નાટક (Natak)'?'selected':''}>🎭 નાટક (Natak)</option>
+          <option value="મિમિક્રી (Mimicry)" ${b.program_prakar==='મિમિક્રી (Mimicry)'?'selected':''}>🎪 મિમિક્રી (Mimicry)</option>
+          <option value="શ્લોક (Shlok)" ${b.program_prakar==='શ્લોક (Shlok)'?'selected':''}>📿 શ્લોક (Shlok)</option>
+          <option value="પ્રાર્થના (Prayer)" ${b.program_prakar==='પ્રાર્થના (Prayer)'?'selected':''}>🙏 પ્રાર્થના (Prayer)</option>
+          <option value="ભાષણ (Speech)" ${b.program_prakar==='ભાષણ (Speech)'?'selected':''}>🎙️ ભાષણ (Speech)</option>
+          <option value="વાદ્યયંત્ર (Instrument)" ${b.program_prakar==='વાદ્યયંત્ર (Instrument)'?'selected':''}>🎶 વાદ્યયંત્ર (Instrument)</option>
+          <option value="અન્ય (Other)" ${b.program_prakar==='અન્ય (Other)'?'selected':''}>✨ અન્ય (Other)</option>
+        </select>
+      </div>
+      <div class="fg"><label>Mobile</label><input type="tel" id="eb-mobile" value="${b.mobile_no||''}" maxlength="10" inputmode="numeric"></div>
+    </div>`;
+  
+  document.getElementById('emod').classList.add('open');
+  // Override save button
+  document.querySelector('#emod .btn.bp').onclick = ()=>saveBalakEdit(id);
+}
+
+async function saveBalakEdit(id){
+  const payload = {
+    balak_naam: document.getElementById('eb-naam').value.trim(),
+    parent_naam: document.getElementById('eb-parent').value.trim(),
+    janm_tarikh: document.getElementById('eb-dob').value,
+    umer: parseInt(document.getElementById('eb-age').value)||0,
+    society_naam: document.getElementById('eb-society').value.trim(),
+    shala_naam: document.getElementById('eb-shala').value.trim(),
+    program_prakar: document.getElementById('eb-prog').value,
+    mobile_no: document.getElementById('eb-mobile').value.trim()
+  };
+  const {error} = await sb.from('balak_registration').update(payload).eq('id',id);
+  if(error){ toast('Error: '+error.message,'te'); return; }
+  toast('✓ Update thayo!','tg');
+  cmod();
+  await loadBalak();
+}
+
+async function deleteBalak(id){
+  if(!confirm('Delete karvu? (Recover kari shakasho)')) return;
+  await sb.from('balak_registration').update({is_deleted:true}).eq('id',id);
+  toast('🗑 Delete thayo','tg');
+  await loadBalak();
+}
+
+function renderBalak(){
+  const filter = document.getElementById('prog-filter')?.value || '';
+  const filtered = filter ? balaks.filter(x=>x.program_prakar===filter) : balaks;
+  const list = document.getElementById('balak-list');
+  if(!list) return;
+  if(!filtered.length){
+    list.innerHTML = '<div class="empty">કોઈ entry નથી</div>';
+    return;
+  }
+  // Group by program type
+  const groups = {};
+  filtered.forEach(x=>{ const k=x.program_prakar||'Other'; if(!groups[k])groups[k]=[]; groups[k].push(x); });
+  let h = `<div style="font-size:12px;color:var(--gy);margin-bottom:10px;font-weight:600">કુલ ${filtered.length} entries</div>`;
+  Object.entries(groups).forEach(([prog, items])=>{
+    h += `<div style="font-size:11px;font-weight:700;color:var(--gy);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 7px;display:flex;align-items:center;justify-content:space-between">
+      <span>${prog}</span>
+      <span style="background:var(--pul);color:var(--pu);padding:2px 9px;border-radius:12px;font-size:11px">${items.length}</span>
+    </div>`;
+    items.forEach(x=>{
+      h += `<div style="background:var(--wh);border-radius:10px;padding:11px 13px;margin-bottom:7px;border:1px solid var(--bd)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="background:linear-gradient(135deg,var(--pu),#8b5cf6);color:#fff;font-size:13px;font-weight:700;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">#${x.serial_no}</div>
+            <div>
+              <div style="font-size:14px;font-weight:700">${x.balak_naam}</div>
+              <div style="font-size:11px;color:var(--gy);margin-top:2px">👤 ${x.parent_naam} &nbsp;•&nbsp; 🎂 ${x.umer} વર્ષ</div>
+              <div style="font-size:11px;color:var(--gy)">🏠 ${x.society_naam}${x.shala_naam?' &nbsp;•&nbsp; 🏫 '+x.shala_naam:''}</div>
+              <div style="font-size:11px;color:var(--bl);margin-top:2px">📱 ${x.mobile_no} &nbsp;•&nbsp; ${utag(x.entry_by)}</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+            <button onclick="openEditBalak(${x.id})" class="bedit" style="padding:5px 10px;font-size:11px">✏️</button>
+            <button onclick="resendWA(${x.id})" style="background:#25d366;color:#fff;border:none;border-radius:6px;padding:5px 9px;font-size:11px;cursor:pointer;font-weight:600">📤</button>
+            <button onclick="deleteBalak(${x.id})" class="bdel" style="padding:5px 9px;font-size:11px">🗑</button>
+          </div>
+        </div>
+      </div>`;
+    });
+  });
+  list.innerHTML = h;
+}
+
+function exportBalakExcel(mode){
+  const wb = XLSX.utils.book_new();
+  const H = 'શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ — સાંસ્કૃતિક પ્રોગ્રામ 2026';
+  const sorted = [...balaks].sort((a,b)=>a.serial_no-b.serial_no);
+
+  // Summary row
+  const progs = {};
+  balaks.forEach(x=>{ progs[x.program_prakar]=(progs[x.program_prakar]||0)+1; });
+
+  // Main list sheet - always add
+  const rows = [
+    [H],['Silver Jubilee — 25th Ganesh Mahotsav'],[],
+    ['ક્રમ','બાળકનું નામ','Parent નામ','જન્મ તા.','ઉંમર','સોસાયટી','શાળા','પ્રોગ્રામ','Mobile','Entry By'],
+    ...sorted.map(x=>[x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, x.mobile_no, un(x.entry_by)]),
+    [],[],['Program-wise Summary'],['Program','Balako'],
+    ...Object.entries(progs).sort((a,b)=>b[1]-a[1]).map(([p,c])=>[p,c]),
+    ['કુલ',balaks.length]
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:12},{wch:8},{wch:20},{wch:18},{wch:20},{wch:14},{wch:14}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Full List');
+
+  if(mode==='progwise'){
+    // Program wise sheets
+    Object.keys(progs).forEach(prog=>{
+      const items = sorted.filter(x=>x.program_prakar===prog);
+      const sname = prog.split('(')[0].trim().substring(0,28);
+      const prows = [
+        [H],[prog+' — '+items.length+' Participants'],[],
+        ['ક્રમ','બાળકનું નામ','Parent','ઉંમર','સોસાયટી','Mobile'],
+        ...items.map(x=>[x.serial_no, x.balak_naam, x.parent_naam, x.umer+' વર્ષ', x.society_naam, x.mobile_no])
+      ];
+      const pws = XLSX.utils.aoa_to_sheet(prows);
+      pws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:8},{wch:20},{wch:14}];
+      XLSX.utils.book_append_sheet(wb, pws, sname);
+    });
+  }
+  XLSX.writeFile(wb, 'Balak_Registration_2026.xlsx');
+  toast('✓ Excel download thayo!','ts');
+}
+
+
 function exportExcel(type){
   if(cu!==1){toast('Admin access required','te');return;}
   const wb=XLSX.utils.book_new(),H='Shree Vishvanath Mahadev Group — 25th Ganesh Mahotsav',c=cfg();
