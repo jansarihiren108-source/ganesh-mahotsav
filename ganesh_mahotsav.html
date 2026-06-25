@@ -63,11 +63,12 @@ body{font-family:'Poppins',sans-serif;background:#f7f3ee;color:var(--tx);min-hei
 .hdr-un{font-size:10px;color:rgba(255,255,255,.6);margin-bottom:2px}
 .lout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);font-size:10px;padding:4px 8px;border-radius:5px;cursor:pointer;font-family:'Poppins',sans-serif}
 
-.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--deep);border-top:1px solid rgba(212,160,23,.15);display:flex;overflow-x:auto;box-shadow:0 -2px 12px rgba(0,0,0,.2)}
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--deep);border-top:1px solid rgba(212,160,23,.2);display:flex;overflow-x:auto;box-shadow:0 -2px 16px rgba(0,0,0,.3)}
 .bnav::-webkit-scrollbar{display:none}
-.nb{flex:0 0 auto;min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 6px 9px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,.35);font-size:10px;font-weight:500;gap:2px;font-family:'Poppins',sans-serif;transition:color .15s}
-.nb .ic{font-size:18px;line-height:1}
+.nb{flex:1 0 auto;min-width:56px;max-width:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 10px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,.3);font-size:9px;font-weight:600;gap:3px;font-family:'Poppins',sans-serif;transition:all .15s;letter-spacing:.2px}
+.nb .ic{font-size:22px;line-height:1;transition:transform .15s}
 .nb.active{color:var(--gold2)}
+.nb.active .ic{transform:scale(1.15)}
 
 .page{display:none;padding:12px;max-width:680px;margin:0 auto}
 .page.active{display:block}
@@ -186,12 +187,13 @@ body{font-family:'Poppins',sans-serif;background:#f7f3ee;color:var(--tx);min-hei
 .bbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
 
 /* TABLE */
-.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rs);border:1px solid var(--bd)}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:6px 7px;font-size:10px;font-weight:600;color:var(--gy);background:#fafafa;border-bottom:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
-td{padding:6px 8px;border-bottom:1px solid #f5f5f5;vertical-align:middle;word-break:break-word;font-size:12px}
+.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rs);border:1px solid var(--bd);width:100%}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:auto}
+th{text-align:left;padding:6px 7px;font-size:10px;font-weight:600;color:var(--gy);background:#fafafa;border-bottom:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;overflow:hidden;text-overflow:ellipsis}
+td{padding:6px 8px;border-bottom:1px solid #f5f5f5;vertical-align:middle;font-size:12px;white-space:nowrap}
 tr:last-child td{border-bottom:none}
 .bdg{display:inline-block;padding:2px 8px;border-radius:18px;font-size:11px;font-weight:600;white-space:nowrap}
+.amt{white-space:nowrap;font-weight:700;text-align:right}
 .bdg-g{background:var(--grl);color:var(--gr)}
 .bdg-r{background:var(--rel);color:var(--re)}
 .bdg-a{background:var(--aml);color:var(--am)}
@@ -294,7 +296,13 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="card">
       <div class="ctitle"><span class="cdot dg"></span>Recent આવક <span id="d-il" style="font-size:10px;color:var(--gy);font-weight:400;margin-left:4px"></span></div>
-      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>₹</th><th>કોણ</th></tr></thead><tbody id="di"></tbody></table></div>
+      <div class="twrap"><table><thead><tr>
+  <th>તારીખ</th>
+  <th>નામ</th>
+  <th>પ્રકાર</th>
+  <th>₹</th>
+  <th>કોણ</th>
+</tr></thead><tbody id="di"></tbody></table></div>
     </div>
     <div class="card">
       <div class="ctitle"><span class="cdot dr"></span>Recent જાવક <span id="d-el" style="font-size:10px;color:var(--gy);font-weight:400;margin-left:4px"></span></div>
@@ -382,7 +390,14 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="card">
       <div class="ctitle"><span class="cdot dg"></span>બધી આવક</div>
-      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>નામ</th><th>પ્રકાર</th><th>₹</th><th>કોણ</th><th>Action</th></tr></thead><tbody id="itbl"></tbody></table></div>
+      <div class="twrap"><table><thead><tr>
+  <th>તારીખ</th>
+  <th>નામ</th>
+  <th>પ્રકાર</th>
+  <th>₹</th>
+  <th>કોણ</th>
+  <th>Action</th>
+</tr></thead><tbody id="itbl"></tbody></table></div>
     </div>
   </div>
 
@@ -426,7 +441,15 @@ tr:last-child td{border-bottom:none}
     </div>
     <div class="card">
       <div class="ctitle"><span class="cdot dr"></span>બધી જાવક</div>
-      <div class="twrap"><table><thead><tr><th>તારીખ</th><th>વિવરણ</th><th>પ્રકાર</th><th>₹</th><th>Bill</th><th>કોણ</th><th>Action</th></tr></thead><tbody id="etbl"></tbody></table></div>
+      <div class="twrap"><table><thead><tr>
+  <th>તારીખ</th>
+  <th>વિવરણ</th>
+  <th>પ્રકાર</th>
+  <th>₹</th>
+  <th>Bill</th>
+  <th>કોણ</th>
+  <th>Action</th>
+</tr></thead><tbody id="etbl"></tbody></table></div>
     </div>
   </div>
 
@@ -1620,15 +1643,15 @@ function render(){
   const expD=showAll?exp:exp.filter(x=>x.user_id==cu);
   const allE=[...expD.map(x=>({d:x.entry_date,ds:x.description,t:x.type,a:x.amount,u:x.user_id,bu:x.bill_url,bn:x.bill_name})),...(showAll?agn:agn.filter(x=>x.user_id==cu)).map(x=>({d:x.final_date,ds:x.name+' (Adv)',t:x.type,a:x.advance_amount,u:x.user_id,bu:null,bn:null}))].sort((a,b)=>(b.d||'').localeCompare(a.d||''));
 
-  document.getElementById('di').innerHTML=incD.length?incD.slice(0,10).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700;color:var(--gr);white-space:nowrap">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
-  document.getElementById('de').innerHTML=allE.length?allE.slice(0,10).map(x=>`<tr><td>${fD(x.d)}</td><td>${x.ds}</td><td><span class="bdg ${x.t==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.t==='Internal Transfer'?'🔄':x.t}</span></td><td style="font-weight:700;color:var(--re);white-space:nowrap">${fmt(x.a)}</td><td>${x.bu?`<a href="${x.bu}" target="_blank" style="color:var(--bl);font-size:11px;font-weight:600">📎 Bill</a>`:'—'}</td><td>${utag(x.u)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">—</td></tr>';
+  document.getElementById('di').innerHTML=incD.length?incD.slice(0,10).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td class="amt" style="color:var(--gr)">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
+  document.getElementById('de').innerHTML=allE.length?allE.slice(0,10).map(x=>`<tr><td>${fD(x.d)}</td><td>${x.ds}</td><td><span class="bdg ${x.t==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.t==='Internal Transfer'?'🔄':x.t}</span></td><td class="amt" style="color:var(--re)">${fmt(x.a)}</td><td>${x.bu?`<a href="${x.bu}" target="_blank" style="color:var(--bl);font-size:11px;font-weight:600">📎 Bill</a>`:'—'}</td><td>${utag(x.u)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">—</td></tr>';
 
   document.getElementById('itbl').innerHTML=(showAll?inc:inc.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.name}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-g'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700;white-space:nowrap">${fmt(x.amount)}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('income',${x.id})">✏️</button> <button class="bdel" onclick="dI(${x.id})">🗑</button></td></tr>`).join('')||'<tr><td colspan="6" class="empty">—</td></tr>';
   document.getElementById('etbl').innerHTML=(showAll?exp:exp.filter(x=>x.user_id==cu)).map(x=>`<tr><td>${fD(x.entry_date)}</td><td>${x.description}</td><td><span class="bdg ${x.type==='Internal Transfer'?'bdg-pu':'bdg-r'}">${x.type==='Internal Transfer'?'🔄':x.type}</span></td><td style="font-weight:700;white-space:nowrap">${fmt(x.amount)}</td><td>${x.bill_url?`<a href="${x.bill_url}" target="_blank" style="color:var(--bl);font-size:11px;font-weight:600">📎</a>`:'—'}</td><td>${utag(x.user_id)}</td><td style="white-space:nowrap"><button class="bedit" onclick="oEdit('expense',${x.id})">✏️</button> <button class="bdel" onclick="dE(${x.id})">🗑</button></td></tr>`).join('')||'<tr><td colspan="7" class="empty">—</td></tr>';
 
   // Transfer
   const trD=showAll?transfers:transfers.filter(x=>x.from_user==cu||x.to_user==cu);
-  document.getElementById('tr-tbl').innerHTML=trD.length?trD.map(x=>`<tr><td>${fD(x.transfer_date)}</td><td>${utag(x.from_user)}</td><td>${utag(x.to_user)}</td><td style="font-weight:700;color:var(--pu)">${fmt(x.amount)}</td><td style="color:var(--gy);font-size:11px">${x.note||'—'}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
+  document.getElementById('tr-tbl').innerHTML=trD.length?trD.map(x=>`<tr><td>${fD(x.transfer_date)}</td><td>${utag(x.from_user)}</td><td>${utag(x.to_user)}</td><td class="amt" style="color:var(--pu)">${fmt(x.amount)}</td><td style="color:var(--gy);font-size:11px">${x.note||'—'}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">—</td></tr>';
 
   // Pending
   const pl=document.getElementById('plst');
@@ -1813,51 +1836,28 @@ function removeGroupMember(id){
 }
 
 function renderGroupMembers(){
-  const list = document.getElementById('group-members-list');
-  if(!list) return;
-  list.innerHTML = groupMembers.map((m,i)=>`
-    <div style="background:#fff;border-radius:var(--rs);padding:11px 13px;margin-bottom:9px;border:1.5px solid rgba(109,40,217,.18)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
-        <div style="font-size:12px;font-weight:700;color:var(--pu);display:flex;align-items:center;gap:6px">
-          <span style="background:var(--pu);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px">${i+1}</span>
-          Member ${i+1}
-        </div>
-        ${groupMembers.length > 1 ? `<button onclick="removeGroupMember(${m.id})" style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600">✕</button>` : ''}
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px">
-        <div class="fg"><label style="font-size:10px">બાળકનું નામ *</label>
-          <input type="text" id="gm-naam-${m.id}" value="${m.naam||''}" onchange="updateMember(${m.id},'naam',this.value)" placeholder="પૂરું નામ..." style="font-size:13px;padding:8px 10px">
-        </div>
-        <div class="fg"><label style="font-size:10px">જન્મ તારીખ *</label>
-          <input type="date" id="gm-dob-${m.id}" value="${m.dob||''}" onchange="updateMemberDOB(${m.id},this.value)" style="font-size:13px;padding:8px 10px">
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px">
-        <div class="fg"><label style="font-size:10px">ઉંમર (Auto)</label>
-          <input type="text" id="gm-age-${m.id}" value="${m.age?m.age+' વર્ષ':''}" placeholder="DOB પરથી..." readonly style="font-size:13px;padding:8px 10px;background:var(--gyl);color:var(--gy)">
-        </div>
-        <div class="fg"><label style="font-size:10px">સોસાયટી *</label>
-          <div style="position:relative">
-            <input type="text" id="gm-soc-${m.id}" value="${m.society||''}" 
-              oninput="scMember(${m.id},'soc',this.value)" 
-              onfocus="scMember(${m.id},'soc',this.value)"
-              onblur="setTimeout(()=>document.getElementById('gml-soc-${m.id}').style.display='none',220)"
-              placeholder="સોસાયટી..." style="font-size:13px;padding:8px 10px">
-            <div id="gml-soc-${m.id}" class="clist"></div>
-          </div>
-        </div>
-      </div>
-      <div class="fg"><label style="font-size:10px">શાળાનું નામ</label>
-        <div style="position:relative">
-          <input type="text" id="gm-shala-${m.id}" value="${m.shala||''}"
-            oninput="scMember(${m.id},'shala',this.value)"
-            onfocus="scMember(${m.id},'shala',this.value)"
-            onblur="setTimeout(()=>document.getElementById('gml-shala-${m.id}').style.display='none',220)"
-            placeholder="શાળા..." style="font-size:13px;padding:8px 10px">
-          <div id="gml-shala-${m.id}" class="clist"></div>
-        </div>
-      </div>
-    </div>`).join('');
+  const list=document.getElementById('group-members-list');
+  if(!list)return;
+  let html='';
+  groupMembers.forEach(function(m,i){
+    const bg=i===0?'rgba(109,40,217,.08)':'#fff';
+    const border=i===0?'rgba(109,40,217,.18)':'var(--bd)';
+    const lbl='Member '+(i+1);
+    const rmBtn=groupMembers.length>1?'<button onclick="removeGroupMember('+m.id+')" style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600">✕</button>':'';
+    html+='<div style="background:'+bg+';border-radius:var(--rs);padding:11px 13px;margin-bottom:9px;border:1.5px solid '+border+'">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">';
+    html+='<div style="font-size:12px;font-weight:700;color:var(--pu);display:flex;align-items:center;gap:6px"><span style="background:var(--pu);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px">'+(i+1)+'</span>'+lbl+'</div>';
+    html+=rmBtn+'</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px">';
+    html+='<div class="fg"><label style="font-size:10px">બાળકનું નામ *</label><input type="text" id="gm-naam-'+m.id+'" value="'+(m.naam||'')+'" onchange="updateMember('+m.id+',\'naam\',this.value)" placeholder="પૂરું નામ..." style="font-size:13px;padding:8px 10px"></div>';
+    html+='<div class="fg"><label style="font-size:10px">જન્મ તારીખ *</label><input type="date" id="gm-dob-'+m.id+'" value="'+(m.dob||'')+'" onchange="updateMemberDOB('+m.id+',this.value)" style="font-size:13px;padding:8px 10px"></div>';
+    html+='</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px">';
+    html+='<div class="fg"><label style="font-size:10px">ઉંમર (Auto)</label><input type="text" id="gm-age-'+m.id+'" value="'+(m.age?m.age+' વર્ષ':'')+'" placeholder="DOB પરથી..." readonly style="font-size:13px;padding:8px 10px;background:var(--gyl);color:var(--gy)"></div>';
+    html+='<div class="fg"><label style="font-size:10px">સોસાયટી *</label><div style="position:relative"><input type="text" id="gm-soc-'+m.id+'" value="'+(m.society||'')+'" oninput="scMember('+m.id+',\'soc\',this.value)" onfocus="scMember('+m.id+',\'soc\',this.value)" onblur="setTimeout(function(){var el=document.getElementById(\'gml-soc-'+m.id+'\');if(el)el.style.display=\'none\'},220)" placeholder="સોસાયટી..." style="font-size:13px;padding:8px 10px"><div id="gml-soc-'+m.id+'" class="clist"></div></div></div>';
+    html+='</div><div class="fg"><label style="font-size:10px">શાળાનું નામ</label><div style="position:relative"><input type="text" id="gm-shala-'+m.id+'" value="'+(m.shala||'')+'" oninput="scMember('+m.id+',\'shala\',this.value)" onfocus="scMember('+m.id+',\'shala\',this.value)" onblur="setTimeout(function(){var el=document.getElementById(\'gml-shala-'+m.id+'\');if(el)el.style.display=\'none\'},220)" placeholder="શાળા..." style="font-size:13px;padding:8px 10px"><div id="gml-shala-'+m.id+'" class="clist"></div></div></div>';
+    html+='</div>';
+  });
+  list.innerHTML=html;
 }
 
 function updateMember(id, field, val){
@@ -1966,13 +1966,17 @@ function renderBalakDashboard(){
   const progs = {};
   balaks.forEach(x=>{ progs[x.program_prakar] = (progs[x.program_prakar]||0)+1; });
   const totalProgs = Object.keys(progs).length;
-  const totalBalaks = balaks.length;
+  // Total individual balako = sum of total_members across all registrations
+  const totalIndividuals = balaks.reduce((s,x)=>s+(parseInt(x.total_members)||1),0);
+  const totalRegistrations = balaks.length;
   const maxCount = Math.max(...Object.values(progs), 1);
 
   // Update main stats
   const bdTotal = document.getElementById('bd-total');
   const bdProgCount = document.getElementById('bd-prog-count');
-  if(bdTotal) bdTotal.textContent = totalBalaks;
+  if(bdTotal){
+    bdTotal.innerHTML = totalIndividuals+(totalIndividuals!==totalRegistrations?'<div style="font-size:11px;opacity:.7;margin-top:2px">'+totalRegistrations+' Registrations</div>':'');
+  }
   if(bdProgCount) bdProgCount.textContent = totalProgs;
 
   // Program breakdown with visual bars
@@ -2129,97 +2133,86 @@ async function addBalak(){
 }
 
 function sendWhatsApp(entry, serial, grpMembers){
-  const c = cfg();
-  const now = new Date();
-  const dateStr = `${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
-
-  let progDateStr='', progDayStr='';
+  const c=cfg();
+  const now=new Date();
+  const dd=String(now.getDate()).padStart(2,'0');
+  const mm=String(now.getMonth()+1).padStart(2,'0');
+  const dateStr=dd+'/'+mm+'/'+now.getFullYear();
+  const guDays=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
+  const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
+  let progDateStr='',progDayStr='';
   if(c.prog_date){
     const pd=new Date(c.prog_date+'T00:00:00');
-    const guDays=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
-    const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
     progDateStr=pd.getDate()+' '+guM[pd.getMonth()]+' '+pd.getFullYear();
     progDayStr=guDays[pd.getDay()];
   }
-
-  let memberBlock='';
   const isGroup=entry.performance_type==='Group';
-  if(isGroup && entry.group_members){
+  let memberBlock='';
+  if(isGroup&&entry.group_members){
     try{
       const members=JSON.parse(entry.group_members);
-      memberBlock=members.map((m,i)=>{
+      memberBlock=members.map(function(m,i){
         const leader=m.isLeader?' 👑 (Leader)':'';
-        return `👦 *${i+1}. ${m.naam}*${leader}
-   🎂 ${m.age} વર્ષ   🏠 ${m.society||'—'}${m.shala?'
-   🏫 '+m.shala:''}`;
-      }).join('
-
-');
+        const soc=m.society||'—';
+        const schLine=m.shala?'\n   🏫 '+m.shala:'';
+        return '👦 *'+(i+1)+'. '+m.naam+'*'+leader+'\n   🎂 '+m.age+' વર્ષ   🏠 '+soc+schLine;
+      }).join('\n\n');
     }catch(e){}
   }
-
-  const soloDetails=!isGroup?`
-👦 *બાળકનું નામ:* ${entry.balak_naam}
-👤 *Parent:* ${entry.parent_naam}
-🎂 *ઉંમર:* ${entry.umer} વર્ષ
-🏠 *સોસાયટી:* ${entry.society_naam}${entry.shala_naam?'
-🏫 *શાળા:* '+entry.shala_naam:''}
-📱 *Mobile:* ${entry.mobile_no}`:`
-📱 *Contact:* ${entry.mobile_no}`;
-
+  const soloLine=!isGroup
+    ? '\n👦 *બાળકનું નામ:* '+entry.balak_naam
+      +'\n👤 *Parent:* '+entry.parent_naam
+      +'\n🎂 *ઉંમર:* '+entry.umer+' વર્ષ'
+      +'\n🏠 *સોસાયટી:* '+entry.society_naam
+      +(entry.shala_naam?'\n🏫 *શાળા:* '+entry.shala_naam:'')
+      +'\n📱 *Mobile:* '+entry.mobile_no
+    : '\n📱 *Contact:* '+entry.mobile_no;
   const progInfo=c.prog_date
-    ?`📅 *${progDateStr} (${progDayStr})*
-⏰ *સમય: ${c.prog_time||'9:15 AM - 12:30 PM'}*${c.prog_venue?'
-📍 *સ્થળ: '+c.prog_venue+'*':''}`
-    :'📅 Program date alag thi janavvashe';
+    ? '📅 *'+progDateStr+' ('+progDayStr+')*\n⏰ *સમય: '+(c.prog_time||'9:15 AM - 12:30 PM')+'*'+(c.prog_venue?'\n📍 *સ્થળ: '+c.prog_venue+'*':'')
+    : '📅 Program date alag thi janavvashe';
+  const groupLine=isGroup?'\n\n👥 Group performance — બધા members સાથે આવે .':'';
+  const contactLine=c.prog_contact?'\n\n📞 *સંપર્ક: '+c.prog_contact+'*':'';
+  const memberSection=isGroup&&memberBlock
+    ? '\n👥 *Group Members:*\n\n'+memberBlock+'\n'
+    : soloLine;
 
-  const groupLine=isGroup?'
-
-👥 Group performance — બધા members સાથે આવે .':'';
-  const contactLine=c.prog_contact?'
-
-📞 *સંપર્ક: '+c.prog_contact+'*':'';
-
-  const msg=
-`🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*
-*યુવક મિત્ર મંડળ, અમરાઈવાડી*
-
-✨ *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026* ✨
-🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅
-
-━━━━━━━━━━━━━━━━━━━━
-🎫 *Registration No: #${serial}*
-📝 *Registration Date: ${dateStr}*
-🎭 *Program: ${entry.program_prakar}*
-${isGroup?`👥 *${entry.total_members} Members Group Performance*`:'👤 *Solo Performance*'}
-━━━━━━━━━━━━━━━━━━━━
-${isGroup && memberBlock?`
-👥 *Group Members:*
-
-${memberBlock}
-`:soloDetails}
-━━━━━━━━━━━━━━━━━━━━
-📆 *Performance Schedule:*
-${progInfo}
-━━━━━━━━━━━━━━━━━━━━
-📋 *મહત્વની સૂચનાઓ અને નિયમો :-*
-
-👦 આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે .
-
-⏰ Performance ના 30 મિનિટ પહેલા હાજર રહેવું .${groupLine}
-
-💾 જે બાળકને ગીત, ડાન્સ , મિમિકી કે અન્ય કાર્યક્રમ કરવાના હોય તે Pendrive માં આગાઉથી આપી દેવી .
-
-🎁 સ્ટેજ પર perform કરનાર દરેક બાળકને *Special Gift* આપવામાં આવશે .
-
-🚫 કાર્યક્રમ સંદર્ભી કોઈ તકરાર સાંભળવામાં આવશે નહી .
-
-⚖️ કોઈ અગમ્ય કારણોસર અડચણ આવે તો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા .${contactLine}
-
-━━━━━━━━━━━━━━━━━━━━
-🙏 *ગણપતિ બાપ્પા મોર્યા!*
-🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺`;
-
+  const lines=[
+    '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*',
+    '*યુવક મિત્ર મંડળ, અમરાઈવાડી*',
+    '',
+    '✨ *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026* ✨',
+    '🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🎫 *Registration No: #'+serial+'*',
+    '📝 *Registration Date: '+dateStr+'*',
+    '🎭 *Program: '+entry.program_prakar+'*',
+    isGroup?'👥 *'+entry.total_members+' Members Group Performance*':'👤 *Solo Performance*',
+    '━━━━━━━━━━━━━━━━━━━━',
+    memberSection,
+    '━━━━━━━━━━━━━━━━━━━━',
+    '📆 *Performance Schedule:*',
+    progInfo,
+    '━━━━━━━━━━━━━━━━━━━━',
+    '📋 *મહત્વની સૂચનાઓ અને નિયમો :-*',
+    '',
+    '👦 આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે .',
+    '',
+    '⏰ Performance ના 30 મિનિટ પહેલા હાજર રહેવું .'+groupLine,
+    '',
+    '💾 જે બાળકને ગીત, ડાન્સ , મિમિકી કે અન્ય કાર્યક્રમ કરવાના હોય તે Pendrive માં આગાઉથી આપી દેવી .',
+    '',
+    '🎁 સ્ટેજ પર perform કરનાર દરેક બાળકને *Special Gift* આપવામાં આવશે .',
+    '',
+    '🚫 કાર્યક્રમ સંદર્ભી કોઈ તકરાર સાંભળવામાં આવશે નહી .',
+    '',
+    '⚖️ કોઈ અગમ્ય કારણોસર અડચણ આવે તો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા .'+contactLine,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🙏 *ગણપતિ બાપ્પા મોર્યા!*',
+    '🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺'
+  ];
+  const msg=lines.join('\n');
   window.open('https://wa.me/91'+entry.mobile_no+'?text='+encodeURIComponent(msg),'_blank');
 }
 
@@ -2230,50 +2223,54 @@ function resendWA(id){
 
 // Edit balak entry
 function openEditBalak(id){
-  const b = balaks.find(x=>x.id===id);
-  if(!b) return;
-  const mb = document.getElementById('ebody');
-  const mt = document.getElementById('etitle');
-  mt.textContent = '✏️ Edit — ' + b.balak_naam + ' (#' + b.serial_no + ')';
-  mb.innerHTML = `
-    <div style="background:var(--pul);border-radius:var(--rs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--pu);font-weight:600">
-      Registration #${b.serial_no} — ${b.program_prakar}
-    </div>
-    <div class="frow">
-      <div class="fg"><label>બાળકનું નામ</label><input type="text" id="eb-naam" value="${b.balak_naam||''}"></div>
-      <div class="fg"><label>Parent નામ</label><input type="text" id="eb-parent" value="${b.parent_naam||''}"></div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label>જન્મ તારીખ</label><input type="date" id="eb-dob" value="${b.janm_tarikh||''}"></div>
-      <div class="fg"><label>ઉંમર</label><input type="number" id="eb-age" value="${b.umer||0}"></div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label>સોસાયટી</label><input type="text" id="eb-society" value="${b.society_naam||''}"></div>
-      <div class="fg"><label>શાળા</label><input type="text" id="eb-shala" value="${b.shala_naam||''}"></div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label>Program પ્રકાર</label>
-        <select id="eb-prog">
-          <option value="નૃત્ય (Dance)" ${b.program_prakar==='નૃત્ય (Dance)'?'selected':''}>🕺 નૃત્ય (Dance)</option>
-          <option value="ગાયન (Singing)" ${b.program_prakar==='ગાયન (Singing)'?'selected':''}>🎤 ગાયન (Singing)</option>
-          <option value="નાટક (Natak)" ${b.program_prakar==='નાટક (Natak)'?'selected':''}>🎭 નાટક (Natak)</option>
-          <option value="મિમિક્રી (Mimicry)" ${b.program_prakar==='મિમિક્રી (Mimicry)'?'selected':''}>🎪 મિમિક્રી (Mimicry)</option>
-          <option value="શ્લોક (Shlok)" ${b.program_prakar==='શ્લોક (Shlok)'?'selected':''}>📿 શ્લોક (Shlok)</option>
-          <option value="પ્રાર્થના (Prayer)" ${b.program_prakar==='પ્રાર્થના (Prayer)'?'selected':''}>🙏 પ્રાર્થના (Prayer)</option>
-          <option value="ભાષણ (Speech)" ${b.program_prakar==='ભાષણ (Speech)'?'selected':''}>🎙️ ભાષણ (Speech)</option>
-          <option value="વાદ્યયંત્ર (Instrument)" ${b.program_prakar==='વાદ્યયંત્ર (Instrument)'?'selected':''}>🎶 વાદ્યયંત્ર (Instrument)</option>
-          <option value="અન્ય (Other)" ${b.program_prakar==='અન્ય (Other)'?'selected':''}>✨ અન્ય (Other)</option>
-        </select>
-      </div>
-      <div class="fg"><label>Mobile</label><input type="tel" id="eb-mobile" value="${b.mobile_no||''}" maxlength="10" inputmode="numeric"></div>
-    </div>`;
-  
+  const b=balaks.find(x=>x.id===id);
+  if(!b)return;
+  const mb=document.getElementById('ebody');
+  const mt=document.getElementById('etitle');
+  mt.textContent='✏️ Edit — '+b.balak_naam+' (#'+b.serial_no+')';
+
+  const isGrp=b.performance_type==='Group';
+  let members=[];
+  if(isGrp&&b.group_members){try{members=JSON.parse(b.group_members);}catch(e){}}
+
+  const progOpts=['નૃત્ય (Dance)','ગાયન (Singing)','નાટક (Natak)','મિમિક્રી (Mimicry)','શ્લોક (Shlok)','પ્રાર્થના (Prayer)','ભાષણ (Speech)','વાદ્યયંત્ર (Instrument)','અન્ય (Other)'];
+  const icons=['🕺','🎤','🎭','🎪','📿','🙏','🎙️','🎶','✨'];
+  const progSelect='<select id="eb-prog">'+progOpts.map((p,i)=>'<option value="'+p+'"'+(b.program_prakar===p?' selected':'')+'>'+icons[i]+' '+p+'</option>').join('')+'</select>';
+
+  let html='<div style="background:var(--pul);border-radius:var(--rs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--pu);font-weight:600">Registration #'+b.serial_no+' — '+b.program_prakar+(isGrp?' — 👥 Group ('+b.total_members+' Members)':' — 👤 Solo')+'</div>';
+  html+='<div style="font-size:11px;font-weight:700;color:var(--gy);margin-bottom:8px;text-transform:uppercase">👑 '+(isGrp?'Leader / Member 1':'Main Balak')+'</div>';
+  html+='<div class="frow"><div class="fg"><label>બાળકનું નામ</label><input type="text" id="eb-naam" value="'+esc(b.balak_naam)+'"></div><div class="fg"><label>Parent નામ</label><input type="text" id="eb-parent" value="'+esc(b.parent_naam)+'"></div></div>';
+  html+='<div class="frow"><div class="fg"><label>જન્મ તારીખ</label><input type="date" id="eb-dob" value="'+(b.janm_tarikh||'')+'"></div><div class="fg"><label>ઉંમર</label><input type="number" id="eb-age" value="'+(b.umer||0)+'"></div></div>';
+  html+='<div class="frow"><div class="fg"><label>સોસાયટી</label><input type="text" id="eb-society" value="'+esc(b.society_naam)+'"></div><div class="fg"><label>શાળા</label><input type="text" id="eb-shala" value="'+esc(b.shala_naam)+'"></div></div>';
+  html+='<div class="frow"><div class="fg"><label>Program</label>'+progSelect+'</div><div class="fg"><label>Mobile</label><input type="tel" id="eb-mobile" value="'+(b.mobile_no||'')+'" maxlength="10" inputmode="numeric"></div></div>';
+
+  if(isGrp&&members.length>0){
+    html+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd)"><div style="font-size:12px;font-weight:700;color:var(--pu);margin-bottom:10px">👥 Group Members ('+members.length+')</div>';
+    members.forEach(function(m,i){
+      const bg=m.isLeader?'var(--pul)':'var(--gyl)';
+      const border=m.isLeader?'rgba(109,40,217,.2)':'var(--bd)';
+      const lbl='Member '+(i+1)+(m.isLeader?' 👑 Leader':'');
+      html+='<div style="background:'+bg+';border-radius:var(--rs);padding:10px 12px;margin-bottom:8px;border:1px solid '+border+'">';
+      html+='<div style="font-size:11px;font-weight:700;color:var(--pu);margin-bottom:8px">'+lbl+'</div>';
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px">';
+      html+='<div class="fg"><label style="font-size:10px">નામ</label><input type="text" id="ebm-naam-'+i+'" value="'+esc(m.naam||'')+'" style="font-size:13px;padding:7px 10px"></div>';
+      html+='<div class="fg"><label style="font-size:10px">ઉંમર</label><input type="number" id="ebm-age-'+i+'" value="'+(m.age||'')+'" style="font-size:13px;padding:7px 10px" inputmode="numeric"></div>';
+      html+='</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+      html+='<div class="fg"><label style="font-size:10px">સોસાયટી</label><input type="text" id="ebm-soc-'+i+'" value="'+esc(m.society||'')+'" style="font-size:13px;padding:7px 10px"></div>';
+      html+='<div class="fg"><label style="font-size:10px">શાળા</label><input type="text" id="ebm-shala-'+i+'" value="'+esc(m.shala||'')+'" style="font-size:13px;padding:7px 10px"></div>';
+      html+='</div></div>';
+    });
+    html+='</div>';
+  }
+
+  mb.innerHTML=html;
   document.getElementById('emod').classList.add('open');
-  // Override save button
-  document.querySelector('#emod .btn.bp').onclick = ()=>saveBalakEdit(id);
+  document.querySelector('#emod .btn.bp').onclick=function(){saveBalakEdit(id);};
 }
+function esc(s){return (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
 async function saveBalakEdit(id){
+  const b = balaks.find(x=>x.id===id);
   const payload = {
     balak_naam: document.getElementById('eb-naam').value.trim(),
     parent_naam: document.getElementById('eb-parent').value.trim(),
@@ -2284,9 +2281,39 @@ async function saveBalakEdit(id){
     program_prakar: document.getElementById('eb-prog').value,
     mobile_no: document.getElementById('eb-mobile').value.trim()
   };
+
+  // Update group members if group
+  if(b && b.performance_type==='Group' && b.group_members){
+    try{
+      const members = JSON.parse(b.group_members);
+      const updatedMembers = members.map((m,i)=>{
+        const naamEl = document.getElementById('ebm-naam-'+i);
+        const ageEl = document.getElementById('ebm-age-'+i);
+        const socEl = document.getElementById('ebm-soc-'+i);
+        const shalaEl = document.getElementById('ebm-shala-'+i);
+        return {
+          ...m,
+          naam: naamEl ? naamEl.value.trim() : m.naam,
+          age: ageEl ? parseInt(ageEl.value)||m.age : m.age,
+          society: socEl ? socEl.value.trim() : m.society,
+          shala: shalaEl ? shalaEl.value.trim() : m.shala
+        };
+      });
+      // Update leader (member 0) from main fields too
+      if(updatedMembers[0] && updatedMembers[0].isLeader){
+        updatedMembers[0].naam = payload.balak_naam;
+        updatedMembers[0].age = payload.umer;
+        updatedMembers[0].society = payload.society_naam;
+        updatedMembers[0].shala = payload.shala_naam;
+      }
+      payload.group_members = JSON.stringify(updatedMembers);
+      payload.total_members = updatedMembers.length;
+    }catch(e){}
+  }
+
   const {error} = await sb.from('balak_registration').update(payload).eq('id',id);
   if(error){ toast('Error: '+error.message,'te'); return; }
-  toast('✓ Update thayo!','tg');
+  toast('✓ Update thayo! Group members pan save thaya.','tg');
   cmod();
   await loadBalak();
 }
@@ -2351,27 +2378,84 @@ function exportBalakExcel(mode){
   balaks.forEach(x=>{ progs[x.program_prakar]=(progs[x.program_prakar]||0)+1; });
 
   // Main list sheet - always add
+  // Build rows - expand group members as separate rows
+  const dataRows = [];
+  let rowNum = 0;
+  sorted.forEach(x=>{
+    rowNum++;
+    if(x.performance_type==='Group' && x.group_members){
+      try{
+        const members = JSON.parse(x.group_members);
+        members.forEach((m,mi)=>{
+          dataRows.push([
+            x.serial_no + (mi>0?'-'+(mi+1):''),
+            m.naam + (m.isLeader?' (Leader)':''),
+            mi===0 ? x.parent_naam : '',
+            mi===0 ? fD(x.janm_tarikh) : (m.dob?fD(m.dob):''),
+            (m.age||x.umer)+' વર્ષ',
+            m.society||x.society_naam,
+            m.shala||x.shala_naam||'',
+            x.program_prakar,
+            mi===0 ? x.mobile_no : '',
+            mi===0 ? un(x.entry_by) : ''
+          ]);
+        });
+      }catch(e){
+        dataRows.push([x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, x.mobile_no, un(x.entry_by)]);
+      }
+    } else {
+      dataRows.push([x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, x.mobile_no, un(x.entry_by)]);
+    }
+  });
+
+  const totalIndiv = balaks.reduce((s,x)=>s+(parseInt(x.total_members)||1),0);
   const rows = [
     [H],['Silver Jubilee — 25th Ganesh Mahotsav'],[],
     ['ક્રમ','બાળકનું નામ','Parent નામ','જન્મ તા.','ઉંમર','સોસાયટી','શાળા','પ્રોગ્રામ','Mobile','Entry By'],
-    ...sorted.map(x=>[x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, x.mobile_no, un(x.entry_by)]),
-    [],[],['Program-wise Summary'],['Program','Balako'],
-    ...Object.entries(progs).sort((a,b)=>b[1]-a[1]).map(([p,c])=>[p,c]),
-    ['કુલ',balaks.length]
+    ...dataRows,
+    [],[],['Program-wise Summary'],['Program','Registrations','Total Balako'],
+    ...Object.entries(progs).sort((a,b)=>b[1]-a[1]).map(([p,c])=>{
+      const pMembers = sorted.filter(x=>x.program_prakar===p).reduce((s,x)=>s+(parseInt(x.total_members)||1),0);
+      return [p, c, pMembers];
+    }),
+    ['કુલ', balaks.length+' Registrations', totalIndiv+' Balako']
   ];
   const ws = XLSX.utils.aoa_to_sheet(rows);
   ws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:12},{wch:8},{wch:20},{wch:18},{wch:20},{wch:14},{wch:14}];
   XLSX.utils.book_append_sheet(wb, ws, 'Full List');
 
   if(mode==='progwise'){
-    // Program wise sheets
     Object.keys(progs).forEach(prog=>{
       const items = sorted.filter(x=>x.program_prakar===prog);
       const sname = prog.split('(')[0].trim().substring(0,28);
+      const totalInProg = items.reduce((s,x)=>s+(parseInt(x.total_members)||1),0);
+      // Expand members
+      const pDataRows = [];
+      items.forEach(x=>{
+        if(x.performance_type==='Group' && x.group_members){
+          try{
+            const members = JSON.parse(x.group_members);
+            members.forEach((m,mi)=>{
+              pDataRows.push([
+                x.serial_no+(mi>0?'-'+(mi+1):''),
+                m.naam+(m.isLeader?' 👑':''),
+                mi===0?x.parent_naam:'',
+                (m.age||x.umer)+' વર્ષ',
+                m.society||x.society_naam,
+                mi===0?x.mobile_no:''
+              ]);
+            });
+          }catch(e){
+            pDataRows.push([x.serial_no,x.balak_naam,x.parent_naam,x.umer+' વર્ષ',x.society_naam,x.mobile_no]);
+          }
+        } else {
+          pDataRows.push([x.serial_no,x.balak_naam,x.parent_naam,x.umer+' વર્ષ',x.society_naam,x.mobile_no]);
+        }
+      });
       const prows = [
-        [H],[prog+' — '+items.length+' Participants'],[],
-        ['ક્રમ','બાળકનું નામ','Parent','ઉંમર','સોસાયટી','Mobile'],
-        ...items.map(x=>[x.serial_no, x.balak_naam, x.parent_naam, x.umer+' વર્ષ', x.society_naam, x.mobile_no])
+        [H],[prog+' — '+items.length+' Registrations — '+totalInProg+' Balako'],[],
+        ['ક્રમ','બાળકનું નામ (Leader 👑)','Parent','ઉંમર','સોસાયટી','Mobile'],
+        ...pDataRows
       ];
       const pws = XLSX.utils.aoa_to_sheet(prows);
       pws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:8},{wch:20},{wch:14}];
