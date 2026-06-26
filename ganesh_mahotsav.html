@@ -2177,14 +2177,15 @@ function sendWhatsApp(entry, serial, grpMembers){
     : soloLine;
 
   const lines=[
-    '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ*',
-    '*યુવક મિત્ર મંડળ, અમરાઈવાડી*',
+    '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — યુવક મિત્ર મંડળ*',
     '',
     '✨ *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026* ✨',
     '🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅',
     '',
     '━━━━━━━━━━━━━━━━━━━━',
-    '🎫 *Registration No: #'+serial+'*',
+    '┌─────────────────────┐',
+    '│  🎫 REGISTRATION NO: *#'+serial+'*  │',
+    '└─────────────────────┘',
     '📝 *Registration Date: '+dateStr+'*',
     '🎭 *Program: '+entry.program_prakar+'*',
     isGroup?'👥 *'+entry.total_members+' Members Group Performance*':'👤 *Solo Performance*',
