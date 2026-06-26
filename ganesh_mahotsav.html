@@ -636,6 +636,26 @@ tr:last-child td{border-bottom:none}
     <div id="prog-date-badge" style="margin-top:8px;font-size:12px;color:var(--gold2);font-weight:600;display:none">
       📅 <span id="prog-date-display"></span> &nbsp;⏰ <span id="prog-time-display"></span>
     </div>
+    <button onclick="showRegLink()" style="margin-top:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--deep);border:none;border-radius:20px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;display:inline-flex;align-items:center;gap:6px">
+      🔗 Registration Link / QR
+    </button>
+    </div>
+
+    <!-- QR LINK MODAL -->
+    <div id="reg-link-modal" style="display:none;background:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;border:2px solid var(--gold);box-shadow:var(--sh)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;color:var(--deep)">🔗 Public Registration Link</div>
+        <button onclick="document.getElementById('reg-link-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px">✕</button>
+      </div>
+      <div style="text-align:center;margin-bottom:12px">
+        <div id="qr-container" style="display:inline-block;padding:10px;background:#fff;border:2px solid var(--bd);border-radius:10px"></div>
+        <div style="font-size:10px;color:var(--gy);margin-top:5px">📱 QR scan karo — form khulse</div>
+      </div>
+      <div style="background:var(--gyl);border-radius:var(--rs);padding:10px 12px;margin-bottom:10px;word-break:break-all;font-size:11px;color:var(--bl);font-weight:600" id="reg-link-text"></div>
+      <div style="display:flex;gap:8px">
+        <button onclick="copyRegLink()" class="btn bgold" style="flex:1;justify-content:center;font-size:12px">📋 Copy</button>
+        <button onclick="shareRegLink()" class="btn bte" style="flex:1;justify-content:center;font-size:12px">📤 WA Share</button>
+      </div>
     </div>
 
     <!-- Sub tabs -->
@@ -927,6 +947,8 @@ function startApp(){
   const c=cfg();
   const sel=document.getElementById('tr-to');
   sel.innerHTML=cu===1?`<option value="2">${c.pn} ને</option>`:`<option value="1">${c.an} ને</option>`;
+  // Save login state so refresh doesn't logout
+  sessionStorage.setItem('gm_cu', cu);
   setTd();loadAll();
 }
 function logout(){cu=null;document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('lp').value='';document.getElementById('apanel').style.display='none';}
@@ -978,6 +1000,13 @@ async function saveSettings(){
 // Load settings from Supabase when page loads
 window.addEventListener('load', async function(){
   await loadSettings();
+  // Auto-restore login session after refresh
+  const savedCu = sessionStorage.getItem('gm_cu');
+  if(savedCu){
+    cu = parseInt(savedCu);
+    startApp();
+    return;
+  }
   // Pre-fill settings panel if shown
   const c=cfg();
   if(document.getElementById('s-u1n'))document.getElementById('s-u1n').value=c.an;
@@ -1243,7 +1272,8 @@ function printReport(type){
   win.document.close();
 }
 
-async function loadAll(){
+async function loadAll(noScroll){
+  const scrollY = noScroll ? window.scrollY : 0;
   const [r1,r2,r3,r4,r5,r6,r7]=await Promise.all([
     sb.from('income').select('*').eq('is_deleted',false).order('entry_date',{ascending:false}),
     sb.from('expense').select('*').eq('is_deleted',false).order('entry_date',{ascending:false}),
@@ -1290,7 +1320,7 @@ async function addI(){
   if(!n||!a){toast('નામ અને રકમ ફરજિયાત!','te');return;}
   const {error}=await sb.from('income').insert({entry_date:d,type:t,name:n,amount:a,note:no,user_id:cu});
   if(error){toast('Error: '+error.message,'te');return;}
-  toast('✓ '+un(cu)+' ની આવક સેવ');['in-n','in-a','in-no'].forEach(id=>document.getElementById(id).value='');await loadAll();
+  toast('✓ '+un(cu)+' ની આવક સેવ');['in-n','in-a','in-no'].forEach(id=>document.getElementById(id).value='');await loadAll(true);
 }
 
 // -------- ADD EXPENSE (with bill) --------
@@ -1303,7 +1333,7 @@ async function addE(){
   if(error){toast('Error: '+error.message,'te');return;}
   toast('✓ '+un(cu)+' ની જાવક સેવ'+(bUrl?' + Bill upload':''));
   ['ex-desc','ex-a','ex-no'].forEach(id=>document.getElementById(id).value='');
-  clearBill();await loadAll();
+  clearBill();await loadAll(true);
 }
 
 // -------- TRANSFER --------
@@ -1323,7 +1353,7 @@ async function addP(){
   const n=document.getElementById('pe-n').value.trim(),a=parseFloat(document.getElementById('pe-a').value)||0,t=document.getElementById('pe-t').value.trim()||'Other',d=document.getElementById('pe-d').value,no=document.getElementById('pe-no').value.trim();
   if(!n||!a){toast('નામ અને રકમ ફરજિયાત!','te');return;}
   await sb.from('pending_amount').insert({name:n,amount:a,type:t,entry_date:d,note:no,received:false,user_id:cu});
-  toast('✓ પેન્ડિંગ સેવ');['pe-n','pe-a','pe-no'].forEach(id=>document.getElementById(id).value='');await loadAll();
+  toast('✓ પેન્ડિંગ સેવ');['pe-n','pe-a','pe-no'].forEach(id=>document.getElementById(id).value='');await loadAll(true);
 }
 async function mRec(id){const p=pend.find(x=>x.id===id);if(!p)return;await sb.from('pending_amount').update({received:true}).eq('id',id);await sb.from('income').insert({entry_date:new Date().toISOString().split('T')[0],type:'Pending Recovery',name:p.name,amount:p.amount,note:'Pending recover',user_id:p.user_id||cu});toast('✓ '+p.name+' ની રકમ મળી');await loadAll();}
 
@@ -1332,7 +1362,7 @@ async function addA(){
   const n=document.getElementById('ag-n').value.trim(),t=document.getElementById('ag-t').value.trim()||'Other',d=document.getElementById('ag-d').value,tot=parseFloat(document.getElementById('ag-tot').value)||0,adv=parseFloat(document.getElementById('ag-adv').value)||0,no=document.getElementById('ag-no').value.trim();
   if(!n||!tot){toast('નામ અને Total ફરજિયાત!','te');return;}
   await sb.from('agency').insert({name:n,type:t,final_date:d,total_amount:tot,advance_amount:adv,note:no,user_id:cu});
-  toast('✓ Agency સેવ');['ag-n','ag-tot','ag-adv','ag-no'].forEach(id=>document.getElementById(id).value='');await loadAll();
+  toast('✓ Agency સેવ');['ag-n','ag-tot','ag-adv','ag-no'].forEach(id=>document.getElementById(id).value='');await loadAll(true);
 }
 
 // -------- DELETE --------
@@ -1778,6 +1808,56 @@ function renderTrash(){
 }
 
 // ============================================================
+// REG LINK + QR CODE
+// ============================================================
+const REG_URL = 'https://jansarihiren108-source.github.io/ganesh-mahotsav/balak_registration.html';
+
+function showRegLink(){
+  const modal = document.getElementById('reg-link-modal');
+  modal.style.display = modal.style.display==='none'?'block':'none';
+  if(modal.style.display==='block'){
+    document.getElementById('reg-link-text').textContent = REG_URL;
+    generateQR();
+  }
+}
+
+function generateQR(){
+  const container = document.getElementById('qr-container');
+  container.innerHTML = '';
+  // Use QR code API
+  const img = document.createElement('img');
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(REG_URL);
+  img.alt = 'QR Code';
+  img.style.cssText = 'width:160px;height:160px;display:block';
+  img.onerror = function(){
+    container.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:var(--gy)">QR load nathi thatu<br>Link copy karo</div>';
+  };
+  container.appendChild(img);
+}
+
+function copyRegLink(){
+  navigator.clipboard.writeText(REG_URL)
+    .then(()=>toast('✓ Link copy thayo!','tg'))
+    .catch(()=>{
+      const ta=document.createElement('textarea');
+      ta.value=REG_URL;
+      document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      toast('✓ Link copy thayo!','tg');
+    });
+}
+
+function shareRegLink(){
+  const msg = '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ*\n\n🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Self Registration*\n\n👇 Aa link kholi ne form bharo:\n' + REG_URL + '\n\n🙏 ગણપતિ બાપ્પા મોર્યા!';
+  if(navigator.share){
+    navigator.share({title:'Balak Registration', text:msg}).catch(()=>{});
+  } else {
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  }
+}
+
+// ============================================================
 // BALAK REGISTRATION MODULE
 // ============================================================
 let balaks = [];
@@ -2086,7 +2166,15 @@ async function addBalak(){
     if(invalid){ toast('Group na badha members na naam ane umer bharo!','te'); return; }
   }
 
-  const nextSerial = balaks.length > 0 ? Math.max(...balaks.map(x=>x.serial_no||0)) + 1 : 1;
+  // Get serial from DB atomically - prevents duplicate numbers
+  let nextSerial = 1;
+  try{
+    const {data:snData} = await sb.rpc('get_next_balak_serial');
+    nextSerial = snData || 1;
+  }catch(e){
+    // Fallback
+    nextSerial = balaks.length > 0 ? Math.max(...balaks.map(x=>x.serial_no||0)) + 1 : 1;
+  }
 
   // Build group members JSON
   // Capture latest values from DOM before saving
@@ -2218,6 +2306,9 @@ function sendWhatsApp(entry, serial, grpMembers){
     '🚫 કાર્યક્રમ સંદર્ભી કોઈ તકરાર સાંભળવામાં આવશે નહી .',
     '',
     '⚖️ કોઈ અગમ્ય કારણોસર અડચણ આવે તો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા .'+contactLine,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🔔 *મહત્વની નોંધ:* આ Registration No. ફક્ત *Performance નોંધણી* માટે છે. Actual performance order અને time *આયોજકો તરફથી Performance ના દિવસે અલગથી જણાવવામાં આવશે.*',
     '',
     '━━━━━━━━━━━━━━━━━━━━',
     '🙏 *ગણપતિ બાપ્પા મોર્યા!*',

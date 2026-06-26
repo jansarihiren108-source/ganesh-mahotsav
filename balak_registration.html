@@ -253,8 +253,13 @@ body{font-family:'Poppins',sans-serif;background:linear-gradient(160deg,#1a0a2e 
       <div style="font-size:13px;color:#666;margin-bottom:8px">Registration Number</div>
       <div class="success-reg" id="s-reg-no">#1</div>
       <div class="success-card" id="s-details"></div>
-      <div style="font-size:12px;color:#666;margin-top:8px;line-height:1.7">
-        📱 WhatsApp confirmation aapna number par moklavamshe<br>
+      <button onclick="sendWAManual()" style="width:100%;padding:14px;background:#25d366;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">
+        📱 WhatsApp Confirmation મોકલો
+      </button>
+      <div style="font-size:11px;color:#999;margin-top:6px;text-align:center">
+        Button dabata WhatsApp khulse — Send karo
+      </div>
+      <div style="font-size:12px;color:#666;margin-top:10px;line-height:1.7;text-align:center">
         🙏 <strong>ગણપતિ બાપ્પા મોર્યા!</strong>
       </div>
       <button class="register-more" onclick="resetForm()">+ બીજા Balak ને Register કરો</button>
@@ -279,6 +284,7 @@ let members=[];
 
 // Load settings
 window.addEventListener('load', async function(){
+  loadAppSettings();
   try{
     const {data}=await sb.from('app_settings').select('*').limit(1).maybeSingle();
     if(data&&data.prog_date){
@@ -423,9 +429,15 @@ async function submitForm(){
   btn.innerHTML='<div class="spin"></div> Registration thay chhe...';
 
   try{
-    // Get next serial
-    const {data:allBalaks}=await sb.from('balak_registration').select('serial_no').eq('is_deleted',false).order('serial_no',{ascending:false}).limit(1);
-    const nextSerial=allBalaks&&allBalaks.length>0?(allBalaks[0].serial_no+1):1;
+    // Get serial from DB atomically - prevents duplicate numbers
+    let nextSerial=1;
+    try{
+      const {data:snData}=await sb.rpc('get_next_balak_serial');
+      nextSerial=snData||1;
+    }catch(e){
+      const {data:allBalaks}=await sb.from('balak_registration').select('serial_no').eq('is_deleted',false).order('serial_no',{ascending:false}).limit(1);
+      nextSerial=allBalaks&&allBalaks.length>0?(allBalaks[0].serial_no+1):1;
+    }
 
     // Build group members
     const allMembers=btype==='Group'?[
@@ -479,18 +491,90 @@ async function submitForm(){
   }
 }
 
-function sendWA(entry,serial){
+// Store last registration for manual WA send
+let lastEntry = null;
+let lastSerial = 0;
+let appSettings = {};
+
+// Load settings on page load
+async function loadAppSettings(){
   try{
+    const {data}=await sb.from('app_settings').select('*').limit(1).maybeSingle();
+    if(data) appSettings=data;
+  }catch(e){}
+}
+
+function sendWAManual(){
+  if(lastEntry) sendWA(lastEntry, lastSerial);
+}
+
+function sendWA(entry, serial){
+  lastEntry=entry; lastSerial=serial;
+  try{
+    const c=appSettings;
     const now=new Date();
-    const dateStr=now.getDate()+'/'+(now.getMonth()+1)+'/'+now.getFullYear();
-    const isGrp=entry.performance_type==='Group';
-    let memberLines='';
-    if(isGrp&&entry.group_members){
+    const dd=String(now.getDate()).padStart(2,'0');
+    const mm=String(now.getMonth()+1).padStart(2,'0');
+    const dateStr=dd+'/'+mm+'/'+now.getFullYear();
+    const guDays=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
+    const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
+    let progDateStr='',progDayStr='';
+    if(c.prog_date){
+      const pd=new Date(c.prog_date+'T00:00:00');
+      progDateStr=pd.getDate()+' '+guM[pd.getMonth()]+' '+pd.getFullYear();
+      progDayStr=guDays[pd.getDay()];
+    }
+    const isGroup=entry.performance_type==='Group';
+    let memberBlock='';
+    if(isGroup&&entry.group_members){
       try{
-        const mems=JSON.parse(entry.group_members);
-        memberLines='\n\n👥 *Group Members:*\n'+mems.map(function(m,i){return(i+1)+'. '+m.naam+' ('+m.age+' yr)'+(m.isLeader?' 👑':'');}).join('\n');
+        const members=JSON.parse(entry.group_members);
+        memberBlock=members.map(function(m,i){
+          const leader=m.isLeader?' 👑 (Leader)':'';
+          const soc=m.society||'—';
+          const schLine=m.shala?'
+   🏫 '+m.shala:'';
+          return '👦 *'+(i+1)+'. '+m.naam+'*'+leader+'
+   🎂 '+m.age+' વર્ષ   🏠 '+soc+schLine;
+        }).join('
+
+');
       }catch(e){}
     }
+    const soloLine=!isGroup
+      ? '
+👦 *બાળકનું નામ:* '+entry.balak_naam
+        +'
+👤 *Parent:* '+entry.parent_naam
+        +'
+🎂 *ઉંમર:* '+entry.umer+' વર્ષ'
+        +'
+🏠 *સોસાયટી:* '+entry.society_naam
+        +(entry.shala_naam?'
+🏫 *શાળા:* '+entry.shala_naam:'')
+        +'
+📱 *Mobile:* '+entry.mobile_no
+      : '
+📱 *Contact:* '+entry.mobile_no;
+    const progInfo=c.prog_date
+      ? '📅 *'+progDateStr+' ('+progDayStr+')*
+⏰ *સમય: '+(c.prog_time||'9:15 AM - 12:30 PM')+'*'+(c.prog_venue?'
+📍 *સ્થળ: '+c.prog_venue+'*':'')
+      : '📅 Program date alag thi janavvashe';
+    const groupLine=isGroup?'
+
+👥 Group performance — બધા members સાથે આવે .':'';
+    const contactLine=c.prog_contact?'
+
+📞 *સંપર્ક: '+c.prog_contact+'*':'';
+    const memberSection=isGroup&&memberBlock
+      ? '
+👥 *Group Members:*
+
+'+memberBlock+'
+'
+      : soloLine;
+
     const lines=[
       '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — યુવક મિત્ર મંડળ*',
       '',
@@ -501,31 +585,41 @@ function sendWA(entry,serial){
       '┌─────────────────────┐',
       '│  🎫 REGISTRATION NO: *#'+serial+'*  │',
       '└─────────────────────┘',
-      '📝 Date: '+dateStr,
-      '🎭 Program: *'+entry.program_prakar+'*',
-      '🎵 Performance: *'+entry.performance_details+'*',
-      isGrp?'👥 *Group — '+(entry.total_members)+' Members*':'👤 *Solo Performance*',
+      '📝 *Registration Date: '+dateStr+'*',
+      '🎭 *Program: '+entry.program_prakar+'*',
+      entry.performance_details?'🎵 *Performance: '+entry.performance_details+'*':'',
+      isGroup?'👥 *'+entry.total_members+' Members Group Performance*':'👤 *Solo Performance*',
+      '━━━━━━━━━━━━━━━━━━━━',
+      memberSection,
+      '━━━━━━━━━━━━━━━━━━━━',
+      '📆 *Performance Schedule:*',
+      progInfo,
+      '━━━━━━━━━━━━━━━━━━━━',
+      '📋 *મહત્વની સૂચનાઓ અને નિયમો :-*',
       '',
-      '👦 *'+entry.balak_naam+'*',
-      '👤 Parent: '+entry.parent_naam,
-      '🏠 '+entry.society_naam,
-      '📱 '+entry.mobile_no,
-      memberLines,
+      '👦 આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે .',
+      '',
+      '⏰ Performance ના 30 મિનિટ પહેલા હાજર રહેવું .'+groupLine,
+      '',
+      '💾 જે બાળકને ગીત, ડાન્સ , મિમિકી કે અન્ય કાર્યક્રમ કરવાના હોય તે Pendrive માં આગાઉથી આપી દેવી .',
+      '',
+      '🎁 સ્ટેજ પર perform કરનાર દરેક બાળકને *Special Gift* આપવામાં આવશે .',
+      '',
+      '🚫 કાર્યક્રમ સંદર્ભી કોઈ તકરાર સાંભળવામાં આવશે નહી .',
+      '',
+      '⚖️ કોઈ અગમ્ય કારણોસર અડચણ આવે તો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા .'+contactLine,
       '',
       '━━━━━━━━━━━━━━━━━━━━',
-      '📋 *નોંધ:*',
-      '⏰ Performance ના 30 મિ. પહેલા હાજર રહેવું',
-      '💾 Song/Dance Pendrive આગાઉથી આપી દેવી',
-      '🎁 દરેક Balak ને Special Gift',
+      
+      '🔔 *મહત્વની નોંધ:* આ Registration No. ફક્ત *Performance નોંધણી* માટે છે. Actual performance order અને time *આયોજકો તરફથી Performance ના દિવસે અલગથી જણાવવામાં આવશે.*',
       '',
       '🙏 *ગણપતિ બાપ્પા મોર્યા!*',
       '🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺'
     ];
-    const msg=lines.join('\n');
-    setTimeout(function(){
-      window.open('https://wa.me/91'+entry.mobile_no+'?text='+encodeURIComponent(msg),'_blank');
-    },1000);
-  }catch(e){}
+    const msg=lines.join('
+');
+    window.open('https://wa.me/91'+entry.mobile_no+'?text='+encodeURIComponent(msg),'_blank');
+  }catch(e){alert('Error: '+e.message);}
 }
 
 function resetForm(){
