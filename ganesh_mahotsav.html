@@ -744,6 +744,13 @@ tr:last-child td{border-bottom:none}
           </select>
         </div>
 
+        <!-- PERFORMANCE DETAILS -->
+        <div class="fg" style="margin-bottom:9px">
+          <label>🎵 Performance Details <span style="font-size:10px;color:var(--gy);font-weight:400">(Song / Natak / Script name...)</span></label>
+          <input type="text" id="b-perf-details" placeholder="Jem ke: Ae Maa tara charana ma / Ganesh Vandana / Ramayan Natak...">
+          <div style="font-size:10px;color:var(--gy);margin-top:3px">💡 Group ma aa ek j field — badha members mate same performance</div>
+        </div>
+
         <!-- GROUP MEMBERS SECTION -->
         <div id="group-section" style="display:none;background:var(--pul);border-radius:var(--rs);padding:13px;margin-bottom:10px;border:1.5px solid rgba(109,40,217,.2)">
           <div style="font-size:12px;font-weight:700;color:var(--pu);margin-bottom:6px">
@@ -2101,6 +2108,7 @@ async function addBalak(){
   const membersData = btype === 'Group' ? JSON.stringify(allGroupMembers) : null;
   const totalMembers = btype === 'Group' ? allGroupMembers.length : 1;
 
+  const perfDetails = document.getElementById('b-perf-details')?.value.trim()||'';
   const {data, error} = await sb.from('balak_registration').insert({
     serial_no: nextSerial,
     balak_naam: naam,
@@ -2111,6 +2119,7 @@ async function addBalak(){
     shala_naam: shala,
     program_prakar: prog,
     mobile_no: mobile,
+    performance_details: perfDetails,
     performance_type: btype,
     group_members: membersData,
     total_members: totalMembers,
@@ -2122,7 +2131,7 @@ async function addBalak(){
   const memberMsg = btype==='Group' ? ' — Group: '+totalMembers+' members (Leader included)' : '';
   toast('✓ Registration #'+nextSerial+' સફળ!'+memberMsg,'ts');
 
-  ['b-naam','b-parent','b-dob','b-age','b-society','b-shala','b-mobile'].forEach(id=>document.getElementById(id).value='');
+  ['b-naam','b-parent','b-dob','b-age','b-society','b-shala','b-mobile','b-perf-details'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('b-prog').value='';
   document.getElementById('b-type').value='Solo';
   document.getElementById('group-section').style.display='none';
@@ -2188,6 +2197,7 @@ function sendWhatsApp(entry, serial, grpMembers){
     '└─────────────────────┘',
     '📝 *Registration Date: '+dateStr+'*',
     '🎭 *Program: '+entry.program_prakar+'*',
+    entry.performance_details?'🎵 *Performance: '+entry.performance_details+'*':'',
     isGroup?'👥 *'+entry.total_members+' Members Group Performance*':'👤 *Solo Performance*',
     '━━━━━━━━━━━━━━━━━━━━',
     memberSection,
@@ -2352,6 +2362,7 @@ function renderBalak(){
             <div>
               <div style="font-size:14px;font-weight:700">${x.balak_naam} ${x.performance_type==='Group'?'<span style="background:var(--pul);color:var(--pu);font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:4px">👥 Group</span>':''}</div>
               <div style="font-size:11px;color:var(--gy);margin-top:2px">👤 ${x.parent_naam} &nbsp;•&nbsp; 🎂 ${x.umer} વર્ષ</div>
+              ${x.performance_details?'<div style="font-size:11px;color:var(--saff);margin-top:2px;font-weight:600">🎵 '+x.performance_details+'</div>':''}
               <div style="font-size:11px;color:var(--gy)">🏠 ${x.society_naam}${x.shala_naam?' &nbsp;•&nbsp; 🏫 '+x.shala_naam:''}</div>
               ${x.performance_type==='Group'&&x.group_members?`<div style="font-size:11px;color:var(--pu);margin-top:3px;font-weight:600">👥 Members: ${(()=>{try{return JSON.parse(x.group_members).map(m=>m.naam+'('+m.age+'yr)').join(', ');}catch(e){return 'N/A';}})()}</div>`:''}
               <div style="font-size:11px;color:var(--bl);margin-top:2px">📱 ${x.mobile_no} &nbsp;•&nbsp; ${utag(x.entry_by)}</div>
