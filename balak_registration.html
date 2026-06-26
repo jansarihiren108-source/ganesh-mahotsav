@@ -10,125 +10,99 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Poppins',sans-serif;background:linear-gradient(160deg,#1a0a2e 0%,#3d1a6e 40%,#6b1a00 100%);min-height:100vh;padding:16px 14px 40px}
 .wrap{max-width:480px;margin:0 auto}
-
-/* HEADER */
-.hdr{text-align:center;padding:20px 0 18px}
-.hdr-logo{width:110px;height:110px;margin:0 auto 12px;border-radius:50%;border:3px solid rgba(212,160,23,.5);box-shadow:0 0 0 6px rgba(212,160,23,.15),0 0 30px rgba(212,160,23,.3);overflow:hidden;background:#1a0a2e}
+.hdr{text-align:center;padding:20px 0 14px}
+.hdr-logo{width:100px;height:100px;margin:0 auto 10px;border-radius:50%;border:3px solid rgba(212,160,23,.5);box-shadow:0 0 0 6px rgba(212,160,23,.15),0 0 30px rgba(212,160,23,.3);overflow:hidden}
 .hdr-logo img{width:100%;height:100%;object-fit:contain}
-.hdr-org{font-size:14px;font-weight:700;color:#f0c040;margin-bottom:3px}
-.hdr-sub{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.5px;margin-bottom:10px}
-.hdr-badge{display:inline-block;background:linear-gradient(135deg,#d4a017,#f0c040);color:#1a0a2e;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.5px}
-
-/* CARD */
-.card{background:#fff;border-radius:16px;padding:20px 16px;margin-top:14px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
-.card-title{font-size:14px;font-weight:700;color:#1a0a2e;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #f0c040;display:flex;align-items:center;gap:8px}
-
-/* FORM */
-.fg{margin-bottom:13px}
-.fg label{display:block;font-size:11px;font-weight:600;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
-.fg input,.fg select,.fg textarea{width:100%;padding:11px 13px;font-size:14px;border:1.5px solid #e5e7eb;border-radius:9px;background:#fff;color:#1a1a1a;outline:none;transition:border .15s;font-family:'Poppins',sans-serif;-webkit-appearance:none}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#6d28d9;box-shadow:0 0 0 3px rgba(109,40,217,.1)}
-.fg textarea{resize:vertical;min-height:70px}
-.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-/* AGE AUTO */
-.age-display{background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:9px;padding:11px 13px;font-size:14px;font-weight:600;color:#6d28d9}
-
-/* PROGRAM TYPE */
-.prog-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.prog-chip{padding:7px 13px;border:1.5px solid #e5e7eb;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#666;transition:all .15s;font-family:'Poppins',sans-serif}
-.prog-chip.sel{background:#6d28d9;border-color:#6d28d9;color:#fff}
-
+.hdr-org{font-size:15px;font-weight:700;color:#f0c040;margin-bottom:3px}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:8px}
+.hdr-badge{display:inline-block;background:linear-gradient(135deg,#d4a017,#f0c040);color:#1a0a2e;font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px}
+.card{background:#fff;border-radius:16px;padding:18px 15px;margin-top:12px}
+.card-title{font-size:14px;font-weight:700;color:#1a0a2e;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #f0c040;display:flex;align-items:center;gap:7px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;font-weight:600;color:#555;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select{width:100%;padding:11px 13px;font-size:14px;border:1.5px solid #e5e7eb;border-radius:9px;color:#1a1a1a;outline:none;font-family:'Poppins',sans-serif;background:#fff;-webkit-appearance:none;appearance:none}
+.fg input:focus,.fg select:focus{border-color:#6d28d9;box-shadow:0 0 0 3px rgba(109,40,217,.1)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.age-box{background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:9px;padding:11px 13px;font-size:14px;font-weight:700;color:#6d28d9;min-height:44px}
+/* PROGRAM CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.chip{padding:8px 13px;border:1.5px solid #e5e7eb;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#555;transition:all .15s;font-family:'Poppins',sans-serif;-webkit-tap-highlight-color:transparent}
+.chip.active{background:#6d28d9;border-color:#6d28d9;color:#fff}
 /* PERF TYPE */
-.perf-type-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
-.perf-card{border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .15s}
-.perf-card.sel{border-color:#6d28d9;background:#f5f3ff}
-.perf-card .ic{font-size:24px;margin-bottom:4px}
-.perf-card .lb{font-size:12px;font-weight:600;color:#1a1a1a}
-.perf-card .ds{font-size:10px;color:#999;margin-top:2px}
-
-/* MEMBERS */
-.member-box{background:#f5f3ff;border-radius:10px;padding:13px;margin-bottom:10px;border:1.5px solid #ddd6fe}
-.member-num{font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.member-num span{background:#6d28d9;color:#fff;width:20px;height:20px;border-radius:50%;font-size:10px;display:inline-flex;align-items:center;justify-content:center}
-
+.ptype-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.ptype-card{border:2px solid #e5e7eb;border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;background:#fff}
+.ptype-card.active{border-color:#6d28d9;background:#f5f3ff}
+.ptype-card .ic{font-size:26px;margin-bottom:5px}
+.ptype-card .lb{font-size:13px;font-weight:700;color:#1a1a1a}
+.ptype-card .ds{font-size:10px;color:#999;margin-top:2px}
 /* COMBO */
 .combo-wrap{position:relative}
-.combo-list{position:absolute;top:calc(100% + 2px);left:0;right:0;z-index:100;background:#fff;border:1.5px solid #6d28d9;border-radius:9px;max-height:160px;overflow-y:auto;display:none;box-shadow:0 4px 16px rgba(0,0,0,.12)}
-.combo-item{padding:10px 13px;font-size:14px;cursor:pointer;border-bottom:1px solid #f5f5f5}
-.combo-item:last-child{border-bottom:none}
-.combo-item:hover{background:#f5f3ff;color:#6d28d9}
-
+.clist{position:absolute;top:100%;left:0;right:0;z-index:999;background:#fff;border:2px solid #6d28d9;border-radius:9px;max-height:160px;overflow-y:auto;display:none;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.ci{padding:11px 13px;font-size:14px;cursor:pointer;border-bottom:1px solid #f5f5f5}
+.ci:last-child{border:none}
+.ci:active{background:#f5f3ff;color:#6d28d9}
+/* GROUP */
+.grp-section{display:none;background:#f5f3ff;border-radius:12px;padding:14px;margin-bottom:10px;border:1.5px solid #ddd6fe}
+.mbox{background:#fff;border-radius:10px;padding:11px;margin-bottom:9px;border:1px solid #ddd6fe}
+.mbox-title{font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between}
+/* TERMS */
+.terms{background:#fff8e7;border:1px solid #f0c040;border-radius:10px;padding:12px;margin-bottom:14px}
+.terms-title{font-size:12px;font-weight:700;color:#92400e;margin-bottom:7px}
+.terms-line{font-size:11px;color:#555;line-height:1.9}
 /* SUBMIT */
-.submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,#6d28d9,#8b5cf6);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
-.submit-btn:active{opacity:.88}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed}
-
+.sbtn{width:100%;padding:15px;background:linear-gradient(135deg,#6d28d9,#8b5cf6);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+.sbtn:disabled{opacity:.5}
 /* SUCCESS */
-.success-screen{display:none;text-align:center;padding:30px 20px}
-.success-icon{font-size:60px;margin-bottom:14px}
-.success-title{font-size:20px;font-weight:700;color:#1a7a4a;margin-bottom:8px}
-.success-reg{font-size:32px;font-weight:800;color:#6d28d9;margin:16px 0 6px}
-.success-msg{font-size:13px;color:#666;line-height:1.6}
-.success-card{background:#f5f3ff;border-radius:12px;padding:16px;margin:16px 0;text-align:left}
-.success-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ede9fe;font-size:13px}
-.success-row:last-child{border:none}
-.success-row .lbl{color:#666}
-.success-row .val{font-weight:600;color:#1a1a1a}
-.register-more{background:#f5f3ff;border:1.5px solid #6d28d9;color:#6d28d9;border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;width:100%;margin-top:10px}
-
-/* INFO BOX */
-.info-box{background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:12px 14px;margin-bottom:14px}
-.info-box .ib-title{font-size:12px;font-weight:700;color:#f0c040;margin-bottom:6px}
-.info-box .ib-row{font-size:12px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:6px;margin-bottom:3px}
-
-/* LOADING */
-.loading{display:flex;align-items:center;justify-content:center;gap:8px;padding:20px;color:#666;font-size:13px}
-.spin{width:18px;height:18px;border:2px solid #e5e7eb;border-top-color:#6d28d9;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.error-msg{background:#fdecea;border:1px solid #f5c6c0;border-radius:8px;padding:10px 13px;color:#c0392b;font-size:13px;margin-bottom:12px;display:none}
+.success{display:none;text-align:center;padding:10px 0}
+.s-icon{font-size:56px;margin-bottom:12px}
+.s-title{font-size:20px;font-weight:700;color:#1a7a4a;margin-bottom:6px}
+.s-num{font-size:36px;font-weight:800;color:#6d28d9;margin:14px 0 5px}
+.s-detail{background:#f5f3ff;border-radius:10px;padding:14px;margin:12px 0;text-align:left}
+.s-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ede9fe;font-size:12px}
+.s-row:last-child{border:none}
+.s-row .l{color:#666}.s-row .v{font-weight:600}
+.wa-btn{width:100%;padding:14px;background:#25d366;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.more-btn{width:100%;padding:12px;background:#f5f3ff;border:2px solid #6d28d9;border-radius:12px;color:#6d28d9;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif}
+.err{background:#fdecea;border:1px solid #f5c6c0;border-radius:8px;padding:10px 13px;color:#c0392b;font-size:13px;margin-bottom:10px;display:none}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
 .req{color:#e8621a}
-
-@media(max-width:360px){.fg-row{grid-template-columns:1fr}}
+.info-bar{background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:11px 13px;margin-bottom:12px;display:none}
+.info-bar-title{font-size:11px;font-weight:700;color:#f0c040;margin-bottom:5px}
+.info-bar-line{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:2px}
+@media(max-width:360px){.frow{grid-template-columns:1fr}.ptype-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-  <!-- HEADER -->
   <div class="hdr">
     <div class="hdr-logo">
-      <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png"
-           alt="Ganesh Ji" onerror="this.style.display='none'">
+      <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png" alt="Ganesh Ji" onerror="this.style.fontSize='50px';this.style.lineHeight='100px';this.textContent='🕉️'">
     </div>
     <div class="hdr-org">🕉️ શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div>
     <div class="hdr-sub">YUVA MITRA MANDAL</div>
     <div class="hdr-badge">✨ ૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026 ✨</div>
   </div>
 
-  <!-- PROGRAM INFO -->
-  <div class="info-box" id="info-box" style="display:none">
-    <div class="ib-title">🎭 સાંસ્કૃતિક પ્રોગ્રામ — Program Details</div>
-    <div class="ib-row">📅 <span id="info-date"></span></div>
-    <div class="ib-row">⏰ <span id="info-time"></span></div>
-    <div class="ib-row" id="info-venue-row" style="display:none">📍 <span id="info-venue"></span></div>
+  <div class="info-bar" id="info-bar">
+    <div class="info-bar-title">🎭 Program Details</div>
+    <div class="info-bar-line" id="info-date"></div>
+    <div class="info-bar-line" id="info-time"></div>
+    <div class="info-bar-line" id="info-venue" style="display:none"></div>
   </div>
 
-  <!-- FORM CARD -->
   <div class="card" id="form-card">
     <div class="card-title">🎭 બાળક નોંધણી ફોર્મ</div>
-    <div class="error-msg" id="err-msg"></div>
+    <div class="err" id="err"></div>
 
-    <!-- MAIN BALAK -->
     <div class="fg">
       <label>બાળકનું પૂરું નામ <span class="req">*</span></label>
-      <input type="text" id="f-naam" placeholder="Full name..." autocomplete="off">
+      <input type="text" id="f-naam" placeholder="Full name...">
     </div>
 
-    <div class="fg-row">
+    <div class="frow">
       <div class="fg">
-        <label>Parent / Guardian નામ <span class="req">*</span></label>
+        <label>Parent નું નામ <span class="req">*</span></label>
         <input type="text" id="f-parent" placeholder="Parent name...">
       </div>
       <div class="fg">
@@ -137,101 +111,90 @@ body{font-family:'Poppins',sans-serif;background:linear-gradient(160deg,#1a0a2e 
       </div>
     </div>
 
-    <div class="fg-row">
+    <div class="frow">
       <div class="fg">
         <label>જન્મ તારીખ <span class="req">*</span></label>
         <input type="date" id="f-dob" onchange="calcAge()">
       </div>
       <div class="fg">
         <label>ઉંમર (Auto)</label>
-        <div class="age-display" id="f-age-display">—</div>
+        <div class="age-box" id="f-age">—</div>
       </div>
     </div>
 
     <div class="fg">
       <label>સોસાયટી / વિસ્તાર <span class="req">*</span></label>
       <div class="combo-wrap">
-        <input type="text" id="f-society" placeholder="Select or type..." autocomplete="off"
-          oninput="showCombo('f-society','soc-list',SOCS)"
-          onfocus="showCombo('f-society','soc-list',SOCS)"
-          onblur="setTimeout(()=>hideCombo('soc-list'),200)">
-        <div class="combo-list" id="soc-list"></div>
+        <input type="text" id="f-soc" placeholder="Type or select..." autocomplete="off"
+          oninput="showList('f-soc','soc-list',SOCS)"
+          onfocus="showList('f-soc','soc-list',SOCS)"
+          onblur="setTimeout(function(){hideList('soc-list')},250)">
+        <div class="clist" id="soc-list"></div>
       </div>
     </div>
 
     <div class="fg">
       <label>શાળાનું નામ</label>
       <div class="combo-wrap">
-        <input type="text" id="f-shala" placeholder="Select or type..." autocomplete="off"
-          oninput="showCombo('f-shala','shala-list',SHALAS)"
-          onfocus="showCombo('f-shala','shala-list',SHALAS)"
-          onblur="setTimeout(()=>hideCombo('shala-list'),200)">
-        <div class="combo-list" id="shala-list"></div>
+        <input type="text" id="f-shala" placeholder="Type or select..." autocomplete="off"
+          oninput="showList('f-shala','shala-list',SHALAS)"
+          onfocus="showList('f-shala','shala-list',SHALAS)"
+          onblur="setTimeout(function(){hideList('shala-list')},250)">
+        <div class="clist" id="shala-list"></div>
       </div>
     </div>
 
-    <!-- PROGRAM TYPE -->
     <div class="fg">
       <label>પ્રોગ્રામ પ્રકાર <span class="req">*</span></label>
-      <div class="prog-chips" id="prog-chips">
-        <button class="prog-chip" onclick="selectProg(this,'નૃત્ય (Dance)')">🕺 Dance</button>
-        <button class="prog-chip" onclick="selectProg(this,'ગાયન (Singing)')">🎤 Singing</button>
-        <button class="prog-chip" onclick="selectProg(this,'નાટક (Natak)')">🎭 Natak</button>
-        <button class="prog-chip" onclick="selectProg(this,'મિમિક્રી (Mimicry)')">🎪 Mimicry</button>
-        <button class="prog-chip" onclick="selectProg(this,'શ્લોક (Shlok)')">📿 Shlok</button>
-        <button class="prog-chip" onclick="selectProg(this,'પ્રાર્થના (Prayer)')">🙏 Prayer</button>
-        <button class="prog-chip" onclick="selectProg(this,'ભાષણ (Speech)')">🎙️ Speech</button>
-        <button class="prog-chip" onclick="selectProg(this,'વાદ્યયંત્ર (Instrument)')">🎶 Instrument</button>
-        <button class="prog-chip" onclick="selectProg(this,'અન્ય (Other)')">✨ Other</button>
+      <div class="chips" id="prog-chips">
+        <button type="button" class="chip" onclick="selProg(this,'નૃત્ય (Dance)')">🕺 Dance</button>
+        <button type="button" class="chip" onclick="selProg(this,'ગાયન (Singing)')">🎤 Singing</button>
+        <button type="button" class="chip" onclick="selProg(this,'નાટક (Natak)')">🎭 Natak</button>
+        <button type="button" class="chip" onclick="selProg(this,'મિમિક્રી (Mimicry)')">🎪 Mimicry</button>
+        <button type="button" class="chip" onclick="selProg(this,'શ્લોક (Shlok)')">📿 Shlok</button>
+        <button type="button" class="chip" onclick="selProg(this,'પ્રાર્થના (Prayer)')">🙏 Prayer</button>
+        <button type="button" class="chip" onclick="selProg(this,'ભાષણ (Speech)')">🎙️ Speech</button>
+        <button type="button" class="chip" onclick="selProg(this,'વાદ્યયંત્ર (Instrument)')">🎶 Instrument</button>
+        <button type="button" class="chip" onclick="selProg(this,'અન્ય (Other)')">✨ Other</button>
       </div>
-      <input type="hidden" id="f-prog">
     </div>
 
-    <!-- PERFORMANCE DETAILS -->
     <div class="fg">
       <label>🎵 Performance Details <span class="req">*</span></label>
-      <input type="text" id="f-perf-details"
-        placeholder="Song name / Natak title / Script name...">
-      <div style="font-size:10px;color:#999;margin-top:3px">
-        Jem ke: "Ae Maa tara charana ma" / "Ganesh Vandana" / "Ramayan Natak"
-      </div>
+      <input type="text" id="f-perf" placeholder="Song name / Natak title / Script...">
+      <div style="font-size:10px;color:#999;margin-top:3px">Jem ke: Ae Maa tara charana ma / Ganesh Vandana</div>
     </div>
 
-    <!-- PERFORMANCE TYPE -->
     <div class="fg">
       <label>Performance Type <span class="req">*</span></label>
-      <div class="perf-type-row">
-        <div class="perf-card sel" id="pt-solo" onclick="selectPerfType('Solo')">
+      <div class="ptype-row">
+        <div class="ptype-card active" id="pt-solo" onclick="selPtype('Solo')">
           <div class="ic">👤</div>
           <div class="lb">Solo</div>
           <div class="ds">Tame ekla perform karso</div>
         </div>
-        <div class="perf-card" id="pt-group" onclick="selectPerfType('Group')">
+        <div class="ptype-card" id="pt-group" onclick="selPtype('Group')">
           <div class="ic">👥</div>
           <div class="lb">Group</div>
           <div class="ds">2 ke vadhu saathe</div>
         </div>
       </div>
-      <input type="hidden" id="f-perf-type" value="Solo">
     </div>
 
     <!-- GROUP MEMBERS -->
-    <div id="group-section" style="display:none;background:#f5f3ff;border-radius:12px;padding:14px;margin-bottom:10px;border:1.5px solid #ddd6fe">
-      <div style="font-size:12px;font-weight:700;color:#6d28d9;margin-bottom:4px">👥 Group Members</div>
-      <div style="font-size:11px;color:#666;margin-bottom:12px;background:#ede9fe;border-radius:7px;padding:7px 10px">
-        ✅ <strong>Member 1 = Upar na Main Balak</strong> — already counted<br>
-        Niche baki na members umerao
+    <div class="grp-section" id="grp-section">
+      <div style="font-size:12px;font-weight:700;color:#6d28d9;margin-bottom:6px">👥 Group Members</div>
+      <div style="font-size:11px;color:#666;background:#ede9fe;border-radius:7px;padding:8px 10px;margin-bottom:10px">
+        ✅ <strong>Member 1 = Upar na Main Balak</strong><br>
+        <span style="color:#999">Niche baki na members umerao</span>
       </div>
-      <div id="group-members-list"></div>
-      <button type="button" onclick="addMember()" style="background:#6d28d9;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;margin-top:4px">
-        + Member ઉમેરો
-      </button>
+      <div id="grp-list"></div>
+      <button type="button" onclick="addMember()" style="background:#6d28d9;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;width:100%">+ Member ઉમેરો</button>
     </div>
 
-    <!-- TERMS -->
-    <div style="background:#fff8e7;border:1px solid #f0c040;border-radius:10px;padding:12px 14px;margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:7px">📋 નોંધ અને નિયમો</div>
-      <div style="font-size:11px;color:#555;line-height:1.8">
+    <div class="terms">
+      <div class="terms-title">📋 નોંધ અને નિયમો</div>
+      <div class="terms-line">
         👦 15 વર્ષ સુધીના બાળકો ભાગ લઈ શકશે<br>
         💾 Song/Dance — Pendrive માં આગાઉથી આપી દેવી<br>
         🎁 દરેક perform કરનારને <strong>Special Gift</strong><br>
@@ -240,34 +203,24 @@ body{font-family:'Poppins',sans-serif;background:linear-gradient(160deg,#1a0a2e 
       </div>
     </div>
 
-    <button class="submit-btn" id="submit-btn" onclick="submitForm()">
-      💾 Registration કરો
-    </button>
+    <button type="button" class="sbtn" id="sbtn" onclick="submitForm()">💾 Registration કરો</button>
   </div>
 
-  <!-- SUCCESS SCREEN -->
+  <!-- SUCCESS -->
   <div class="card" id="success-card" style="display:none">
-    <div class="success-screen">
-      <div class="success-icon">🎉</div>
-      <div class="success-title">Registration Successful!</div>
-      <div style="font-size:13px;color:#666;margin-bottom:8px">Registration Number</div>
-      <div class="success-reg" id="s-reg-no">#1</div>
-      <div class="success-card" id="s-details"></div>
-      <button onclick="sendWAManual()" style="width:100%;padding:14px;background:#25d366;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">
-        📱 WhatsApp Confirmation મોકલો
-      </button>
-      <div style="font-size:11px;color:#999;margin-top:6px;text-align:center">
-        Button dabata WhatsApp khulse — Send karo
-      </div>
-      <div style="font-size:12px;color:#666;margin-top:10px;line-height:1.7;text-align:center">
-        🙏 <strong>ગણપતિ બાપ્પા મોર્યા!</strong>
-      </div>
-      <button class="register-more" onclick="resetForm()">+ બીજા Balak ને Register કરો</button>
+    <div class="success" id="success-div">
+      <div class="s-icon">🎉</div>
+      <div class="s-title">Registration Successful!</div>
+      <div style="font-size:13px;color:#666">Registration Number</div>
+      <div class="s-num" id="s-num">#1</div>
+      <div class="s-detail" id="s-detail"></div>
+      <button type="button" class="wa-btn" onclick="sendWANow()">📱 WhatsApp Confirmation મોકલો</button>
+      <div style="font-size:11px;color:#999;margin-bottom:12px">Button dabata WhatsApp khulse — Send karo</div>
+      <button type="button" class="more-btn" onclick="resetForm()">+ બીજા Balak ને Register કરો</button>
     </div>
   </div>
 
 </div>
-
 <script>
 const SU='https://mlmrwvffdkwvnqbvkgzd.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sbXJ3dmZmZGt3dm5xYnZrZ3pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMzg4NTUsImV4cCI6MjA5NzkxNDg1NX0.pw8GlogqGvYphOhSjvRqt6E-T-DIxjSEAEdI-9QHdPQ';
@@ -275,52 +228,76 @@ const sb=supabase.createClient(SU,SK);
 
 const SOCS=['શ્રી ભગવતી નગર સોસાયટી','શ્રી હરિદર્શન પાર્ક સોસાયટી','શ્રી ઉમિયા ટેનામેન્ટ','શ્રી મુરલીધર ટેનામેન્ટ'];
 const SHALAS=['શ્રી મધુકાન્ત વિદ્યાલય','શ્રી શારદા બા વિદ્યાલય','શ્રી અંજલી વિદ્યાલય','ક્રિસ્ટલ ઇન્ટરનેશનલ પબ્લિક સ્કૂલ','શ્રી શંકર વિદ્યાલય'];
-const guDays=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
-const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
+const GU_DAYS=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
+const GU_M=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
 
-let selectedProg='';
-let perfType='Solo';
-let members=[];
+var selProgVal='';
+var perfTypeVal='Solo';
+var members=[];
+var appCfg={};
+var lastReg=null;
+var lastSerial=0;
 
 // Load settings
-window.addEventListener('load', async function(){
-  loadAppSettings();
-  try{
-    const {data}=await sb.from('app_settings').select('*').limit(1).maybeSingle();
-    if(data&&data.prog_date){
-      const pd=new Date(data.prog_date+'T00:00:00');
-      document.getElementById('info-date').textContent=pd.getDate()+' '+guM[pd.getMonth()]+' 2026 ('+guDays[pd.getDay()]+')';
-      document.getElementById('info-time').textContent=data.prog_time||'9:15 AM - 12:30 PM';
-      if(data.prog_venue){document.getElementById('info-venue').textContent=data.prog_venue;document.getElementById('info-venue-row').style.display='flex';}
-      document.getElementById('info-box').style.display='block';
+window.addEventListener('load',function(){
+  sb.from('app_settings').select('*').limit(1).maybeSingle().then(function(r){
+    if(r.data){
+      appCfg=r.data;
+      if(r.data.prog_date){
+        var pd=new Date(r.data.prog_date+'T00:00:00');
+        document.getElementById('info-date').textContent='📅 '+pd.getDate()+' '+GU_M[pd.getMonth()]+' 2026 ('+GU_DAYS[pd.getDay()]+')';
+        document.getElementById('info-time').textContent='⏰ '+(r.data.prog_time||'9:15 AM - 12:30 PM');
+        if(r.data.prog_venue){
+          document.getElementById('info-venue').textContent='📍 '+r.data.prog_venue;
+          document.getElementById('info-venue').style.display='block';
+        }
+        document.getElementById('info-bar').style.display='block';
+      }
     }
-  }catch(e){}
+  });
 });
 
 function calcAge(){
-  const dob=document.getElementById('f-dob').value;
-  if(!dob){document.getElementById('f-age-display').textContent='—';return;}
-  const today=new Date(),birth=new Date(dob+'T00:00:00');
-  let age=today.getFullYear()-birth.getFullYear();
-  const m=today.getMonth()-birth.getMonth();
+  var dob=document.getElementById('f-dob').value;
+  if(!dob){document.getElementById('f-age').textContent='—';return 0;}
+  var today=new Date();
+  var birth=new Date(dob+'T00:00:00');
+  var age=today.getFullYear()-birth.getFullYear();
+  var m=today.getMonth()-birth.getMonth();
   if(m<0||(m===0&&today.getDate()<birth.getDate()))age--;
-  document.getElementById('f-age-display').textContent=age+' વર્ષ';
+  document.getElementById('f-age').textContent=age+' વર્ષ';
   return age;
 }
 
-function selectProg(el,val){
-  document.querySelectorAll('.prog-chip').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  document.getElementById('f-prog').value=val;
-  selectedProg=val;
+function showList(inpId,listId,items){
+  var v=document.getElementById(inpId).value.toLowerCase();
+  var l=document.getElementById(listId);
+  var f=items.filter(function(i){return i.toLowerCase().indexOf(v)>=0;});
+  if(!f.length){l.style.display='none';return;}
+  var html='';
+  f.forEach(function(item){
+    html+='<div class="ci" onmousedown="pickItem(\''+inpId+'\',\''+listId+'\',\''+encodeURIComponent(item)+'\')">'+item+'</div>';
+  });
+  l.innerHTML=html;
+  l.style.display='block';
+}
+function hideList(id){var l=document.getElementById(id);if(l)l.style.display='none';}
+function pickItem(inpId,listId,enc){
+  document.getElementById(inpId).value=decodeURIComponent(enc);
+  hideList(listId);
 }
 
-function selectPerfType(type){
-  perfType=type;
-  document.getElementById('f-perf-type').value=type;
-  document.getElementById('pt-solo').classList.toggle('sel',type==='Solo');
-  document.getElementById('pt-group').classList.toggle('sel',type==='Group');
-  const gs=document.getElementById('group-section');
+function selProg(el,val){
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+  selProgVal=val;
+}
+
+function selPtype(type){
+  perfTypeVal=type;
+  document.getElementById('pt-solo').classList.toggle('active',type==='Solo');
+  document.getElementById('pt-group').classList.toggle('active',type==='Group');
+  var gs=document.getElementById('grp-section');
   if(type==='Group'){
     gs.style.display='block';
     if(members.length===0)addMember();
@@ -332,312 +309,246 @@ function selectPerfType(type){
 }
 
 function addMember(){
-  members.push({id:Date.now(),naam:'',dob:'',age:'',society:'',shala:''});
+  members.push({id:Date.now(),naam:'',dob:'',age:0,soc:'',shala:''});
   renderMembers();
 }
 
 function removeMember(id){
   if(members.length<=1){alert('Ochhamama ek member joie!');return;}
-  members=members.filter(m=>m.id!==id);renderMembers();
+  members=members.filter(function(m){return m.id!==id;});
+  renderMembers();
 }
 
 function renderMembers(){
-  const list=document.getElementById('group-members-list');
-  let html='';
+  var list=document.getElementById('grp-list');
+  var html='';
   members.forEach(function(m,i){
-    html+='<div class="member-box">';
-    html+='<div class="member-num"><span>'+(i+1)+'</span>Member '+(i+1);
-    if(members.length>1)html+='<button onclick="removeMember('+m.id+')" style="margin-left:auto;background:#fdecea;color:#c0392b;border:none;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer">✕</button>';
+    var rmBtn=members.length>1?'<button type="button" onclick="removeMember('+m.id+')" style="background:#fdecea;color:#c0392b;border:none;border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer">✕</button>':'';
+    html+='<div class="mbox">';
+    html+='<div class="mbox-title"><span>Member '+(i+1)+'</span>'+rmBtn+'</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px">';
+    html+='<div class="fg"><label style="font-size:10px">નામ *</label><input type="text" id="gm-n-'+m.id+'" value="'+(m.naam||'')+'" placeholder="Name..." style="font-size:13px;padding:8px 10px" onchange="updM('+m.id+',\'naam\',this.value)"></div>';
+    html+='<div class="fg"><label style="font-size:10px">DOB *</label><input type="date" id="gm-d-'+m.id+'" value="'+(m.dob||'')+'" style="font-size:13px;padding:8px 10px" onchange="updMDOB('+m.id+',this.value)"></div>';
     html+='</div>';
-    html+='<div class="fg-row"><div class="fg"><label style="font-size:10px">નામ *</label><input type="text" id="gm-naam-'+m.id+'" value="'+esc(m.naam||'')+'" onchange="updateM('+m.id+',\'naam\',this.value)" placeholder="Name..." style="font-size:13px;padding:8px 10px"></div>';
-    html+='<div class="fg"><label style="font-size:10px">DOB *</label><input type="date" id="gm-dob-'+m.id+'" value="'+(m.dob||'')+'" onchange="updateMDOB('+m.id+',this.value)" style="font-size:13px;padding:8px 10px"></div></div>';
-    html+='<div class="fg-row"><div class="fg"><label style="font-size:10px">ઉંમર</label><input type="text" id="gm-age-'+m.id+'" value="'+(m.age?m.age+' વર્ષ':'')+'" readonly style="font-size:13px;padding:8px 10px;background:#f5f3ff;color:#6d28d9"></div>';
-    html+='<div class="fg"><label style="font-size:10px">સોસાયટી</label><input type="text" id="gm-soc-'+m.id+'" value="'+esc(m.society||'')+'" placeholder="Society..." style="font-size:13px;padding:8px 10px"></div></div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    html+='<div class="fg"><label style="font-size:10px">ઉંમર</label><input type="text" id="gm-a-'+m.id+'" value="'+(m.age?m.age+' વર્ષ':'')+'" readonly style="font-size:13px;padding:8px 10px;background:#f5f3ff;color:#6d28d9"></div>';
+    html+='<div class="fg"><label style="font-size:10px">સોસાયટી</label><input type="text" id="gm-s-'+m.id+'" value="'+(m.soc||'')+'" placeholder="Society..." style="font-size:13px;padding:8px 10px" onchange="updM('+m.id+',\'soc\',this.value)"></div>';
+    html+='</div>';
     html+='</div>';
   });
   list.innerHTML=html;
 }
 
-function updateM(id,f,v){const m=members.find(x=>x.id===id);if(m)m[f]=v;}
-function updateMDOB(id,dob){
-  const m=members.find(x=>x.id===id);if(!m)return;m.dob=dob;
+function updM(id,f,v){var m=members.find(function(x){return x.id===id;});if(m)m[f]=v;}
+function updMDOB(id,dob){
+  var m=members.find(function(x){return x.id===id;});
+  if(!m)return;
+  m.dob=dob;
   if(dob){
-    const today=new Date(),birth=new Date(dob+'T00:00:00');
-    let age=today.getFullYear()-birth.getFullYear();
-    const mo=today.getMonth()-birth.getMonth();
+    var today=new Date(),birth=new Date(dob+'T00:00:00');
+    var age=today.getFullYear()-birth.getFullYear();
+    var mo=today.getMonth()-birth.getMonth();
     if(mo<0||(mo===0&&today.getDate()<birth.getDate()))age--;
     m.age=age;
-    const el=document.getElementById('gm-age-'+id);
+    var el=document.getElementById('gm-a-'+id);
     if(el)el.value=age+' વર્ષ';
   }
 }
 
-function showCombo(inputId,listId,items){
-  const v=document.getElementById(inputId).value.toLowerCase();
-  const l=document.getElementById(listId);
-  const f=items.filter(i=>i.toLowerCase().includes(v));
-  if(!f.length){l.style.display='none';return;}
-  l.innerHTML=f.map(function(i){
-    return '<div class="combo-item" onmousedown="pickCombo(\''+inputId+'\',\''+listId+'\',\''+encodeURIComponent(i)+'\')">'+i+'</div>';
-  }).join('');
-  l.style.display='block';
-}
-function hideCombo(id){const l=document.getElementById(id);if(l)l.style.display='none';}
-function pickCombo(iid,lid,enc){
-  const el=document.getElementById(iid);
-  if(el)el.value=decodeURIComponent(enc);
-  hideCombo(lid);
-}
-function esc(s){return(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-
 function showErr(msg){
-  const el=document.getElementById('err-msg');
+  var el=document.getElementById('err');
   el.textContent=msg;el.style.display='block';
   el.scrollIntoView({behavior:'smooth',block:'center'});
 }
-function hideErr(){document.getElementById('err-msg').style.display='none';}
+function hideErr(){document.getElementById('err').style.display='none';}
 
-async function submitForm(){
+function submitForm(){
   hideErr();
-  const naam=document.getElementById('f-naam').value.trim();
-  const parent=document.getElementById('f-parent').value.trim();
-  const mobile=document.getElementById('f-mobile').value.trim();
-  const dob=document.getElementById('f-dob').value;
-  const age=calcAge()||0;
-  const society=document.getElementById('f-society').value.trim();
-  const shala=document.getElementById('f-shala').value.trim();
-  const prog=document.getElementById('f-prog').value;
-  const perfDetails=document.getElementById('f-perf-details').value.trim();
-  const btype=document.getElementById('f-perf-type').value;
+  var naam=document.getElementById('f-naam').value.trim();
+  var parent=document.getElementById('f-parent').value.trim();
+  var mobile=document.getElementById('f-mobile').value.trim();
+  var dob=document.getElementById('f-dob').value;
+  var age=calcAge();
+  var soc=document.getElementById('f-soc').value.trim();
+  var shala=document.getElementById('f-shala').value.trim();
+  var perf=document.getElementById('f-perf').value.trim();
 
   if(!naam)return showErr('બાળકનું નામ ભરો!');
   if(!parent)return showErr('Parent નું નામ ભરો!');
-  if(!mobile||mobile.length!==10)return showErr('WhatsApp mobile number (10 digit) ભરો!');
+  if(!mobile||mobile.length!==10)return showErr('10 digit WhatsApp number ભરો!');
   if(!dob)return showErr('જન્મ તારીખ ભરો!');
   if(age>15)return showErr('15 વર્ષ સુધીના બાળકો જ ભાગ લઈ શકે!');
-  if(!society)return showErr('સોસાયટીનું નામ ભરો!');
-  if(!prog)return showErr('પ્રોગ્રામ પ્રકાર select કરો!');
-  if(!perfDetails)return showErr('Performance details ભરો (Song/Natak name)!');
-  if(btype==='Group'&&members.length<1)return showErr('Group ma ochhamama ek vadu member umerao!');
-  if(btype==='Group'){
-    const inv=members.find(m=>!m.naam||!m.dob);
+  if(!soc)return showErr('સોસાયટીનું નામ ભરો!');
+  if(!selProgVal)return showErr('પ્રોગ્રામ પ્રકાર select કરો!');
+  if(!perf)return showErr('Performance details ભરો (Song/Natak name)!');
+  if(perfTypeVal==='Group'){
+    if(members.length<1)return showErr('Group ma ochhamama ek vadu member umerao!');
+    var inv=members.find(function(m){return !m.naam||!m.dob;});
     if(inv)return showErr('Group na badha members na naam ane DOB bharo!');
   }
 
-  const btn=document.getElementById('submit-btn');
+  var btn=document.getElementById('sbtn');
   btn.disabled=true;
   btn.innerHTML='<div class="spin"></div> Registration thay chhe...';
 
-  try{
-    // Get serial from DB atomically - prevents duplicate numbers
-    let nextSerial=1;
-    try{
-      const {data:snData}=await sb.rpc('get_next_balak_serial');
-      nextSerial=snData||1;
-    }catch(e){
-      const {data:allBalaks}=await sb.from('balak_registration').select('serial_no').eq('is_deleted',false).order('serial_no',{ascending:false}).limit(1);
-      nextSerial=allBalaks&&allBalaks.length>0?(allBalaks[0].serial_no+1):1;
+  // Get serial atomically
+  sb.rpc('get_next_balak_serial').then(function(sr){
+    var nextSerial=sr.data||1;
+
+    var allMembers=null;
+    if(perfTypeVal==='Group'){
+      allMembers=[{naam:naam,age:age,dob:dob,society:soc,shala:shala,isLeader:true}];
+      members.forEach(function(m){
+        allMembers.push({naam:m.naam,age:m.age,dob:m.dob,society:m.soc||soc,shala:m.shala||shala,isLeader:false});
+      });
     }
 
-    // Build group members
-    const allMembers=btype==='Group'?[
-      {naam:naam,age:age,dob:dob,society:society,shala:shala,isLeader:true},
-      ...members.map(function(m){
-        return{naam:m.naam,age:m.age,dob:m.dob,society:m.society||society,shala:m.shala||shala,isLeader:false};
-      })
-    ]:null;
-
-    const {data,error}=await sb.from('balak_registration').insert({
+    return sb.from('balak_registration').insert({
       serial_no:nextSerial,
       balak_naam:naam,
       parent_naam:parent,
       janm_tarikh:dob,
       umer:age,
-      society_naam:society,
+      society_naam:soc,
       shala_naam:shala,
-      program_prakar:prog,
-      performance_details:perfDetails,
+      program_prakar:selProgVal,
+      performance_details:perf,
       mobile_no:mobile,
-      performance_type:btype,
+      performance_type:perfTypeVal,
       group_members:allMembers?JSON.stringify(allMembers):null,
       total_members:allMembers?allMembers.length:1,
       entry_by:0
-    }).select().single();
-
-    if(error)throw error;
-
-    // Show success
-    document.getElementById('submit-btn').style.display='none';
-    document.getElementById('form-card').style.display='none';
-    document.getElementById('success-card').style.display='block';
-    document.getElementById('s-reg-no').textContent='#'+nextSerial;
-
-    let detailsHtml='';
-    detailsHtml+='<div class="success-row"><span class="lbl">👦 નામ</span><span class="val">'+naam+'</span></div>';
-    detailsHtml+='<div class="success-row"><span class="lbl">👤 Parent</span><span class="val">'+parent+'</span></div>';
-    detailsHtml+='<div class="success-row"><span class="lbl">🎭 Program</span><span class="val">'+prog+'</span></div>';
-    detailsHtml+='<div class="success-row"><span class="lbl">🎵 Performance</span><span class="val">'+perfDetails+'</span></div>';
-    detailsHtml+='<div class="success-row"><span class="lbl">🏠 સોસાયટી</span><span class="val">'+society+'</span></div>';
-    if(btype==='Group')detailsHtml+='<div class="success-row"><span class="lbl">👥 Type</span><span class="val">Group — '+(allMembers?allMembers.length:1)+' Members</span></div>';
-    document.getElementById('s-details').innerHTML=detailsHtml;
-
-    // Send WhatsApp
-    sendWA(data,nextSerial);
-
-  }catch(e){
-    showErr('Error: '+e.message);
+    }).select().single().then(function(r){
+      if(r.error)throw r.error;
+      lastReg=r.data;
+      lastSerial=nextSerial;
+      showSuccess(r.data,nextSerial);
+    });
+  }).catch(function(e){
+    showErr('Error: '+(e.message||'Try again'));
     btn.disabled=false;
     btn.innerHTML='💾 Registration કરો';
+  });
+}
+
+function showSuccess(data,serial){
+  document.getElementById('form-card').style.display='none';
+  var sc=document.getElementById('success-card');
+  sc.style.display='block';
+  document.getElementById('success-div').style.display='block';
+  document.getElementById('s-num').textContent='#'+serial;
+  var html='';
+  html+='<div class="s-row"><span class="l">👦 નામ</span><span class="v">'+data.balak_naam+'</span></div>';
+  html+='<div class="s-row"><span class="l">👤 Parent</span><span class="v">'+data.parent_naam+'</span></div>';
+  html+='<div class="s-row"><span class="l">🎭 Program</span><span class="v">'+data.program_prakar+'</span></div>';
+  html+='<div class="s-row"><span class="l">🎵 Performance</span><span class="v">'+data.performance_details+'</span></div>';
+  html+='<div class="s-row"><span class="l">🏠 સોસાયટી</span><span class="v">'+data.society_naam+'</span></div>';
+  if(data.performance_type==='Group')html+='<div class="s-row"><span class="l">👥 Type</span><span class="v">Group — '+data.total_members+' Members</span></div>';
+  document.getElementById('s-detail').innerHTML=html;
+  window.scrollTo(0,0);
+}
+
+function sendWANow(){
+  if(!lastReg)return;
+  var c=appCfg;
+  var now=new Date();
+  var dd=String(now.getDate()).padStart(2,'0');
+  var mm=String(now.getMonth()+1).padStart(2,'0');
+  var dateStr=dd+'/'+mm+'/'+now.getFullYear();
+  var progDateStr='',progDayStr='';
+  if(c.prog_date){
+    var pd=new Date(c.prog_date+'T00:00:00');
+    progDateStr=pd.getDate()+' '+GU_M[pd.getMonth()]+' '+pd.getFullYear();
+    progDayStr=GU_DAYS[pd.getDay()];
   }
-}
+  var isGroup=lastReg.performance_type==='Group';
+  var memberBlock='';
+  if(isGroup&&lastReg.group_members){
+    try{
+      var mems=JSON.parse(lastReg.group_members);
+      memberBlock=mems.map(function(m,i){
+        var ldr=m.isLeader?' 👑 (Leader)':'';
+        return '👦 *'+(i+1)+'. '+m.naam+'*'+ldr+'\n   🎂 '+m.age+' વર્ષ   🏠 '+(m.society||'—');
+      }).join('\n\n');
+    }catch(e){}
+  }
+  var soloLine=!isGroup
+    ?'\n👦 *બાળકનું નામ:* '+lastReg.balak_naam
+     +'\n👤 *Parent:* '+lastReg.parent_naam
+     +'\n🎂 *ઉંમર:* '+lastReg.umer+' વર્ષ'
+     +'\n🏠 *સોસાયટી:* '+lastReg.society_naam
+     +(lastReg.shala_naam?'\n🏫 *શાળા:* '+lastReg.shala_naam:'')
+     +'\n📱 *Mobile:* '+lastReg.mobile_no
+    :'\n📱 *Contact:* '+lastReg.mobile_no;
+  var progInfo=c.prog_date
+    ?'📅 *'+progDateStr+' ('+progDayStr+')*\n⏰ *સમય: '+(c.prog_time||'9:15 AM - 12:30 PM')+'*'+(c.prog_venue?'\n📍 *સ્થળ: '+c.prog_venue+'*':'')
+    :'📅 Program date alag thi janavvashe';
+  var groupLine=isGroup?'\n\n👥 Group performance — બધા members સાથે આવે .':'';
+  var contactLine=c.prog_contact?'\n\n📞 *સંપર્ક: '+c.prog_contact+'*':'';
+  var memberSection=isGroup&&memberBlock?'\n👥 *Group Members:*\n\n'+memberBlock+'\n':soloLine;
 
-// Store last registration for manual WA send
-let lastEntry = null;
-let lastSerial = 0;
-let appSettings = {};
-
-// Load settings on page load
-async function loadAppSettings(){
-  try{
-    const {data}=await sb.from('app_settings').select('*').limit(1).maybeSingle();
-    if(data) appSettings=data;
-  }catch(e){}
-}
-
-function sendWAManual(){
-  if(lastEntry) sendWA(lastEntry, lastSerial);
-}
-
-function sendWA(entry, serial){
-  lastEntry=entry; lastSerial=serial;
-  try{
-    const c=appSettings;
-    const now=new Date();
-    const dd=String(now.getDate()).padStart(2,'0');
-    const mm=String(now.getMonth()+1).padStart(2,'0');
-    const dateStr=dd+'/'+mm+'/'+now.getFullYear();
-    const guDays=['રવિવાર','સોમવાર','મંગળવાર','બુધવાર','ગુરૂવાર','શુક્રવાર','શનિવાર'];
-    const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
-    let progDateStr='',progDayStr='';
-    if(c.prog_date){
-      const pd=new Date(c.prog_date+'T00:00:00');
-      progDateStr=pd.getDate()+' '+guM[pd.getMonth()]+' '+pd.getFullYear();
-      progDayStr=guDays[pd.getDay()];
-    }
-    const isGroup=entry.performance_type==='Group';
-    let memberBlock='';
-    if(isGroup&&entry.group_members){
-      try{
-        const members=JSON.parse(entry.group_members);
-        memberBlock=members.map(function(m,i){
-          const leader=m.isLeader?' 👑 (Leader)':'';
-          const soc=m.society||'—';
-          const schLine=m.shala?'
-   🏫 '+m.shala:'';
-          return '👦 *'+(i+1)+'. '+m.naam+'*'+leader+'
-   🎂 '+m.age+' વર્ષ   🏠 '+soc+schLine;
-        }).join('
-
-');
-      }catch(e){}
-    }
-    const soloLine=!isGroup
-      ? '
-👦 *બાળકનું નામ:* '+entry.balak_naam
-        +'
-👤 *Parent:* '+entry.parent_naam
-        +'
-🎂 *ઉંમર:* '+entry.umer+' વર્ષ'
-        +'
-🏠 *સોસાયટી:* '+entry.society_naam
-        +(entry.shala_naam?'
-🏫 *શાળા:* '+entry.shala_naam:'')
-        +'
-📱 *Mobile:* '+entry.mobile_no
-      : '
-📱 *Contact:* '+entry.mobile_no;
-    const progInfo=c.prog_date
-      ? '📅 *'+progDateStr+' ('+progDayStr+')*
-⏰ *સમય: '+(c.prog_time||'9:15 AM - 12:30 PM')+'*'+(c.prog_venue?'
-📍 *સ્થળ: '+c.prog_venue+'*':'')
-      : '📅 Program date alag thi janavvashe';
-    const groupLine=isGroup?'
-
-👥 Group performance — બધા members સાથે આવે .':'';
-    const contactLine=c.prog_contact?'
-
-📞 *સંપર્ક: '+c.prog_contact+'*':'';
-    const memberSection=isGroup&&memberBlock
-      ? '
-👥 *Group Members:*
-
-'+memberBlock+'
-'
-      : soloLine;
-
-    const lines=[
-      '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — યુવક મિત્ર મંડળ*',
-      '',
-      '✨ *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026* ✨',
-      '🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅',
-      '',
-      '━━━━━━━━━━━━━━━━━━━━',
-      '┌─────────────────────┐',
-      '│  🎫 REGISTRATION NO: *#'+serial+'*  │',
-      '└─────────────────────┘',
-      '📝 *Registration Date: '+dateStr+'*',
-      '🎭 *Program: '+entry.program_prakar+'*',
-      entry.performance_details?'🎵 *Performance: '+entry.performance_details+'*':'',
-      isGroup?'👥 *'+entry.total_members+' Members Group Performance*':'👤 *Solo Performance*',
-      '━━━━━━━━━━━━━━━━━━━━',
-      memberSection,
-      '━━━━━━━━━━━━━━━━━━━━',
-      '📆 *Performance Schedule:*',
-      progInfo,
-      '━━━━━━━━━━━━━━━━━━━━',
-      '📋 *મહત્વની સૂચનાઓ અને નિયમો :-*',
-      '',
-      '👦 આ સાંસ્કૃતિક પ્રોગ્રામમાં 15 વર્ષ સુધીની ઉંમર ધરાવતા બાળકો જ ભાગ લઈ શકશે .',
-      '',
-      '⏰ Performance ના 30 મિનિટ પહેલા હાજર રહેવું .'+groupLine,
-      '',
-      '💾 જે બાળકને ગીત, ડાન્સ , મિમિકી કે અન્ય કાર્યક્રમ કરવાના હોય તે Pendrive માં આગાઉથી આપી દેવી .',
-      '',
-      '🎁 સ્ટેજ પર perform કરનાર દરેક બાળકને *Special Gift* આપવામાં આવશે .',
-      '',
-      '🚫 કાર્યક્રમ સંદર્ભી કોઈ તકરાર સાંભળવામાં આવશે નહી .',
-      '',
-      '⚖️ કોઈ અગમ્ય કારણોસર અડચણ આવે તો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે જે સૌને બંધનકર્તા .'+contactLine,
-      '',
-      '━━━━━━━━━━━━━━━━━━━━',
-      
-      '🔔 *મહત્વની નોંધ:* આ Registration No. ફક્ત *Performance નોંધણી* માટે છે. Actual performance order અને time *આયોજકો તરફથી Performance ના દિવસે અલગથી જણાવવામાં આવશે.*',
-      '',
-      '🙏 *ગણપતિ બાપ્પા મોર્યા!*',
-      '🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺'
-    ];
-    const msg=lines.join('
-');
-    window.open('https://wa.me/91'+entry.mobile_no+'?text='+encodeURIComponent(msg),'_blank');
-  }catch(e){alert('Error: '+e.message);}
+  var lines=[
+    '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — યુવક મિત્ર મંડળ*',
+    '',
+    '✨ *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026* ✨',
+    '🎭 *સાંસ્કૃતિક પ્રોગ્રામ — Registration Confirmed* ✅',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '┌─────────────────────┐',
+    '│  🎫 REGISTRATION NO: *#'+lastSerial+'*  │',
+    '└─────────────────────┘',
+    '📝 *Registration Date: '+dateStr+'*',
+    '🎭 *Program: '+lastReg.program_prakar+'*',
+    lastReg.performance_details?'🎵 *Performance: '+lastReg.performance_details+'*':'',
+    isGroup?'👥 *'+lastReg.total_members+' Members Group Performance*':'👤 *Solo Performance*',
+    '━━━━━━━━━━━━━━━━━━━━',
+    memberSection,
+    '━━━━━━━━━━━━━━━━━━━━',
+    '📆 *Performance Schedule:*',
+    progInfo,
+    '━━━━━━━━━━━━━━━━━━━━',
+    '📋 *મહત્વની સૂચનાઓ અને નિયમો :-*',
+    '',
+    '👦 15 વર્ષ સુધીના બાળકો ભાગ લઈ શકશે .',
+    '',
+    '⏰ Performance ના 30 મિ. પહેલા હાજર રહેવું .'+groupLine,
+    '',
+    '💾 ગીત, ડાન્સ , મિમિકી — Pendrive માં આગાઉથી આપી દેવી .',
+    '',
+    '🎁 દરેક perform કરનાર બાળકને *Special Gift* .',
+    '',
+    '🚫 કોઈ તકરાર સ્વીકારવામાં આવશે નહી .',
+    '',
+    '⚖️ અડચણ આવે તો નિર્ણય આયોજનકર્તા ભાઈઓ લેશે, સૌને બંધનકર્તા .'+contactLine,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🔔 *મહત્વની નોંધ:* આ Registration No. ફક્ત *Performance નોંધણી* માટે છે. Actual performance order અને time *આયોજકો તરફથી Performance ના દિવસે અલગથી જણાવવામાં આવશે.*',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '🙏 *ગણપતિ બાપ્પા મોર્યા!*',
+    '🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺'
+  ];
+  var msg=lines.join('\n');
+  window.open('https://wa.me/91'+lastReg.mobile_no+'?text='+encodeURIComponent(msg),'_blank');
 }
 
 function resetForm(){
-  document.getElementById('form-card').style.display='block';
-  document.getElementById('success-card').style.display='none';
-  document.getElementById('submit-btn').style.display='flex';
-  document.getElementById('submit-btn').disabled=false;
-  document.getElementById('submit-btn').innerHTML='💾 Registration કરો';
-  ['f-naam','f-parent','f-mobile','f-dob','f-society','f-shala','f-perf-details'].forEach(function(id){
+  lastReg=null;lastSerial=0;
+  selProgVal='';perfTypeVal='Solo';members=[];
+  ['f-naam','f-parent','f-mobile','f-dob','f-soc','f-shala','f-perf'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.value='';
   });
-  document.getElementById('f-age-display').textContent='—';
-  document.getElementById('f-prog').value='';
-  selectedProg='';
-  document.querySelectorAll('.prog-chip').forEach(function(c){c.classList.remove('sel');});
-  selectPerfType('Solo');
-  members=[];
+  document.getElementById('f-age').textContent='—';
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('pt-solo').classList.add('active');
+  document.getElementById('pt-group').classList.remove('active');
+  document.getElementById('grp-section').style.display='none';
+  document.getElementById('grp-list').innerHTML='';
+  document.getElementById('sbtn').disabled=false;
+  document.getElementById('sbtn').innerHTML='💾 Registration કરો';
   hideErr();
+  document.getElementById('success-card').style.display='none';
+  document.getElementById('form-card').style.display='block';
   window.scrollTo(0,0);
 }
 </script>
