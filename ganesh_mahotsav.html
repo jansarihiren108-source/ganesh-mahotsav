@@ -364,6 +364,19 @@ tr:last-child td{border-bottom:none}
       <div style="font-size:11px;color:var(--gy);margin-top:4px">💡 Copy karo ane Group ma paste karo, ya Share button thi directly open thase</div>
     </div>
 
+    <!-- Full Schedule WhatsApp -->
+    <div class="card">
+      <div class="ctitle"><span class="cdot dg" style="background:#25d366"></span>📅 WhatsApp — સંપૂર્ણ Mahotsav Schedule</div>
+      <div style="font-size:12px;color:var(--gy);margin-bottom:10px;line-height:1.6">
+        બધા દિવસ નો schedule ek sathe — Mahotsav sharu thata pehla Group ma share karva mate
+      </div>
+      <div id="full-wa-preview" class="wa-box" style="max-height:260px;overflow-y:auto;font-size:12px;white-space:pre-wrap"></div>
+      <div class="wa-actions" style="margin-top:10px">
+        <button class="wa-btn wa-copy" onclick="copyFullWA()">📋 Copy Full Schedule</button>
+        <button class="wa-btn wa-share" onclick="shareFullWA()">📤 WhatsApp Share</button>
+      </div>
+    </div>
+
     <!-- Full Schedule List -->
     <div class="card">
       <div class="ctitle"><span class="cdot dgo"></span>બધા દિવસની Summary</div>
@@ -1460,6 +1473,7 @@ function renderMahotsav(){
   if(!selDate&&dates.length>0)selectDay(dates[0]);
   renderFullSchedule();
   renderWAPreview();
+  renderFullWAPreview();
 }
 function renderDayStrip(){
   const dates=getMahotsavDates();
@@ -1531,6 +1545,75 @@ function renderFullSchedule(){
 }
 
 // -------- WHATSAPP MESSAGE --------
+function renderFullWAPreview(){
+  const dates=getMahotsavDates();
+  const el=document.getElementById('full-wa-preview');
+  if(!el)return;
+  if(!dates.length){el.textContent='Settings ma Mahotsav dates set karo';return;}
+  const c=cfg();
+  const guDays=['રવિ','સોમ','મંગળ','બુધ','ગુરૂ','શુક્ર','શનિ'];
+  const guM=['જાન','ફેબ','માર','એપ્ર','મે','જૂન','જુલ','ઓગ','સપ્ટ','ઓક્ટ','નોવ','ડિસ'];
+  const startD=new Date(dates[0]+'T00:00:00');
+  const endD=new Date(dates[dates.length-1]+'T00:00:00');
+  const startStr=startD.getDate()+' '+guM[startD.getMonth()];
+  const endStr=endD.getDate()+' '+guM[endD.getMonth()]+' '+endD.getFullYear();
+  const lines=[
+    '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — યુવક મિત્ર મંડળ*',
+    '',
+    '🏆 *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026* 🏆',
+    '✨ *રજત જયંતી વર્ષ — ૨૫ વર્ષ ની ઉજવણી* ✨',
+    '',
+    '📅 *'+startStr+' થી '+endStr+'*',
+    '📍 *'+(c.prog_venue||'શ્રી વિશ્વનાથ મહાદેવ મંદિર')+'*',
+    '',
+    '〰️〰️〰️〰️〰️〰️〰️〰️〰️〰️',
+    '*🗓️ સંપૂર્ણ Mahotsav Schedule*',
+    '〰️〰️〰️〰️〰️〰️〰️〰️〰️〰️',
+    ''
+  ];
+  let hasData=false;
+  dates.forEach(function(d,i){
+    const dt=new Date(d+'T00:00:00');
+    const dayLabel='*Day '+(i+1)+' — '+dt.getDate()+' '+guM[dt.getMonth()]+' ('+guDays[dt.getDay()]+')*';
+    const da=aartis.filter(x=>x.event_date===d).sort((a,b)=>(a.aarti_time||'').localeCompare(b.aarti_time||''));
+    const de=events.filter(x=>x.event_date===d).sort((a,b)=>(a.event_time||'').localeCompare(b.event_time||''));
+    if(da.length||de.length){
+      hasData=true;
+      lines.push(dayLabel);
+      lines.push('─────────────────');
+      da.forEach(a=>lines.push('🔔 '+(a.aarti_time||'--:--')+' — '+a.aarti_name+(a.person_name?' ('+a.person_name+')':'')));
+      de.forEach(e=>lines.push('🎪 '+(e.event_time||'--:--')+' — '+e.event_name+(e.description?' — '+e.description:'')));
+      lines.push('');
+    }
+  });
+  if(!hasData){lines.push('⚠️ હજુ schedule ઉમેરવામાં આવ્યો નથી.');lines.push('');}
+  lines.push('〰️〰️〰️〰️〰️〰️〰️〰️〰️〰️');
+  lines.push('🙏 *ગણપતિ બાપ્પા મોર્યા!*');
+  lines.push('🙏 *મંગળ મૂર્તિ મોર્યા!*');
+  lines.push('');
+  lines.push('🌺 *૨૫ વર્ષ — ૨૫ રંગ — ૨૫ ઉમંગ!* 🌺');
+  lines.push('✨ *Silver Jubilee Ganesh Mahotsav 2026* ✨');
+  const msg=lines.join('
+');
+  el.textContent=msg;
+  el._fullMsg=msg;
+}
+
+function copyFullWA(){
+  const el=document.getElementById('full-wa-preview');
+  const msg=el._fullMsg||el.textContent;
+  navigator.clipboard.writeText(msg)
+    .then(()=>toast('✓ Full Schedule copy thayo! Group ma paste karo','twa'))
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✓ Copy thayo!','twa');});
+}
+
+function shareFullWA(){
+  const el=document.getElementById('full-wa-preview');
+  const msg=el._fullMsg||el.textContent;
+  if(navigator.share){navigator.share({text:msg}).catch(()=>{});}
+  else{window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}
+}
+
 function renderWAPreview(){
   const dates=getMahotsavDates();
   const was=document.getElementById('wa-section');
