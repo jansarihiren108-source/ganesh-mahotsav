@@ -543,6 +543,7 @@ tr:last-child td{border-bottom:none}
     <button class="nb" onclick="showTab('checklist')" id="nav-checklist"><span class="ic">📋</span><span>Checklist</span></button>
     <button class="nb" onclick="showTab('trash')" id="nav-trash"><span class="ic">🗑</span><span>Trash</span></button>
     <button class="nb" onclick="showTab('balak')" id="nav-balak"><span class="ic">🎭</span><span>Program</span></button>
+    <button class="nb" onclick="showTab('tshirt')" id="nav-tshirt"><span class="ic">👕</span><span>T-Shirt</span></button>
   </nav>
 </div>
 
@@ -889,7 +890,115 @@ tr:last-child td{border-bottom:none}
   </div>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- TSHIRT PAGE -->
+  <div id="page-tshirt" class="page">
+    <div style="height:11px"></div>
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#0e7490,#0284c7);border-radius:var(--r);padding:14px 16px;margin-bottom:11px;color:#fff;position:relative;overflow:hidden">
+      <div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;margin-bottom:3px">👕 GROUP T-SHIRT ORDER</div>
+      <div style="font-size:15px;font-weight:700">T-Shirt Order Management</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">૨૫મો ગણેશ મહોત્સવ — Silver Jubilee</div>
+      <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.15">👕</div>
+    </div>
+
+    <!-- Size Chart -->
+    <div class="card" style="margin-bottom:11px">
+      <div class="ctitle"><span class="cdot dte"></span>📏 Size Chart (inches)</div>
+      <div class="twrap">
+        <table style="table-layout:fixed">
+          <thead>
+            <tr>
+              <th style="width:60px">Size</th>
+              <th>Chest</th>
+              <th>Length</th>
+              <th>Price (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="size-chart-tbody">
+            <tr><td><strong>S</strong></td><td>36"</td><td>26"</td><td><input type="number" id="price-S" placeholder="0" style="width:70px;padding:4px;border:1px solid var(--bd);border-radius:5px;font-size:12px" onchange="updatePrice('S',this.value)"></td></tr>
+            <tr><td><strong>M</strong></td><td>38"</td><td>27"</td><td><input type="number" id="price-M" placeholder="0" style="width:70px;padding:4px;border:1px solid var(--bd);border-radius:5px;font-size:12px" onchange="updatePrice('M',this.value)"></td></tr>
+            <tr><td><strong>L</strong></td><td>40"</td><td>28"</td><td><input type="number" id="price-L" placeholder="0" style="width:70px;padding:4px;border:1px solid var(--bd);border-radius:5px;font-size:12px" onchange="updatePrice('L',this.value)"></td></tr>
+            <tr><td><strong>XL</strong></td><td>42"</td><td>28"</td><td><input type="number" id="price-XL" placeholder="0" style="width:70px;padding:4px;border:1px solid var(--bd);border-radius:5px;font-size:12px" onchange="updatePrice('XL',this.value)"></td></tr>
+            <tr><td><strong>XXL</strong></td><td>44"</td><td>29"</td><td><input type="number" id="price-XXL" placeholder="0" style="width:70px;padding:4px;border:1px solid var(--bd);border-radius:5px;font-size:12px" onchange="updatePrice('XXL',this.value)"></td></tr>
+            <tr><td><strong>XXXL</strong></td><td>46"</td><td>30"</td><td><input type="number" id="price-XXXL" placeholder="0" style="width:70px;padding:4px;border:1px solid var(--bd);border-radius:5px;font-size:12px" onchange="updatePrice('XXXL',this.value)"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:11px;color:var(--gy);margin-top:8px">💡 Price per size set karo — order entry vakhte auto calculate thase</div>
+    </div>
+
+    <!-- Stats -->
+    <div id="tshirt-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:11px"></div>
+
+    <!-- Add Order -->
+    <div class="card">
+      <div class="ctitle"><span class="cdot dte"></span>👕 New Order ઉમેરો</div>
+      
+      <!-- Name -->
+      <div class="frow">
+        <div class="fg"><label>નામ *</label><input type="text" id="ts-naam" placeholder="Member name..."></div>
+        <div class="fg"><label>નોંધ</label><input type="text" id="ts-note" placeholder="Optional..."></div>
+      </div>
+
+      <!-- Size rows -->
+      <div id="ts-size-rows">
+        <!-- First row added by JS -->
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button type="button" onclick="addSizeRow()" style="background:var(--teall);color:#fff;border:none;border-radius:var(--rs);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;align-items:center;gap:5px">
+          + Size ઉમેરો
+        </button>
+        <div style="font-size:11px;color:var(--gy);display:flex;align-items:center">
+          એક member ને multiple size order karo
+        </div>
+      </div>
+
+      <!-- Total preview -->
+      <div id="ts-total-preview" style="background:var(--teall);border-radius:var(--rs);padding:10px 14px;margin-bottom:10px;display:none">
+        <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:3px">Order Summary</div>
+        <div id="ts-preview-text" style="font-size:13px;color:#fff;font-weight:600"></div>
+      </div>
+
+      <div class="bbar"><button class="btn bte" onclick="addTshirt()">💾 Save Order</button></div>
+    </div>
+
+    <!-- Order List -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div class="ctitle" style="margin:0;border:none;padding:0"><span class="cdot dte"></span>👕 Order List</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <select id="ts-filter" onchange="renderTshirt()" style="font-size:11px;padding:5px 8px;border:1px solid var(--bd);border-radius:6px;font-family:Poppins,sans-serif">
+            <option value="all">🔍 બધા</option>
+            <option value="Pending">⏳ Pending</option>
+            <option value="Partial">💛 Partial</option>
+            <option value="Paid">✅ Paid</option>
+          </select>
+          <button class="btn bex" onclick="exportTshirtExcel()" style="padding:5px 10px;font-size:11px">📊 Excel</button>
+        </div>
+      </div>
+      <!-- WA + Summary buttons -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button onclick="copyTshirtWA()" style="flex:1;padding:10px;background:#25d366;border:none;border-radius:var(--rs);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;display:flex;align-items:center;justify-content:center;gap:5px">📤 WhatsApp Order List</button>
+        <button onclick="printTshirtSummary()" style="flex:1;padding:10px;background:var(--bl);border:none;border-radius:var(--rs);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;display:flex;align-items:center;justify-content:center;gap:5px">🖨️ Print Summary</button>
+      </div>
+      <div id="tshirt-list"><div class="empty">Loading...</div></div>
+    </div>
+
+    <!-- SIZE CONFIRMATION TABLE -->
+    <div class="card">
+      <div class="ctitle"><span class="cdot dte"></span>📋 Size Confirmation Table</div>
+      <div style="font-size:11px;color:var(--gy);margin-bottom:10px">દરેક member ની size ek nazar ma — confirmation mate</div>
+      <div id="size-confirm-table"><div class="empty">Loading...</div></div>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button onclick="copySizeConfirm()" style="flex:1;padding:9px;background:#25d366;border:none;border-radius:var(--rs);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif">📤 WhatsApp</button>
+        <button onclick="printSizeConfirm()" style="flex:1;padding:9px;background:var(--bl);border:none;border-radius:var(--rs);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif">🖨️ Print</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
 <div class="mov" id="emod">
   <div class="modal">
     <div class="modal-hdr"><span id="etitle">Edit</span><button class="mc-btn" onclick="cmod()">✕</button></div>
@@ -1052,7 +1161,7 @@ function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
 function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
 function showTab(n){
-  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash','balak'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
+  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash','balak','tshirt'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
   document.getElementById('page-'+n).classList.add('active');
   document.getElementById('nav-'+n).classList.add('active');
   window.scrollTo(0,0);
@@ -1061,6 +1170,11 @@ function showTab(n){
   if(n==='checklist'){renderChecklist();}
   if(n==='trash'){loadTrash();}
   if(n==='balak'){currentBalakTab='dashboard';switchBalakTab('dashboard');loadBalak();}
+  if(n==='tshirt'){
+    if(sizeRows.length===0) sizeRows=[{id:Date.now(),size:'',qty:1,price:0}];
+    renderSizeRows();
+    loadTshirt();
+  }
   if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
   if(n==='mahotsav'){renderMahotsav();}
 }
@@ -2665,6 +2779,645 @@ function exportBalakExcel(mode){
   XLSX.utils.book_append_sheet(wb, tws, 'નોંધ (Terms)');
 
   XLSX.writeFile(wb, 'Balak_Registration_2026.xlsx');
+  toast('✓ Excel download thayo!','ts');
+}
+
+
+// ============================================================
+// T-SHIRT ORDER MODULE
+// ============================================================
+let tshirts = [];
+let tsizePrices = {S:0, M:0, L:0, XL:0, XXL:0, XXXL:0};
+let sizeRows = []; // [{id, size, qty, price}]
+
+function updatePrice(size, val){
+  tsizePrices[size] = parseFloat(val)||0;
+  // Update all rows with this size
+  sizeRows.forEach(r=>{
+    if(r.size===size){
+      r.price=parseFloat(val)||0;
+      const priceEl=document.getElementById('ts-price-'+r.id);
+      const totalEl=document.getElementById('ts-rowtotal-'+r.id);
+      if(priceEl) priceEl.value=r.price;
+      if(totalEl) totalEl.textContent='= '+fmt(r.price*r.qty);
+    }
+  });
+  updateTsPreview();
+}
+
+function addSizeRow(){
+  const id = Date.now();
+  sizeRows.push({id, size:'', qty:1, price:0});
+  renderSizeRows();
+}
+
+function removeSizeRow(id){
+  if(sizeRows.length<=1){ toast('Ochhamama ek size row joie!','te'); return; }
+  sizeRows = sizeRows.filter(r=>r.id!==id);
+  renderSizeRows();
+}
+
+function onSizeChange(id, val){
+  const r = sizeRows.find(x=>x.id===id);
+  if(!r) return;
+  r.size = val;
+  r.price = tsizePrices[val]||0;
+  const priceEl = document.getElementById('ts-price-'+id);
+  const totalEl = document.getElementById('ts-rowtotal-'+id);
+  if(priceEl) priceEl.value = r.price||'';
+  if(totalEl) totalEl.textContent = r.price ? '= '+fmt(r.price*r.qty) : '';
+  updateTsPreview();
+}
+
+function onQtyChange(id, val){
+  const r = sizeRows.find(x=>x.id===id);
+  if(!r) return;
+  r.qty = parseInt(val)||1;
+  const totalEl = document.getElementById('ts-rowtotal-'+id);
+  if(totalEl) totalEl.textContent = r.price ? '= '+fmt(r.price*r.qty) : '';
+  updateTsPreview();
+}
+
+function onPriceChange(id, val){
+  const r = sizeRows.find(x=>x.id===id);
+  if(!r) return;
+  r.price = parseFloat(val)||0;
+  const totalEl = document.getElementById('ts-rowtotal-'+id);
+  if(totalEl) totalEl.textContent = r.price ? '= '+fmt(r.price*r.qty) : '';
+  updateTsPreview();
+}
+
+function renderSizeRows(){
+  const container = document.getElementById('ts-size-rows');
+  if(!container) return;
+  const sizeColors={S:'#0e7490',M:'#1a5fa8',L:'#6d28d9',XL:'#e8621a',XXL:'#1a7a4a',XXXL:'#c0392b'};
+
+  let html = '';
+  sizeRows.forEach((r,i)=>{
+    const sc = r.size ? (sizeColors[r.size]||'#666') : 'var(--bd)';
+    html += `<div style="background:${r.size?'rgba(14,116,144,.05)':'#fff'};border:1.5px solid ${r.size?'rgba(14,116,144,.2)':'var(--bd)'};border-radius:var(--rs);padding:10px 12px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+        <span style="background:var(--teal);color:#fff;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
+        <span style="font-size:11px;font-weight:600;color:var(--teal)">Size Row ${i+1}</span>
+        ${sizeRows.length>1?`<button onclick="removeSizeRow(${r.id})" style="margin-left:auto;background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;font-weight:600">✕</button>`:''}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end">
+        <div class="fg" style="margin:0">
+          <label style="font-size:10px">Size *</label>
+          <select onchange="onSizeChange(${r.id},this.value)" style="width:100%;padding:9px 10px;font-size:13px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;-webkit-appearance:none;background:#fff">
+            <option value="">-- Size --</option>
+            <option value="S" ${r.size==='S'?'selected':''}>S (36")</option>
+            <option value="M" ${r.size==='M'?'selected':''}>M (38")</option>
+            <option value="L" ${r.size==='L'?'selected':''}>L (40")</option>
+            <option value="XL" ${r.size==='XL'?'selected':''}>XL (42")</option>
+            <option value="XXL" ${r.size==='XXL'?'selected':''}>XXL (44")</option>
+            <option value="XXXL" ${r.size==='XXXL'?'selected':''}>XXXL (46")</option>
+          </select>
+        </div>
+        <div class="fg" style="margin:0">
+          <label style="font-size:10px">Qty</label>
+          <input type="number" value="${r.qty}" min="1" inputmode="numeric" onchange="onQtyChange(${r.id},this.value)" style="width:100%;padding:9px 10px;font-size:13px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif">
+        </div>
+        <div class="fg" style="margin:0">
+          <label style="font-size:10px">Price/shirt (₹)</label>
+          <input type="number" id="ts-price-${r.id}" value="${r.price||''}" inputmode="numeric" onchange="onPriceChange(${r.id},this.value)" style="width:100%;padding:9px 10px;font-size:13px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif">
+        </div>
+      </div>
+      <div id="ts-rowtotal-${r.id}" style="font-size:12px;color:var(--teal);font-weight:600;margin-top:6px;text-align:right">${r.price?'= '+fmt(r.price*r.qty):''}</div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  updateTsPreview();
+}
+
+function updateTsPreview(){
+  const preview = document.getElementById('ts-total-preview');
+  const previewText = document.getElementById('ts-preview-text');
+  if(!preview||!previewText) return;
+
+  const validRows = sizeRows.filter(r=>r.size);
+  if(!validRows.length){ preview.style.display='none'; return; }
+
+  const totalQty = validRows.reduce((s,r)=>s+r.qty,0);
+  const totalAmt = validRows.reduce((s,r)=>s+r.price*r.qty,0);
+  const summary = validRows.map(r=>r.size+' x'+r.qty+(r.price?' ('+fmt(r.price*r.qty)+')':'')).join(' | ');
+
+  previewText.textContent = '👕 '+summary+' | Total Qty: '+totalQty+(totalAmt?' | '+fmt(totalAmt):'');
+  preview.style.display = 'block';
+}
+
+async function loadTshirt(){
+  const {data} = await sb.from('tshirt_orders').select('*').order('created_at',{ascending:true});
+  tshirts = data || [];
+  renderTshirt();
+  renderTshirtStats();
+  renderSizeConfirmTable();
+}
+
+async function addTshirt(){
+  const naam = document.getElementById('ts-naam').value.trim();
+  const note = document.getElementById('ts-note').value.trim();
+
+  if(!naam) return toast('નામ ભરો!','te');
+
+  const validRows = sizeRows.filter(r=>r.size);
+  if(!validRows.length) return toast('Ochhamama ek size select karo!','te');
+
+  // Insert one row per size
+  let errors = [];
+  for(const r of validRows){
+    const total = r.price * r.qty;
+    const {error} = await sb.from('tshirt_orders').insert({
+      name: naam,
+      size: r.size,
+      quantity: r.qty,
+      price_per: r.price,
+      total_amount: total,
+      paid_amount: 0,
+      payment_status: 'Pending',
+      note: note||null,
+      entry_by: cu
+    });
+    if(error) errors.push(error.message);
+  }
+
+  if(errors.length){
+    toast('Error: '+errors[0],'te'); return;
+  }
+
+  const totalQty = validRows.reduce((s,r)=>s+r.qty,0);
+  const sizeSummary = validRows.map(r=>r.size+'x'+r.qty).join(', ');
+  toast('✓ '+naam+' — '+sizeSummary+' ('+totalQty+' shirts) save thayo!','ts');
+
+  // Reset form
+  document.getElementById('ts-naam').value='';
+  document.getElementById('ts-note').value='';
+  sizeRows = [{id:Date.now(), size:'', qty:1, price:0}];
+  renderSizeRows();
+  document.getElementById('ts-total-preview').style.display='none';
+
+  await loadTshirt();
+}
+
+async function updatePayment(id, paidAmt, totalAmt){
+  const status = paidAmt >= totalAmt ? 'Paid' : paidAmt > 0 ? 'Partial' : 'Pending';
+  await sb.from('tshirt_orders').update({
+    paid_amount: paidAmt,
+    payment_status: status
+  }).eq('id', id);
+  toast('✓ Payment update thayo!','tg');
+  await loadTshirt();
+}
+
+async function deleteTshirt(id){
+  if(!confirm('Delete?')) return;
+  await sb.from('tshirt_orders').delete().eq('id', id);
+  toast('✓ Delete thayo');
+  await loadTshirt();
+}
+
+function renderTshirtStats(){
+  const el = document.getElementById('tshirt-stats');
+  if(!el) return;
+  const total = tshirts.reduce((s,x)=>s+(x.quantity||1),0);
+  const totalAmt = tshirts.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  const paidAmt = tshirts.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const pending = totalAmt - paidAmt;
+
+  // Size wise count
+  const sizeCounts = {};
+  tshirts.forEach(x=>{ sizeCounts[x.size]=(sizeCounts[x.size]||0)+(x.quantity||1); });
+  const sizeStr = Object.entries(sizeCounts).map(([s,c])=>s+':'+c).join(' | ');
+
+  el.innerHTML = `
+    <div style="background:var(--teall);border-radius:10px;padding:11px;text-align:center;border:1.5px solid rgba(14,116,144,.2)">
+      <div style="font-size:22px;font-weight:700;color:var(--teal)">${total}</div>
+      <div style="font-size:10px;color:var(--gy)">👕 કુલ T-Shirts</div>
+    </div>
+    <div style="background:var(--grl);border-radius:10px;padding:11px;text-align:center;border:1.5px solid rgba(26,122,74,.2)">
+      <div style="font-size:16px;font-weight:700;color:var(--gr)">${fmt(paidAmt)}</div>
+      <div style="font-size:10px;color:var(--gy)">✅ Paid</div>
+    </div>
+    <div style="background:var(--rel);border-radius:10px;padding:11px;text-align:center;border:1.5px solid rgba(192,57,43,.2)">
+      <div style="font-size:16px;font-weight:700;color:var(--re)">${fmt(pending)}</div>
+      <div style="font-size:10px;color:var(--gy)">⏳ Pending</div>
+    </div>
+    <div style="grid-column:1/-1;background:var(--gyl);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--gy);font-weight:600">
+      📊 Size-wise: ${sizeStr||'—'}
+    </div>`;
+  // Fix grid to 3+1
+  el.style.gridTemplateColumns = '1fr 1fr 1fr';
+}
+
+function renderTshirt(){
+  const filter = document.getElementById('ts-filter')?.value||'all';
+  const filtered = filter==='all' ? tshirts : tshirts.filter(x=>x.payment_status===filter);
+  const list = document.getElementById('tshirt-list');
+  if(!list) return;
+  if(!filtered.length){list.innerHTML='<div class="empty">કોઈ order નથી</div>';return;}
+
+  const statusIcon={Pending:'⏳',Partial:'💛',Paid:'✅'};
+  const statusColor={Pending:'var(--re)',Partial:'var(--am)',Paid:'var(--gr)'};
+  const sizeColors={S:'#0e7490',M:'#1a5fa8',L:'#6d28d9',XL:'#e8621a',XXL:'#1a7a4a',XXXL:'#c0392b'};
+
+  // Total row
+  const grandTotal = filtered.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  const grandPaid = filtered.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const grandQty = filtered.reduce((s,x)=>s+(parseInt(x.quantity)||1),0);
+
+  let html = `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rs);border:1px solid var(--bd)">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">
+      <thead>
+        <tr style="background:linear-gradient(135deg,#0e7490,#0284c7)">
+          <th style="padding:9px 8px;color:#fff;text-align:left;white-space:nowrap;font-size:11px">#</th>
+          <th style="padding:9px 8px;color:#fff;text-align:left;white-space:nowrap;font-size:11px">નામ</th>
+          <th style="padding:9px 8px;color:#fff;text-align:center;white-space:nowrap;font-size:11px">Size</th>
+          <th style="padding:9px 8px;color:#fff;text-align:center;white-space:nowrap;font-size:11px">Qty</th>
+          <th style="padding:9px 8px;color:#fff;text-align:right;white-space:nowrap;font-size:11px">Total</th>
+          <th style="padding:9px 8px;color:#fff;text-align:right;white-space:nowrap;font-size:11px">Paid</th>
+          <th style="padding:9px 8px;color:#fff;text-align:right;white-space:nowrap;font-size:11px">Baki</th>
+          <th style="padding:9px 8px;color:#fff;text-align:center;white-space:nowrap;font-size:11px">Status</th>
+          <th style="padding:9px 8px;color:#fff;text-align:center;white-space:nowrap;font-size:11px">Action</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  filtered.forEach((x,i)=>{
+    const paid=parseFloat(x.paid_amount)||0;
+    const total=parseFloat(x.total_amount)||0;
+    const baki=total-paid;
+    const sc=sizeColors[x.size]||'#0e7490';
+    const stColor=statusColor[x.payment_status]||'var(--gy)';
+    const stIcon=statusIcon[x.payment_status]||'⏳';
+    const rowBg=i%2===0?'#fff':'#f8fafc';
+
+    html+=`<tr style="background:${rowBg};border-bottom:1px solid #f0f0f0">
+      <td style="padding:8px;color:var(--gy);text-align:center">${i+1}</td>
+      <td style="padding:8px;font-weight:600;white-space:nowrap">${x.name}${x.note?'<div style="font-size:10px;color:var(--gy);font-weight:400">'+x.note+'</div>':''}</td>
+      <td style="padding:8px;text-align:center"><span style="background:${sc};color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px">${x.size}</span></td>
+      <td style="padding:8px;text-align:center;font-weight:600">${x.quantity}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:var(--teal);white-space:nowrap">${fmt(total)}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:var(--gr);white-space:nowrap">${fmt(paid)}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:${baki>0?'var(--re)':'var(--gr)'};white-space:nowrap">${fmt(baki)}</td>
+      <td style="padding:8px;text-align:center"><span style="color:${stColor};font-size:13px;font-weight:700">${stIcon}</span></td>
+      <td style="padding:8px;text-align:center;white-space:nowrap">
+        <input type="number" id="pay-${x.id}" value="${paid||''}" placeholder="₹" inputmode="numeric"
+          style="width:70px;padding:4px 6px;font-size:12px;border:1px solid var(--bd);border-radius:5px;font-family:Poppins,sans-serif;margin-bottom:3px;display:block">
+        <button onclick="updatePayment(${x.id},parseFloat(document.getElementById('pay-${x.id}').value)||0,${total})"
+          style="background:var(--gr);color:#fff;border:none;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600;margin-right:3px">💰</button>
+        <button onclick="deleteTshirt(${x.id})"
+          style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:600">🗑</button>
+      </td>
+    </tr>`;
+  });
+
+  // Grand total row
+  html+=`<tr style="background:linear-gradient(135deg,#e0f2fe,#f0f9ff);border-top:2px solid #0e7490;font-weight:700">
+    <td colspan="3" style="padding:10px 8px;color:#0e7490;font-size:12px">📊 કુલ (${filtered.length} orders)</td>
+    <td style="padding:10px 8px;text-align:center;color:#0e7490">${grandQty}</td>
+    <td style="padding:10px 8px;text-align:right;color:#0e7490;white-space:nowrap">${fmt(grandTotal)}</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--gr);white-space:nowrap">${fmt(grandPaid)}</td>
+    <td style="padding:10px 8px;text-align:right;color:${grandTotal-grandPaid>0?'var(--re)':'var(--gr)'};white-space:nowrap">${fmt(grandTotal-grandPaid)}</td>
+    <td colspan="2"></td>
+  </tr>`;
+
+  html+='</tbody></table></div>';
+  list.innerHTML=html;
+}
+
+function copyTshirtWA(){
+  const now = new Date();
+  const dateStr = now.getDate()+'/'+(now.getMonth()+1)+'/'+now.getFullYear();
+
+  // Size wise grouping
+  const sizeGroups = {};
+  tshirts.forEach(x=>{
+    if(!sizeGroups[x.size]) sizeGroups[x.size]=[];
+    sizeGroups[x.size].push(x);
+  });
+
+  const totalShirts = tshirts.reduce((s,x)=>s+(x.quantity||1),0);
+  const totalAmt = tshirts.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  const paidAmt = tshirts.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const pendingAmt = totalAmt - paidAmt;
+
+  const lines = [
+    '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — યુવક મિત્ર મંડળ*',
+    '',
+    '👕 *T-Shirt Order Summary*',
+    '🏆 *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026*',
+    '📅 *Date: '+dateStr+'*',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '📊 *Overview:*',
+    '👕 કુલ T-Shirts: *'+totalShirts+'*',
+    '💰 કુલ Amount: *'+fmt(totalAmt)+'*',
+    '✅ Paid: *'+fmt(paidAmt)+'*',
+    '⏳ Remaining: *'+fmt(pendingAmt)+'*',
+    '━━━━━━━━━━━━━━━━━━━━',
+  ];
+
+  // Size-wise detail
+  const sizeOrder = ['S','M','L','XL','XXL','XXXL'];
+  sizeOrder.forEach(size=>{
+    const items = sizeGroups[size];
+    if(!items||!items.length) return;
+    const sizeTotal = items.reduce((s,x)=>s+(x.quantity||1),0);
+    lines.push('');
+    lines.push('👕 *Size '+size+' — '+sizeTotal+' shirts*');
+    lines.push('─────────────────');
+    items.forEach((x,i)=>{
+      const paid = parseFloat(x.paid_amount)||0;
+      const total = parseFloat(x.total_amount)||0;
+      const status = x.payment_status==='Paid'?'✅':x.payment_status==='Partial'?'💛':'⏳';
+      lines.push((i+1)+'. *'+x.name+'* — Qty:'+x.quantity+' — '+fmt(total)+' '+status);
+    });
+  });
+
+  lines.push('');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+
+  // Pending payments list
+  const pendingList = tshirts.filter(x=>x.payment_status!=='Paid');
+  if(pendingList.length){
+    lines.push('⏳ *Payment Pending:*');
+    pendingList.forEach(x=>{
+      const remaining = (parseFloat(x.total_amount)||0)-(parseFloat(x.paid_amount)||0);
+      lines.push('• '+x.name+' ('+x.size+') — *'+fmt(remaining)+'*');
+    });
+    lines.push('');
+    lines.push('━━━━━━━━━━━━━━━━━━━━');
+  }
+
+  lines.push('🙏 *ગણપતિ બાપ્પા મોર્યા!*');
+  lines.push('🌺 *Silver Jubilee Ganesh Mahotsav 2026* 🌺');
+
+  const msg = lines.join('\n');
+  navigator.clipboard.writeText(msg)
+    .then(()=>toast('✓ T-Shirt list copy thayo! WhatsApp par paste karo','twa'))
+    .catch(()=>{
+      const ta=document.createElement('textarea');ta.value=msg;
+      document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');document.body.removeChild(ta);
+      toast('✓ Copy thayo!','twa');
+    });
+
+  // Also open WhatsApp
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+function printTshirtSummary(){
+  const sizeGroups = {};
+  tshirts.forEach(x=>{ if(!sizeGroups[x.size]) sizeGroups[x.size]=[]; sizeGroups[x.size].push(x); });
+  const totalShirts = tshirts.reduce((s,x)=>s+(x.quantity||1),0);
+  const totalAmt = tshirts.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  const paidAmt = tshirts.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const sizeOrder = ['S','M','L','XL','XXL','XXXL'];
+
+  let body = `<div style="text-align:center;margin-bottom:20px;border-bottom:2px solid #0e7490;padding-bottom:14px">
+    <div style="font-size:11px;color:#888;letter-spacing:2px">🕉 SHREE VISHVANATH MAHADEV GROUP 🕉</div>
+    <h1 style="font-size:20px;font-weight:700;color:#1a0a2e;margin:6px 0">👕 T-Shirt Order Summary</h1>
+    <div style="font-size:13px;color:#666">૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026</div>
+    <div style="font-size:12px;color:#888;margin-top:4px">Print Date: ${new Date().toLocaleDateString('en-IN')}</div>
+  </div>`;
+
+  // Overview box
+  body += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+    <div style="background:#e0f2fe;border-radius:8px;padding:12px;text-align:center">
+      <div style="font-size:22px;font-weight:700;color:#0e7490">${totalShirts}</div>
+      <div style="font-size:11px;color:#666">કુલ T-Shirts</div>
+    </div>
+    <div style="background:#e6f7ef;border-radius:8px;padding:12px;text-align:center">
+      <div style="font-size:18px;font-weight:700;color:#1a7a4a">${fmt(paidAmt)}</div>
+      <div style="font-size:11px;color:#666">✅ Paid</div>
+    </div>
+    <div style="background:#fdecea;border-radius:8px;padding:12px;text-align:center">
+      <div style="font-size:18px;font-weight:700;color:#c0392b">${fmt(totalAmt-paidAmt)}</div>
+      <div style="font-size:11px;color:#666">⏳ Remaining</div>
+    </div>
+  </div>`;
+
+  // Size-wise tables
+  sizeOrder.forEach(size=>{
+    const items = sizeGroups[size];
+    if(!items||!items.length) return;
+    const sTotal = items.reduce((s,x)=>s+(x.quantity||1),0);
+    body += `<div style="margin-bottom:18px;page-break-inside:avoid">
+      <div style="background:#0e7490;color:#fff;padding:8px 14px;border-radius:8px 8px 0 0;font-weight:700;font-size:14px">
+        👕 Size ${size} &nbsp;&nbsp; Total: ${sTotal} shirts
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <tr style="background:#f0f9ff"><th style="padding:7px 10px;text-align:left;border:1px solid #e5e7eb">ક્રમ</th><th style="padding:7px 10px;text-align:left;border:1px solid #e5e7eb">નામ</th><th style="padding:7px 10px;text-align:center;border:1px solid #e5e7eb">Qty</th><th style="padding:7px 10px;text-align:right;border:1px solid #e5e7eb">Total</th><th style="padding:7px 10px;text-align:right;border:1px solid #e5e7eb">Paid</th><th style="padding:7px 10px;text-align:right;border:1px solid #e5e7eb">Baki</th><th style="padding:7px 10px;text-align:center;border:1px solid #e5e7eb">Status</th></tr>
+        ${items.map((x,i)=>{
+          const paid=parseFloat(x.paid_amount)||0;
+          const total=parseFloat(x.total_amount)||0;
+          const sc=x.payment_status==='Paid'?'#1a7a4a':x.payment_status==='Partial'?'#b5620a':'#c0392b';
+          return `<tr style="background:${i%2?'#fafafa':'#fff'}">
+            <td style="padding:7px 10px;border:1px solid #f0f0f0">${i+1}</td>
+            <td style="padding:7px 10px;border:1px solid #f0f0f0;font-weight:600">${x.name}</td>
+            <td style="padding:7px 10px;border:1px solid #f0f0f0;text-align:center">${x.quantity}</td>
+            <td style="padding:7px 10px;border:1px solid #f0f0f0;text-align:right;font-weight:600">${fmt(total)}</td>
+            <td style="padding:7px 10px;border:1px solid #f0f0f0;text-align:right;color:#1a7a4a;font-weight:600">${fmt(paid)}</td>
+            <td style="padding:7px 10px;border:1px solid #f0f0f0;text-align:right;color:${total-paid>0?'#c0392b':'#1a7a4a'};font-weight:600">${fmt(total-paid)}</td>
+            <td style="padding:7px 10px;border:1px solid #f0f0f0;text-align:center;font-weight:700;color:${sc}">${x.payment_status}</td>
+          </tr>`;
+        }).join('')}
+        <tr style="background:#f0f9ff;font-weight:700">
+          <td colspan="2" style="padding:7px 10px;border:1px solid #e5e7eb">Size ${size} Total</td>
+          <td style="padding:7px 10px;border:1px solid #e5e7eb;text-align:center">${sTotal}</td>
+          <td style="padding:7px 10px;border:1px solid #e5e7eb;text-align:right">${fmt(items.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0))}</td>
+          <td style="padding:7px 10px;border:1px solid #e5e7eb;text-align:right;color:#1a7a4a">${fmt(items.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0))}</td>
+          <td style="padding:7px 10px;border:1px solid #e5e7eb;text-align:right;color:#c0392b">${fmt(items.reduce((s,x)=>s+(parseFloat(x.total_amount)||0)-(parseFloat(x.paid_amount)||0),0))}</td>
+          <td style="padding:7px 10px;border:1px solid #e5e7eb"></td>
+        </tr>
+      </table>
+    </div>`;
+  });
+
+  const win = window.open('','_blank');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>T-Shirt Orders</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:900px;margin:0 auto}@media print{@page{margin:15mm}}</style></head><body>'+body+'<script>setTimeout(()=>window.print(),400);<\/script></body></html>');
+  win.document.close();
+}
+
+function renderSizeConfirmTable(){
+  const el = document.getElementById('size-confirm-table');
+  if(!el) return;
+  if(!tshirts.length){el.innerHTML='<div class="empty">કોઈ order નથી</div>';return;}
+
+  const sizeOrder=['S','M','L','XL','XXL','XXXL'];
+  const totalQty = tshirts.reduce((s,x)=>s+(parseInt(x.quantity)||1),0);
+
+  // Size-wise totals
+  const sizeTotals={};
+  sizeOrder.forEach(s=>sizeTotals[s]=0);
+  tshirts.forEach(x=>{ sizeTotals[x.size]=(sizeTotals[x.size]||0)+(parseInt(x.quantity)||1); });
+
+  const sizeColors={S:'#0e7490',M:'#1a5fa8',L:'#6d28d9',XL:'#e8621a',XXL:'#1a7a4a',XXXL:'#c0392b'};
+
+  let html = `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rs);border:1px solid var(--bd)">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead>
+        <tr style="background:linear-gradient(135deg,#1a0a2e,#3d1a6e)">
+          <th style="padding:9px 10px;color:#f0c040;text-align:left;font-size:11px;white-space:nowrap">#</th>
+          <th style="padding:9px 10px;color:#f0c040;text-align:left;font-size:11px;white-space:nowrap">નામ</th>
+          <th style="padding:9px 8px;color:#f0c040;text-align:center;font-size:11px;white-space:nowrap">Size</th>
+          <th style="padding:9px 8px;color:#f0c040;text-align:center;font-size:11px;white-space:nowrap">Qty</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  tshirts.forEach((x,i)=>{
+    const sc=sizeColors[x.size]||'#0e7490';
+    html+=`<tr style="background:${i%2===0?'#fff':'#f8fafc'};border-bottom:1px solid #f0f0f0">
+      <td style="padding:8px 10px;color:var(--gy);font-size:12px">${i+1}</td>
+      <td style="padding:8px 10px;font-weight:600;font-size:13px">${x.name}</td>
+      <td style="padding:8px;text-align:center"><span style="background:${sc};color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:14px;display:inline-block">${x.size}</span></td>
+      <td style="padding:8px;text-align:center;font-weight:700;font-size:13px">${x.quantity}</td>
+    </tr>`;
+  });
+
+  // Total row
+  html+=`<tr style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-top:2px solid var(--pu)">
+    <td colspan="2" style="padding:10px;font-weight:700;color:var(--pu);font-size:12px">👕 કુલ (${tshirts.length} members)</td>
+    <td style="padding:10px;text-align:center"></td>
+    <td style="padding:10px;text-align:center;font-weight:800;font-size:15px;color:var(--pu)">${totalQty}</td>
+  </tr>`;
+
+  html+='</tbody></table></div>';
+
+  // Size summary chips
+  const activeSizes = sizeOrder.filter(s=>sizeTotals[s]>0);
+  html+=`<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:7px">`;
+  activeSizes.forEach(s=>{
+    const sc=sizeColors[s]||'#0e7490';
+    html+=`<div style="background:${sc};color:#fff;font-size:12px;font-weight:700;padding:5px 13px;border-radius:20px;display:flex;align-items:center;gap:5px">
+      ${s} <span style="background:rgba(255,255,255,.25);border-radius:10px;padding:1px 7px;font-size:11px">${sizeTotals[s]}</span>
+    </div>`;
+  });
+  html+=`<div style="background:var(--deep);color:var(--gold2);font-size:12px;font-weight:700;padding:5px 13px;border-radius:20px">Total: ${totalQty}</div>`;
+  html+='</div>';
+
+  el.innerHTML=html;
+  el._tshirts=tshirts;
+}
+
+function copySizeConfirm(){
+  const sizeOrder=['S','M','L','XL','XXL','XXXL'];
+  const sizeTotals={};
+  tshirts.forEach(x=>{ sizeTotals[x.size]=(sizeTotals[x.size]||0)+(parseInt(x.quantity)||1); });
+  const totalQty=tshirts.reduce((s,x)=>s+(parseInt(x.quantity)||1),0);
+
+  const lines=[
+    '🕉️ *શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — યુવક મિત્ર મંડળ*',
+    '🏆 *૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026*',
+    '',
+    '👕 *T-Shirt Size Confirmation*',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+  ];
+
+  tshirts.forEach((x,i)=>{
+    lines.push((i+1)+'. *'+x.name+'* — '+x.size+(x.quantity>1?' (Qty: '+x.quantity+')':''));
+  });
+
+  lines.push('');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('📊 *Size-wise Summary:*');
+  sizeOrder.filter(s=>sizeTotals[s]>0).forEach(s=>{
+    lines.push('👕 Size *'+s+'* — *'+sizeTotals[s]+'* shirts');
+  });
+  lines.push('');
+  lines.push('✅ *કુલ T-Shirts: '+totalQty+'*');
+  lines.push('━━━━━━━━━━━━━━━━━━━━');
+  lines.push('🙏 *ગણપતિ બાપ્પા મોર્યા!*');
+
+  const msg=lines.join('\n');
+  navigator.clipboard.writeText(msg)
+    .then(()=>toast('✓ Size confirmation copy thayo!','twa'))
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✓ Copy thayo!','twa');});
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+function printSizeConfirm(){
+  const sizeOrder=['S','M','L','XL','XXL','XXXL'];
+  const sizeTotals={};
+  tshirts.forEach(x=>{ sizeTotals[x.size]=(sizeTotals[x.size]||0)+(parseInt(x.quantity)||1); });
+  const totalQty=tshirts.reduce((s,x)=>s+(parseInt(x.quantity)||1),0);
+  const sizeColors={S:'#0e7490',M:'#1a5fa8',L:'#6d28d9',XL:'#e8621a',XXL:'#1a7a4a',XXXL:'#c0392b'};
+
+  let body=`<div style="text-align:center;margin-bottom:18px;border-bottom:2px solid #1a0a2e;padding-bottom:14px">
+    <div style="font-size:11px;color:#888;letter-spacing:2px">🕉 SHREE VISHVANATH MAHADEV GROUP 🕉</div>
+    <h2 style="font-size:20px;font-weight:700;color:#1a0a2e;margin:6px 0">👕 T-Shirt Size Confirmation</h2>
+    <div style="font-size:13px;color:#666">૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026</div>
+    <div style="font-size:11px;color:#aaa;margin-top:3px">Date: ${new Date().toLocaleDateString('en-IN')}</div>
+  </div>`;
+
+  body+=`<table style="width:100%;border-collapse:collapse;font-size:14px;margin-bottom:20px">
+    <thead><tr style="background:#1a0a2e;color:#f0c040">
+      <th style="padding:10px;text-align:left">ક્રમ</th>
+      <th style="padding:10px;text-align:left">નામ</th>
+      <th style="padding:10px;text-align:center">Size</th>
+      <th style="padding:10px;text-align:center">Qty</th>
+    </tr></thead>
+    <tbody>
+    ${tshirts.map((x,i)=>`<tr style="background:${i%2?'#f9f9f9':'#fff'};border-bottom:1px solid #eee">
+      <td style="padding:9px 10px;color:#666">${i+1}</td>
+      <td style="padding:9px 10px;font-weight:600">${x.name}</td>
+      <td style="padding:9px 10px;text-align:center"><span style="background:${sizeColors[x.size]||'#333'};color:#fff;font-weight:700;padding:3px 12px;border-radius:12px">${x.size}</span></td>
+      <td style="padding:9px 10px;text-align:center;font-weight:700">${x.quantity}</td>
+    </tr>`).join('')}
+    <tr style="background:#f0eefc;border-top:2px solid #6d28d9;font-weight:700">
+      <td colspan="2" style="padding:10px;color:#6d28d9">કુલ (${tshirts.length} members)</td>
+      <td style="padding:10px;text-align:center"></td>
+      <td style="padding:10px;text-align:center;font-size:18px;color:#6d28d9">${totalQty}</td>
+    </tr>
+    </tbody>
+  </table>`;
+
+  body+=`<div style="background:#f0f9ff;border-radius:10px;padding:14px;margin-top:16px">
+    <div style="font-weight:700;margin-bottom:10px;color:#0e7490">📊 Size-wise Summary:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">`;
+  sizeOrder.filter(s=>sizeTotals[s]>0).forEach(s=>{
+    body+=`<div style="background:${sizeColors[s]};color:#fff;font-weight:700;padding:8px 18px;border-radius:20px;font-size:14px">${s}: ${sizeTotals[s]}</div>`;
+  });
+  body+=`<div style="background:#1a0a2e;color:#f0c040;font-weight:700;padding:8px 18px;border-radius:20px;font-size:14px">Total: ${totalQty}</div>`;
+  body+='</div></div>';
+
+  const win=window.open('','_blank');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Size Confirmation</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:700px;margin:0 auto}@media print{@page{margin:15mm}}</style></head><body>'+body+'<script>setTimeout(()=>window.print(),400);<\/script></body></html>');
+  win.document.close();
+}
+
+function exportTshirtExcel(){
+  const wb = XLSX.utils.book_new();
+  const H = 'T-Shirt Order — ૨૫મો ગણેશ મહોત્સવ Silver Jubilee 2026';
+  const rows = [
+    [H],[],
+    ['ક્રમ','નામ','Size','Qty','Price/shirt','Total','Paid','Remaining','Status','નોંધ'],
+    ...tshirts.map((x,i)=>{
+      const paid=parseFloat(x.paid_amount)||0;
+      const total=parseFloat(x.total_amount)||0;
+      return [i+1,x.name,x.size,x.quantity,x.price_per,total,paid,total-paid,x.payment_status,x.note||''];
+    }),
+    [],
+    ['','','','','','Total →',
+      tshirts.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0),
+      tshirts.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0),
+      tshirts.reduce((s,x)=>s+(parseFloat(x.total_amount)||0)-(parseFloat(x.paid_amount)||0),0),
+      ''
+    ]
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{wch:5},{wch:20},{wch:6},{wch:5},{wch:12},{wch:12},{wch:12},{wch:12},{wch:10},{wch:15}];
+  XLSX.utils.book_append_sheet(wb, ws, 'T-Shirt Orders');
+
+  // Size summary sheet
+  const sizeCounts = {};
+  tshirts.forEach(x=>{ sizeCounts[x.size]=(sizeCounts[x.size]||0)+(x.quantity||1); });
+  const srows = [[H],['Size Summary'],[],['Size','Count'],...Object.entries(sizeCounts).map(([s,c])=>[s,c]),['Total',tshirts.reduce((s,x)=>s+(x.quantity||1),0)]];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(srows), 'Size Summary');
+
+  XLSX.writeFile(wb, 'TShirt_Orders_Mahotsav2026.xlsx');
   toast('✓ Excel download thayo!','ts');
 }
 
