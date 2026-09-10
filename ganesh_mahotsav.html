@@ -544,6 +544,7 @@ tr:last-child td{border-bottom:none}
     <button class="nb" onclick="showTab('trash')" id="nav-trash"><span class="ic">🗑</span><span>Trash</span></button>
     <button class="nb" onclick="showTab('balak')" id="nav-balak"><span class="ic">🎭</span><span>Program</span></button>
     <button class="nb" onclick="showTab('tshirt')" id="nav-tshirt"><span class="ic">👕</span><span>T-Shirt</span></button>
+    <button class="nb" onclick="showTab('draw')" id="nav-draw"><span class="ic">🎟️</span><span>Draw</span></button>
   </nav>
 </div>
 
@@ -998,6 +999,75 @@ tr:last-child td{border-bottom:none}
     </div>
   </div>
 
+  <!-- DRAW PAGE -->
+  <div id="page-draw" class="page">
+    <div style="height:11px"></div>
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#7c1010,#b5341f,#d4a017);border-radius:var(--r);padding:14px 16px;margin-bottom:11px;color:#fff;position:relative;overflow:hidden">
+      <div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;margin-bottom:3px">🎟️ DRAW COUPON BOOK MANAGEMENT</div>
+      <div style="font-size:15px;font-weight:700">Draw Coupon Book</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">Coupon No. 0001 — 4000 · ₹20/coupon · Book = 50 coupons = ₹1000</div>
+      <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.15">🎟️</div>
+    </div>
+
+    <!-- Stats -->
+    <div id="draw-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px"></div>
+
+    <!-- Search by coupon no -->
+    <div class="card" style="margin-bottom:11px">
+      <div class="ctitle"><span class="cdot" style="background:#d4a017"></span>🔍 Coupon No. Search</div>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="draw-search" placeholder="Coupon No. (1-4000)..." inputmode="numeric"
+          style="flex:1;padding:10px 12px;font-size:14px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;outline:none"
+          oninput="searchCoupon(this.value)">
+        <button onclick="searchCoupon(document.getElementById('draw-search').value)" class="btn bgold" style="padding:10px 14px">🔍</button>
+      </div>
+      <div id="draw-search-result" style="margin-top:10px;display:none"></div>
+    </div>
+
+    <!-- Add Book -->
+    <div class="card" style="margin-bottom:11px">
+      <div class="ctitle"><span class="cdot" style="background:#d4a017"></span>📖 New Book Entry</div>
+      <div class="frow">
+        <div class="fg"><label>Book No.</label><input type="number" id="db-bookno" placeholder="1, 2, 3..." inputmode="numeric" onchange="calcBookRange()"></div>
+        <div class="fg"><label>Coupon Price (₹)</label><input type="number" id="db-price" value="20" inputmode="numeric" onchange="calcBookRange()"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>From Coupon No. (Auto)</label><input type="number" id="db-from" readonly style="background:var(--gyl);font-weight:600"></div>
+        <div class="fg"><label>To Coupon No. (Auto)</label><input type="number" id="db-to" readonly style="background:var(--gyl);font-weight:600"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Book Value (₹) (Auto)</label><input type="number" id="db-bookval" readonly style="background:var(--gyl);font-weight:700;color:var(--teal)"></div>
+        <div class="fg"><label>Holder નું નામ *</label><input type="text" id="db-holder" placeholder="Jene book aapi..."></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Mobile No.</label><input type="tel" id="db-mobile" placeholder="Optional..." maxlength="10" inputmode="numeric"></div>
+        <div class="fg"><label>Advance આપ્યું (₹)</label><input type="number" id="db-advance" placeholder="0" inputmode="numeric" onchange="calcDrawRemaining()"></div>
+      </div>
+      <div id="db-remaining-preview" style="background:var(--aml);border-radius:var(--rs);padding:9px 13px;margin-bottom:9px;font-size:12px;font-weight:600;color:var(--am);display:none"></div>
+      <div class="fg"><label>નોંધ</label><input type="text" id="db-note" placeholder="Optional..."></div>
+      <div class="bbar"><button class="btn bgold" onclick="addDrawBook()">💾 Book Save</button></div>
+    </div>
+
+    <!-- Book List -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div class="ctitle" style="margin:0;border:none;padding:0"><span class="cdot" style="background:#d4a017"></span>📚 Book List</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <select id="draw-filter" onchange="renderDraw()" style="font-size:11px;padding:5px 8px;border:1px solid var(--bd);border-radius:6px;font-family:Poppins,sans-serif">
+            <option value="all">🔍 બધી</option>
+            <option value="Pending">⏳ Pending</option>
+            <option value="Partial">💛 Partial</option>
+            <option value="Paid">✅ Paid</option>
+          </select>
+          <button class="btn bex" onclick="exportDrawExcel()" style="padding:5px 10px;font-size:11px">📊 Excel</button>
+        </div>
+      </div>
+      <div id="draw-list"><div class="empty">Loading...</div></div>
+    </div>
+  </div>
+
   <!-- EDIT MODAL -->
 <div class="mov" id="emod">
   <div class="modal">
@@ -1161,7 +1231,7 @@ function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
 function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
 function showTab(n){
-  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash','balak','tshirt'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
+  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash','balak','tshirt','draw'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
   document.getElementById('page-'+n).classList.add('active');
   document.getElementById('nav-'+n).classList.add('active');
   window.scrollTo(0,0);
@@ -1175,6 +1245,7 @@ function showTab(n){
     renderSizeRows();
     loadTshirt();
   }
+  if(n==='draw'){loadDraw();}
   if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
   if(n==='mahotsav'){renderMahotsav();}
 }
@@ -3418,6 +3489,271 @@ function exportTshirtExcel(){
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(srows), 'Size Summary');
 
   XLSX.writeFile(wb, 'TShirt_Orders_Mahotsav2026.xlsx');
+  toast('✓ Excel download thayo!','ts');
+}
+
+
+// ============================================================
+// DRAW COUPON BOOK MODULE
+// ============================================================
+let drawBooks = [];
+const COUPONS_PER_BOOK = 50;
+
+function calcBookRange(){
+  const bookNo = parseInt(document.getElementById('db-bookno').value)||0;
+  const price = parseFloat(document.getElementById('db-price').value)||20;
+  if(!bookNo) return;
+  const fromC = (bookNo-1)*COUPONS_PER_BOOK + 1;
+  const toC = bookNo*COUPONS_PER_BOOK;
+  const bookVal = COUPONS_PER_BOOK * price;
+  document.getElementById('db-from').value = String(fromC).padStart(4,'0');
+  document.getElementById('db-to').value = String(toC).padStart(4,'0');
+  document.getElementById('db-bookval').value = bookVal;
+  calcDrawRemaining();
+}
+
+function calcDrawRemaining(){
+  const bookVal = parseFloat(document.getElementById('db-bookval').value)||0;
+  const advance = parseFloat(document.getElementById('db-advance').value)||0;
+  const remaining = bookVal - advance;
+  const prev = document.getElementById('db-remaining-preview');
+  if(bookVal > 0){
+    prev.style.display = 'block';
+    prev.textContent = 'Book Value: '+fmt(bookVal)+' | Advance: '+fmt(advance)+' | Remaining: '+fmt(remaining);
+    prev.style.color = remaining > 0 ? 'var(--am)' : 'var(--gr)';
+    prev.style.background = remaining > 0 ? 'var(--aml)' : 'var(--grl)';
+  }
+}
+
+async function loadDraw(){
+  const {data} = await sb.from('coupon_books').select('*').eq('is_deleted',false).order('book_no',{ascending:true});
+  drawBooks = data||[];
+  renderDraw();
+  renderDrawStats();
+}
+
+async function addDrawBook(){
+  const bookNo = parseInt(document.getElementById('db-bookno').value)||0;
+  const price = parseFloat(document.getElementById('db-price').value)||20;
+  const holder = document.getElementById('db-holder').value.trim();
+  const mobile = document.getElementById('db-mobile').value.trim();
+  const advance = parseFloat(document.getElementById('db-advance').value)||0;
+  const note = document.getElementById('db-note').value.trim();
+
+  if(!bookNo) return toast('Book No. ભરો!','te');
+  if(!holder) return toast('Holder નું નામ ભરો!','te');
+
+  // Check duplicate
+  if(drawBooks.find(x=>x.book_no===bookNo)) return toast('Book No. '+bookNo+' already exist chhe!','te');
+
+  const fromC = (bookNo-1)*COUPONS_PER_BOOK + 1;
+  const toC = bookNo*COUPONS_PER_BOOK;
+  const bookVal = COUPONS_PER_BOOK * price;
+  const status = advance >= bookVal ? 'Paid' : advance > 0 ? 'Partial' : 'Pending';
+
+  const {error} = await sb.from('coupon_books').insert({
+    book_no: bookNo,
+    from_coupon: fromC,
+    to_coupon: toC,
+    total_coupons: COUPONS_PER_BOOK,
+    coupon_price: price,
+    book_value: bookVal,
+    holder_name: holder,
+    mobile_no: mobile||null,
+    advance_amount: advance,
+    paid_amount: advance,
+    payment_status: status,
+    note: note||null,
+    entry_by: cu
+  });
+
+  if(error) return toast('Error: '+error.message,'te');
+  toast('✓ Book #'+bookNo+' ('+String(fromC).padStart(4,'0')+'-'+String(toC).padStart(4,'0')+') — '+holder+' save thayo!','ts');
+  ['db-bookno','db-from','db-to','db-bookval','db-holder','db-mobile','db-advance','db-note'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('db-remaining-preview').style.display='none';
+  await loadDraw();
+}
+
+async function updateDrawPayment(id, paidAmt, bookVal){
+  const status = paidAmt >= bookVal ? 'Paid' : paidAmt > 0 ? 'Partial' : 'Pending';
+  const {error} = await sb.from('coupon_books').update({
+    paid_amount: paidAmt,
+    advance_amount: paidAmt,
+    payment_status: status
+  }).eq('id',id);
+  if(error) return toast('Error: '+error.message,'te');
+  toast('✓ Payment update thayo!','tg');
+  await loadDraw();
+}
+
+async function deleteDrawBook(id){
+  if(!confirm('Delete?')) return;
+  await sb.from('coupon_books').update({is_deleted:true}).eq('id',id);
+  toast('🗑 Delete thayo');
+  await loadDraw();
+}
+
+function searchCoupon(val){
+  const no = parseInt(val);
+  const result = document.getElementById('draw-search-result');
+  if(!no||no<1||no>4000){ result.style.display='none'; return; }
+
+  const book = drawBooks.find(x=>x.from_coupon<=no && x.to_coupon>=no);
+  result.style.display='block';
+
+  if(!book){
+    result.innerHTML='<div style="background:var(--gyl);border-radius:var(--rs);padding:10px 13px;font-size:13px;color:var(--gy)">⚠️ Coupon No. <strong>'+String(no).padStart(4,'0')+'</strong> — કોઈ Book assign નથી</div>';
+    return;
+  }
+
+  const paid=parseFloat(book.paid_amount)||0;
+  const bval=parseFloat(book.book_value)||0;
+  const remaining=bval-paid;
+  const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'}[book.payment_status]||'⏳';
+  const stColor={Pending:'var(--re)',Partial:'var(--am)',Paid:'var(--gr)'}[book.payment_status]||'var(--gy)';
+
+  result.innerHTML=`<div style="background:linear-gradient(135deg,rgba(212,160,23,.1),rgba(212,160,23,.05));border:1.5px solid rgba(212,160,23,.3);border-radius:var(--rs);padding:13px">
+    <div style="font-size:11px;color:var(--gold4);font-weight:700;margin-bottom:8px">🎟️ Coupon ${String(no).padStart(4,'0')} found!</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:5px">📖 Book #${book.book_no} &nbsp; <span style="font-size:12px;color:var(--gy);font-weight:400">${String(book.from_coupon).padStart(4,'0')} — ${String(book.to_coupon).padStart(4,'0')}</span></div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:3px">👤 ${book.holder_name}</div>
+    ${book.mobile_no?'<div style="font-size:12px;color:var(--bl)">📱 '+book.mobile_no+'</div>':''}
+    <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+      <span style="font-size:12px">💰 Book Value: <strong>${fmt(bval)}</strong></span>
+      <span style="font-size:12px;color:var(--gr)">✅ Paid: <strong>${fmt(paid)}</strong></span>
+      <span style="font-size:12px;color:${remaining>0?'var(--re)':'var(--gr)'}">⏳ Baki: <strong>${fmt(remaining)}</strong></span>
+    </div>
+    <div style="margin-top:6px;font-size:13px;font-weight:700;color:${stColor}">${stIcon} ${book.payment_status}</div>
+    ${book.note?'<div style="font-size:11px;color:var(--gy);margin-top:5px">📝 '+book.note+'</div>':''}
+  </div>`;
+}
+
+function renderDrawStats(){
+  const el = document.getElementById('draw-stats');
+  if(!el) return;
+  const totalBooks = drawBooks.length;
+  const totalCoupons = drawBooks.reduce((s,x)=>s+(x.total_coupons||50),0);
+  const totalVal = drawBooks.reduce((s,x)=>s+(parseFloat(x.book_value)||0),0);
+  const totalPaid = drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const totalPending = totalVal - totalPaid;
+
+  el.innerHTML=`
+    <div style="background:linear-gradient(135deg,rgba(212,160,23,.15),rgba(212,160,23,.05));border-radius:10px;padding:12px;border:1.5px solid rgba(212,160,23,.25)">
+      <div style="font-size:22px;font-weight:700;color:var(--gold4)">${totalBooks}</div>
+      <div style="font-size:10px;color:var(--gy)">📚 Books Assigned</div>
+      <div style="font-size:11px;color:var(--gold4);margin-top:2px">${totalCoupons} Coupons</div>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(212,160,23,.15),rgba(212,160,23,.05));border-radius:10px;padding:12px;border:1.5px solid rgba(212,160,23,.25)">
+      <div style="font-size:17px;font-weight:700;color:var(--gr)">${fmt(totalPaid)}</div>
+      <div style="font-size:10px;color:var(--gy)">✅ Collected</div>
+      <div style="font-size:11px;color:var(--re);margin-top:2px">⏳ Baki: ${fmt(totalPending)}</div>
+    </div>
+  `;
+}
+
+function renderDraw(){
+  const filter = document.getElementById('draw-filter')?.value||'all';
+  const filtered = filter==='all' ? drawBooks : drawBooks.filter(x=>x.payment_status===filter);
+  const list = document.getElementById('draw-list');
+  if(!list) return;
+  if(!filtered.length){list.innerHTML='<div class="empty">કોઈ book નથી</div>';return;}
+
+  const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'};
+  const stColor={Pending:'var(--re)',Partial:'var(--am)',Paid:'var(--gr)'};
+  const stBg={Pending:'var(--rel)',Partial:'var(--aml)',Paid:'var(--grl)'};
+
+  const grandVal = filtered.reduce((s,x)=>s+(parseFloat(x.book_value)||0),0);
+  const grandPaid = filtered.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+
+  let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--rs);border:1px solid var(--bd)">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:600px">
+      <thead>
+        <tr style="background:linear-gradient(135deg,#7c1010,#d4a017)">
+          <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Book</th>
+          <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Coupon Range</th>
+          <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Holder</th>
+          <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Value</th>
+          <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Paid</th>
+          <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Baki</th>
+          <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Status</th>
+          <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Action</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  filtered.forEach((x,i)=>{
+    const paid=parseFloat(x.paid_amount)||0;
+    const bval=parseFloat(x.book_value)||0;
+    const baki=bval-paid;
+    const pct=bval>0?Math.round((paid/bval)*100):0;
+    const sc=stColor[x.payment_status]||'var(--gy)';
+    const si=stIcon[x.payment_status]||'⏳';
+
+    html+=`<tr style="background:${i%2===0?'#fff':'#fafafa'};border-bottom:1px solid #f0f0f0">
+      <td style="padding:8px;font-weight:700;color:var(--gold4)">#${x.book_no}</td>
+      <td style="padding:8px;font-family:monospace;font-size:12px;white-space:nowrap">
+        <span style="background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);border-radius:5px;padding:2px 7px">${String(x.from_coupon).padStart(4,'0')} — ${String(x.to_coupon).padStart(4,'0')}</span>
+      </td>
+      <td style="padding:8px">
+        <div style="font-weight:600;font-size:13px">${x.holder_name}</div>
+        ${x.mobile_no?'<div style="font-size:10px;color:var(--bl)">📱 '+x.mobile_no+'</div>':''}
+        ${x.note?'<div style="font-size:10px;color:var(--gy)">'+x.note+'</div>':''}
+      </td>
+      <td style="padding:8px;text-align:right;font-weight:600;white-space:nowrap">${fmt(bval)}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:var(--gr);white-space:nowrap">${fmt(paid)}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:${baki>0?'var(--re)':'var(--gr)'};white-space:nowrap">${fmt(baki)}</td>
+      <td style="padding:8px;text-align:center">
+        <span style="font-size:13px;font-weight:700;color:${sc}">${si}</span>
+        <div style="font-size:9px;color:${sc}">${pct}%</div>
+      </td>
+      <td style="padding:8px;text-align:center;white-space:nowrap">
+        <input type="number" id="dpay-${x.id}" value="${paid||''}" placeholder="₹" inputmode="numeric"
+          style="width:70px;padding:4px 6px;font-size:12px;border:1px solid var(--bd);border-radius:5px;font-family:Poppins,sans-serif;margin-bottom:3px;display:block">
+        <button onclick="updateDrawPayment(${x.id},parseFloat(document.getElementById('dpay-${x.id}').value)||0,${bval})"
+          style="background:var(--gr);color:#fff;border:none;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:600;margin-right:3px">💰</button>
+        <button onclick="deleteDrawBook(${x.id})"
+          style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:600">🗑</button>
+      </td>
+    </tr>`;
+  });
+
+  html+=`<tr style="background:linear-gradient(135deg,rgba(212,160,23,.1),rgba(212,160,23,.05));border-top:2px solid var(--gold);font-weight:700">
+    <td colspan="3" style="padding:10px 8px;color:var(--gold4)">📊 કુલ (${filtered.length} Books)</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--gold4)">${fmt(grandVal)}</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--gr)">${fmt(grandPaid)}</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--re)">${fmt(grandVal-grandPaid)}</td>
+    <td colspan="2"></td>
+  </tr>`;
+
+  html+='</tbody></table></div>';
+  list.innerHTML=html;
+}
+
+function exportDrawExcel(){
+  const wb=XLSX.utils.book_new();
+  const H='Draw Coupon Book — ૨૫મો ગણેશ મહોત્સવ Silver Jubilee 2026';
+  const rows=[
+    [H],[],
+    ['Book No','From Coupon','To Coupon','Holder','Mobile','Book Value','Paid','Baki','Status','Note'],
+    ...drawBooks.map(x=>{
+      const paid=parseFloat(x.paid_amount)||0;
+      const bval=parseFloat(x.book_value)||0;
+      return ['#'+x.book_no, String(x.from_coupon).padStart(4,'0'), String(x.to_coupon).padStart(4,'0'),
+        x.holder_name, x.mobile_no||'', bval, paid, bval-paid, x.payment_status, x.note||''];
+    }),
+    [],
+    ['','','','Total →','',
+      drawBooks.reduce((s,x)=>s+(parseFloat(x.book_value)||0),0),
+      drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0),
+      drawBooks.reduce((s,x)=>s+(parseFloat(x.book_value)||0)-(parseFloat(x.paid_amount)||0),0),
+      '',''
+    ]
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:8},{wch:12},{wch:12},{wch:20},{wch:14},{wch:12},{wch:12},{wch:12},{wch:10},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Coupon Books');
+  XLSX.writeFile(wb,'Draw_CouponBooks_Mahotsav2026.xlsx');
   toast('✓ Excel download thayo!','ts');
 }
 
