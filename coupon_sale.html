@@ -174,7 +174,12 @@ function calcTotal(){
   document.getElementById('f-total').value=total||'';
 }
 
-function showErr(msg){var el=document.getElementById('err');el.textContent=msg;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'center'});}
+function showErr(msg){
+  var el=document.getElementById('err');
+  el.innerHTML=msg.replace(/\n/g,'<br>');
+  el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+}
 function hideErr(){document.getElementById('err').style.display='none';}
 
 function submitForm(){
@@ -195,9 +200,42 @@ function submitForm(){
 
   var btn=document.getElementById('sbtn');
   btn.disabled=true;
-  btn.innerHTML='<div class="spin"></div> Save thay chhe...';
+  btn.innerHTML='<div class="spin"></div> Check thay chhe...';
 
-  sb.from('coupon_sales').insert({
+  // Check for duplicates in DB before saving
+  Promise.all([
+    sb.from('coupon_sales').select('coupon_nos,buyer_name'),
+    sb.from('coupon_books').select('from_coupon,to_coupon,holder_name,book_no').eq('is_deleted',false)
+  ]).then(function(results){
+    var salesData=results[0].data||[];
+    var booksData=results[1].data||[];
+    var duplicates=[];
+
+    parsedNos.forEach(function(no){
+      // Check in existing sales
+      salesData.forEach(function(s){
+        var existNos=s.coupon_nos.split(',').map(function(n){return parseInt(n);});
+        if(existNos.indexOf(no)>=0){
+          duplicates.push('Coupon '+String(no).padStart(4,'0')+' — already registered by '+s.buyer_name);
+        }
+      });
+      // Check in book assignments
+      var book=booksData.find(function(b){return b.from_coupon<=no&&b.to_coupon>=no;});
+      if(book){
+        duplicates.push('Coupon '+String(no).padStart(4,'0')+' — Book #'+book.book_no+' ('+book.holder_name+') ma chhe');
+      }
+    });
+
+    if(duplicates.length){
+      showErr('⚠️ Duplicate coupons found:\n'+duplicates.slice(0,5).join('\n')+(duplicates.length>5?'\n...ane '+(duplicates.length-5)+' vadu':''));
+      btn.disabled=false;
+      btn.innerHTML='🎟️ Coupon Sale Register';
+      return;
+    }
+
+    // No duplicates - proceed with insert
+    btn.innerHTML='<div class="spin"></div> Save thay chhe...';
+    sb.from('coupon_sales').insert({
     coupon_nos:couponStr,
     buyer_name:naam,
     mobile_no:mobile,
@@ -208,11 +246,16 @@ function submitForm(){
     payment_status:status,
     note:note||null,
     entry_by:0
-  }).select().single().then(function(r){
-    if(r.error)throw r.error;
-    showSuccess(r.data);
+    }).select().single().then(function(r){
+      if(r.error)throw r.error;
+      showSuccess(r.data);
+    }).catch(function(e){
+      showErr('Error: '+(e.message||'Try again'));
+      btn.disabled=false;
+      btn.innerHTML='🎟️ Coupon Sale Register';
+    });
   }).catch(function(e){
-    showErr('Error: '+(e.message||'Try again'));
+    showErr('Error checking duplicates: '+(e.message||'Try again'));
     btn.disabled=false;
     btn.innerHTML='🎟️ Coupon Sale Register';
   });
