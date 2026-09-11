@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Coupon Sale — ૨૫મો ગણેશ મહોત્સવ Draw</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(160deg,#1a0a2e 0%,#7c1010 60%,#d4a017 100%);min-height:100vh;padding:16px 14px 40px}
+.wrap{max-width:480px;margin:0 auto}
+.hdr{text-align:center;padding:20px 0 14px}
+.hdr-logo{width:90px;height:90px;margin:0 auto 10px;border-radius:50%;border:3px solid rgba(212,160,23,.5);box-shadow:0 0 0 6px rgba(212,160,23,.15),0 0 30px rgba(212,160,23,.3);overflow:hidden}
+.hdr-logo img{width:100%;height:100%;object-fit:contain}
+.hdr-org{font-size:14px;font-weight:700;color:#f0c040;margin-bottom:3px}
+.hdr-badge{display:inline-block;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;margin-top:6px}
+.card{background:#fff;border-radius:16px;padding:18px 15px;margin-top:12px}
+.card-title{font-size:14px;font-weight:700;color:#1a0a2e;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #c0392b;display:flex;align-items:center;gap:7px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;font-weight:600;color:#555;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg textarea{width:100%;padding:11px 13px;font-size:14px;border:1.5px solid #e5e7eb;border-radius:9px;color:#1a1a1a;outline:none;font-family:'Poppins',sans-serif;background:#fff;-webkit-appearance:none;text-transform:uppercase}
+.fg input::placeholder,.fg textarea::placeholder{text-transform:none;color:#aaa}
+.fg input:focus,.fg textarea:focus{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,.1)}
+.fg textarea{text-transform:uppercase;resize:vertical;min-height:70px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.parsed-box{background:#fff5f5;border:1.5px solid rgba(192,57,43,.2);border-radius:9px;padding:10px 12px;margin-top:6px;font-size:12px;font-weight:600;color:#c0392b;display:none}
+.info-box{background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:11px 13px;margin-bottom:12px}
+.info-title{font-size:11px;font-weight:700;color:#f0c040;margin-bottom:5px}
+.info-line{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:2px}
+.help-box{background:#fff8e7;border:1px solid #f0c040;border-radius:10px;padding:11px 13px;margin-bottom:12px;font-size:11px;color:#555;line-height:1.8}
+.sbtn{width:100%;padding:15px;background:linear-gradient(135deg,#c0392b,#e74c3c);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+.sbtn:disabled{opacity:.5}
+.success{display:none;text-align:center;padding:10px 0}
+.s-icon{font-size:56px;margin-bottom:12px}
+.s-title{font-size:20px;font-weight:700;color:#1a7a4a;margin-bottom:6px}
+.s-detail{background:#fff5f5;border-radius:10px;padding:14px;margin:12px 0;text-align:left;border:1px solid rgba(192,57,43,.2)}
+.s-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #fde9e9;font-size:12px}
+.s-row:last-child{border:none}
+.s-row .l{color:#666}.s-row .v{font-weight:600;text-align:right;flex:1;margin-left:10px}
+.more-btn{width:100%;padding:12px;background:#fff5f5;border:2px solid #c0392b;border-radius:12px;color:#c0392b;font-size:14px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;margin-top:8px}
+.err{background:#fdecea;border:1px solid #f5c6c0;border-radius:8px;padding:10px 13px;color:#c0392b;font-size:13px;margin-bottom:10px;display:none}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+.req{color:#e8621a}
+.coupon-preview{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.cpill{background:#fff5f5;border:1px solid rgba(192,57,43,.3);border-radius:6px;padding:3px 8px;font-size:12px;font-weight:700;color:#c0392b;font-family:monospace}
+@media(max-width:360px){.frow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div class="hdr-logo">
+      <img src="https://jansarihiren108-source.github.io/ganesh-mahotsav/ganesh_logo_transparent.png" alt="Ganesh" onerror="this.parentElement.innerHTML='🕉️'">
+    </div>
+    <div class="hdr-org">🕉️ શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">YUVA MITRA MANDAL</div>
+    <div class="hdr-badge">🎟️ ૨૫મો ગણેશ મહોત્સવ — Draw Coupon Sale</div>
+  </div>
+
+  <div class="info-box" id="info-box" style="display:none">
+    <div class="info-title">🎟️ Draw Coupon Details</div>
+    <div class="info-line">💰 Price per coupon: ₹20</div>
+    <div class="info-line">📖 50 coupons per book = ₹1,000</div>
+  </div>
+
+  <div class="card" id="form-card">
+    <div class="card-title">🎟️ Coupon Sale Form</div>
+    <div class="err" id="err"></div>
+
+    <div class="help-box">
+      💡 <strong>Coupon number format:</strong><br>
+      • <strong>Specific:</strong> 0151, 0153, 0521 (comma thi alag)<br>
+      • <strong>Range:</strong> 0051-0100 (50 coupons)<br>
+      • <strong>Aakhi Book:</strong> B3 (Book 3 = 0101-0150)
+    </div>
+
+    <div class="fg">
+      <label>Buyer નું નામ * <span style="font-size:10px;color:#c0392b;font-weight:400">(Capital ma auto)</span></label>
+      <input type="text" id="f-naam" placeholder="Your full name..." oninput="this.value=this.value.toUpperCase()">
+    </div>
+
+    <div class="fg">
+      <label>WhatsApp Mobile *</label>
+      <input type="tel" id="f-mobile" placeholder="10 digit..." maxlength="10" inputmode="numeric" style="text-transform:none">
+    </div>
+
+    <div class="fg">
+      <label>Coupon Numbers * <span style="font-size:10px;color:#c0392b;font-weight:400">(format upar dekho)</span></label>
+      <textarea id="f-coupons" rows="3" placeholder="Example:&#10;0151,0153,0521&#10;0051-0100&#10;B3" oninput="parseCoupons(this.value)" style="text-transform:none"></textarea>
+      <div class="parsed-box" id="parsed-box">
+        <div id="parsed-text"></div>
+        <div class="coupon-preview" id="coupon-pills"></div>
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="fg">
+        <label>Price/Coupon (₹)</label>
+        <input type="number" id="f-price" value="20" inputmode="numeric" style="text-transform:none" onchange="calcTotal()">
+      </div>
+      <div class="fg">
+        <label>Total (₹) (Auto)</label>
+        <input type="number" id="f-total" readonly style="background:#fff5f5;font-weight:700;color:#c0392b;text-transform:none">
+      </div>
+    </div>
+
+    <div class="fg">
+      <label>Paid Amount (₹)</label>
+      <input type="number" id="f-paid" placeholder="0" inputmode="numeric" style="text-transform:none">
+    </div>
+
+    <div class="fg">
+      <label>નોંધ (Optional)</label>
+      <input type="text" id="f-note" placeholder="Any note..." oninput="this.value=this.value.toUpperCase()">
+    </div>
+
+    <button type="button" class="sbtn" id="sbtn" onclick="submitForm()">🎟️ Coupon Sale Register</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="card" id="success-card" style="display:none">
+    <div class="success" id="success-div">
+      <div class="s-icon">🎉</div>
+      <div class="s-title">Sale Registered!</div>
+      <div class="s-detail" id="s-detail"></div>
+      <button type="button" class="more-btn" onclick="resetForm()">+ બીજી Sale Add કરો</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SU='https://mlmrwvffdkwvnqbvkgzd.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sbXJ3dmZmZGt3dm5xYnZrZ3pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMzg4NTUsImV4cCI6MjA5NzkxNDg1NX0.pw8GlogqGvYphOhSjvRqt6E-T-DIxjSEAEdI-9QHdPQ';
+const sb=supabase.createClient(SU,SK);
+
+var parsedNos=[];
+
+function parseCoupons(val){
+  val=val||'';
+  var coupons=new Set();
+  var parts=val.split(/[\n,]+/).map(function(p){return p.trim();}).filter(function(p){return p;});
+  parts.forEach(function(p){
+    // Book ref B1-B80
+    var bm=p.match(/^[Bb](?:ook\s*)?(\d+)$/);
+    if(bm){var bn=parseInt(bm[1]);var f=(bn-1)*50+1;var t=bn*50;for(var i=f;i<=t;i++)coupons.add(i);return;}
+    // Range
+    var rm=p.match(/^(\d+)\s*[-]\s*(\d+)$/);
+    if(rm){var f2=parseInt(rm[1]);var t2=parseInt(rm[2]);for(var i2=f2;i2<=t2;i2++)if(i2>=1&&i2<=4000)coupons.add(i2);return;}
+    // Single
+    var n=parseInt(p);
+    if(!isNaN(n)&&n>=1&&n<=4000)coupons.add(n);
+  });
+  parsedNos=[...coupons].sort(function(a,b){return a-b;});
+  var box=document.getElementById('parsed-box');
+  var txt=document.getElementById('parsed-text');
+  var pills=document.getElementById('coupon-pills');
+  if(parsedNos.length){
+    box.style.display='block';
+    txt.textContent='✓ '+parsedNos.length+' coupons selected';
+    // Show pills (max 20)
+    var show=parsedNos.slice(0,20);
+    pills.innerHTML=show.map(function(n){return '<span class="cpill">'+String(n).padStart(4,'0')+'</span>';}).join('')+(parsedNos.length>20?'<span class="cpill">+'+( parsedNos.length-20)+' more</span>':'');
+  } else {
+    box.style.display='none';
+  }
+  calcTotal();
+}
+
+function calcTotal(){
+  var price=parseFloat(document.getElementById('f-price').value)||20;
+  var total=parsedNos.length*price;
+  document.getElementById('f-total').value=total||'';
+}
+
+function showErr(msg){var el=document.getElementById('err');el.textContent=msg;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'center'});}
+function hideErr(){document.getElementById('err').style.display='none';}
+
+function submitForm(){
+  hideErr();
+  var naam=document.getElementById('f-naam').value.trim().toUpperCase();
+  var mobile=document.getElementById('f-mobile').value.trim();
+  var price=parseFloat(document.getElementById('f-price').value)||20;
+  var paid=parseFloat(document.getElementById('f-paid').value)||0;
+  var note=document.getElementById('f-note').value.trim().toUpperCase();
+
+  if(!naam)return showErr('Buyer નું નામ ભરો!');
+  if(!mobile||mobile.length!==10)return showErr('10 digit WhatsApp number ભરો!');
+  if(!parsedNos.length)return showErr('Coupon numbers ભરો!');
+
+  var total=parsedNos.length*price;
+  var status=paid>=total?'Paid':paid>0?'Partial':'Pending';
+  var couponStr=parsedNos.map(function(n){return String(n).padStart(4,'0');}).join(',');
+
+  var btn=document.getElementById('sbtn');
+  btn.disabled=true;
+  btn.innerHTML='<div class="spin"></div> Save thay chhe...';
+
+  sb.from('coupon_sales').insert({
+    coupon_nos:couponStr,
+    buyer_name:naam,
+    mobile_no:mobile,
+    quantity:parsedNos.length,
+    price_per:price,
+    total_amount:total,
+    paid_amount:paid,
+    payment_status:status,
+    note:note||null,
+    entry_by:0
+  }).select().single().then(function(r){
+    if(r.error)throw r.error;
+    showSuccess(r.data);
+  }).catch(function(e){
+    showErr('Error: '+(e.message||'Try again'));
+    btn.disabled=false;
+    btn.innerHTML='🎟️ Coupon Sale Register';
+  });
+}
+
+function showSuccess(data){
+  document.getElementById('form-card').style.display='none';
+  document.getElementById('success-card').style.display='block';
+  var paid=parseFloat(data.paid_amount)||0;
+  var total=parseFloat(data.total_amount)||0;
+  var nos=data.coupon_nos.split(',');
+  var displayNos=nos.length<=10?nos.join(', '):nos.slice(0,8).join(', ')+' ... +'+( nos.length-8)+' more';
+  var html='';
+  html+='<div class="s-row"><span class="l">👤 Buyer</span><span class="v">'+data.buyer_name+'</span></div>';
+  html+='<div class="s-row"><span class="l">📱 Mobile</span><span class="v">'+data.mobile_no+'</span></div>';
+  html+='<div class="s-row"><span class="l">🎟️ Coupons</span><span class="v" style="color:#c0392b;font-family:monospace">'+displayNos+'</span></div>';
+  html+='<div class="s-row"><span class="l">📊 Quantity</span><span class="v">'+data.quantity+' coupons</span></div>';
+  html+='<div class="s-row"><span class="l">💰 Total</span><span class="v">₹'+total+'</span></div>';
+  html+='<div class="s-row"><span class="l">✅ Paid</span><span class="v" style="color:var(--gr)">₹'+paid+'</span></div>';
+  if(total-paid>0)html+='<div class="s-row"><span class="l">⏳ Remaining</span><span class="v" style="color:#c0392b">₹'+(total-paid)+'</span></div>';
+  document.getElementById('s-detail').innerHTML=html;
+  window.scrollTo(0,0);
+}
+
+function resetForm(){
+  parsedNos=[];
+  ['f-naam','f-mobile','f-coupons','f-paid','f-note'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('f-price').value='20';
+  document.getElementById('f-total').value='';
+  document.getElementById('parsed-box').style.display='none';
+  document.getElementById('sbtn').disabled=false;
+  document.getElementById('sbtn').innerHTML='🎟️ Coupon Sale Register';
+  hideErr();
+  document.getElementById('success-card').style.display='none';
+  document.getElementById('form-card').style.display='block';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

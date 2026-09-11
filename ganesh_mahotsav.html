@@ -1008,7 +1008,27 @@ tr:last-child td{border-bottom:none}
       <div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;margin-bottom:3px">🎟️ DRAW COUPON BOOK MANAGEMENT</div>
       <div style="font-size:15px;font-weight:700">Draw Coupon Book</div>
       <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">Coupon No. 0001 — 4000 · ₹20/coupon · Book = 50 coupons = ₹1000</div>
+      <button onclick="showCouponLink()" style="margin-top:10px;background:linear-gradient(135deg,#d4a017,#f0c040);color:#1a0a2e;border:none;border-radius:20px;padding:7px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;display:inline-flex;align-items:center;gap:6px">
+        🔗 Coupon Sale Link / QR
+      </button>
       <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.15">🎟️</div>
+    </div>
+
+    <!-- COUPON LINK MODAL -->
+    <div id="coupon-link-modal" style="display:none;background:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;border:2px solid var(--gold);box-shadow:var(--sh)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;color:var(--deep)">🔗 Coupon Sale Public Link</div>
+        <button onclick="document.getElementById('coupon-link-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px">✕</button>
+      </div>
+      <div style="text-align:center;margin-bottom:12px">
+        <div id="coupon-qr-container" style="display:inline-block;padding:10px;background:#fff;border:2px solid var(--bd);border-radius:10px"></div>
+        <div style="font-size:10px;color:var(--gy);margin-top:5px">📱 QR scan karo — form khulse</div>
+      </div>
+      <div style="background:var(--gyl);border-radius:var(--rs);padding:10px 12px;margin-bottom:10px;word-break:break-all;font-size:11px;color:var(--bl);font-weight:600">https://jansarihiren108-source.github.io/ganesh-mahotsav/coupon_sale.html</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="copyCouponLink()" class="btn bgold" style="flex:1;justify-content:center;font-size:12px">📋 Copy</button>
+        <button onclick="shareCouponLink()" class="btn bte" style="flex:1;justify-content:center;font-size:12px">📤 WA Share</button>
+      </div>
     </div>
 
     <!-- Stats -->
@@ -1048,6 +1068,65 @@ tr:last-child td{border-bottom:none}
       <div id="db-remaining-preview" style="background:var(--aml);border-radius:var(--rs);padding:9px 13px;margin-bottom:9px;font-size:12px;font-weight:600;color:var(--am);display:none"></div>
       <div class="fg"><label>નોંધ</label><input type="text" id="db-note" placeholder="Optional..."></div>
       <div class="bbar"><button class="btn bgold" onclick="addDrawBook()">💾 Book Save</button></div>
+    </div>
+
+    <!-- Coupon Sales Entry -->
+    <div class="card" style="margin-bottom:11px">
+      <div class="ctitle"><span class="cdot" style="background:#c0392b"></span>🎟️ Coupon Sales Entry</div>
+      <div style="font-size:11px;color:var(--gy);margin-bottom:10px;background:var(--gyl);border-radius:var(--rs);padding:8px 11px;line-height:1.7">
+        💡 <strong>Multiple options:</strong><br>
+        • <strong>Aakhi book:</strong> Book no. nakho (50 coupons auto)<br>
+        • <strong>Specific coupons:</strong> 0151,0153,0521 aem comma thi nakho<br>
+        • <strong>Range:</strong> 0051-0060 aem nakho (10 coupons)
+      </div>
+
+      <div class="frow">
+        <div class="fg"><label>Buyer નું નામ *</label><input type="text" id="cs-naam" placeholder="Jene coupon vachi..."></div>
+        <div class="fg"><label>Mobile No.</label><input type="tel" id="cs-mobile" placeholder="Optional..." maxlength="10" inputmode="numeric"></div>
+      </div>
+
+      <div class="fg">
+        <label>Coupon Numbers * <span style="font-size:10px;color:var(--gy);font-weight:400">(comma thi alag karo, ya range, ya book no)</span></label>
+        <textarea id="cs-coupons" rows="2" placeholder="Examples:&#10;• 0151,0153,0521,0451 (specific coupons)&#10;• 0051-0100 (range — Book 2 aakhi)&#10;• B5 (Book 5 aakhi — 0201-0250)" style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;resize:vertical;outline:none" oninput="parseCoupons()"></textarea>
+        <div id="cs-parsed" style="margin-top:6px;font-size:12px;color:var(--teal);font-weight:600;display:none"></div>
+      </div>
+
+      <div class="frow">
+        <div class="fg"><label>Price/Coupon (₹)</label><input type="number" id="cs-price" value="20" inputmode="numeric" onchange="calcCsTotal()"></div>
+        <div class="fg"><label>Total (₹) (Auto)</label><input type="number" id="cs-total" readonly style="background:var(--gyl);font-weight:700;color:var(--teal)"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Paid Amount (₹)</label><input type="number" id="cs-paid" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>નોંધ</label><input type="text" id="cs-note" placeholder="Optional..."></div>
+      </div>
+      <div class="bbar">
+        <button class="btn" style="background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff" onclick="addCouponSale()">🎟️ Coupon Sale Save</button>
+      </div>
+    </div>
+
+    <!-- Draw Day Search -->
+    <div class="card" style="margin-bottom:11px">
+      <div class="ctitle"><span class="cdot" style="background:#c0392b"></span>🎯 Draw Day — Coupon Lookup</div>
+      <div style="font-size:11px;color:var(--gy);margin-bottom:10px">Draw ના દિવસે coupon no. nakho — kone sell kari hati ae turant dikhashe</div>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="draw-lookup" placeholder="Winning coupon no..." inputmode="numeric"
+          style="flex:1;padding:10px 12px;font-size:14px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;outline:none"
+          oninput="lookupWinner(this.value)">
+        <button onclick="lookupWinner(document.getElementById('draw-lookup').value)" class="btn" style="background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:10px 14px">🎯</button>
+      </div>
+      <div id="draw-winner-result" style="margin-top:10px;display:none"></div>
+    </div>
+
+    <!-- Coupon Sales List -->
+    <div class="card" style="margin-bottom:11px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div class="ctitle" style="margin:0;border:none;padding:0"><span class="cdot" style="background:#c0392b"></span>🎟️ Coupon Sales List</div>
+        <div style="display:flex;gap:7px">
+          <button class="btn" style="background:#25d366;color:#fff;padding:5px 10px;font-size:11px" onclick="exportCouponPDF()">📄 PDF</button>
+          <button class="btn bex" onclick="exportCouponExcel()" style="padding:5px 10px;font-size:11px">📊 Excel</button>
+        </div>
+      </div>
+      <div id="coupon-sales-list"><div class="empty">Loading...</div></div>
     </div>
 
     <!-- Book List -->
@@ -3494,7 +3573,39 @@ function exportTshirtExcel(){
 
 
 // ============================================================
-// DRAW COUPON BOOK MODULE
+// COUPON SALE PUBLIC LINK
+// ============================================================
+const COUPON_SALE_URL = 'https://jansarihiren108-source.github.io/ganesh-mahotsav/coupon_sale.html';
+
+function showCouponLink(){
+  const modal=document.getElementById('coupon-link-modal');
+  if(modal.style.display==='none'){
+    modal.style.display='block';
+    const qr=document.getElementById('coupon-qr-container');
+    qr.innerHTML='';
+    const img=document.createElement('img');
+    img.src='https://api.qrserver.com/v1/create-qr-code/?size=160x160&data='+encodeURIComponent(COUPON_SALE_URL);
+    img.style.cssText='width:140px;height:140px;display:block';
+    qr.appendChild(img);
+  } else {
+    modal.style.display='none';
+  }
+}
+
+function copyCouponLink(){
+  navigator.clipboard.writeText(COUPON_SALE_URL)
+    .then(()=>toast('✓ Link copy thayo!','tg'))
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=COUPON_SALE_URL;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✓ Copy thayo!','tg');});
+}
+
+function shareCouponLink(){
+  var waMsg='Ganesh Mahotsav 2026 - Draw Coupon Sale\nTamara coupon numbers nakho: '+COUPON_SALE_URL+'\nGanapati Bappa Morya!';
+  if(navigator.share){navigator.share({text:waMsg}).catch(function(){});}
+  else{window.open('https://wa.me/?text='+encodeURIComponent(waMsg),'_blank');}
+}
+
+
+
 // ============================================================
 let drawBooks = [];
 const COUPONS_PER_BOOK = 50;
@@ -3526,10 +3637,15 @@ function calcDrawRemaining(){
 }
 
 async function loadDraw(){
-  const {data} = await sb.from('coupon_books').select('*').eq('is_deleted',false).order('book_no',{ascending:true});
-  drawBooks = data||[];
+  const [r1,r2] = await Promise.all([
+    sb.from('coupon_books').select('*').eq('is_deleted',false).order('book_no',{ascending:true}),
+    sb.from('coupon_sales').select('*').order('created_at',{ascending:false})
+  ]);
+  drawBooks = r1.data||[];
+  couponSales = r2.data||[];
   renderDraw();
   renderDrawStats();
+  renderCouponSales();
 }
 
 async function addDrawBook(){
@@ -3755,6 +3871,327 @@ function exportDrawExcel(){
   XLSX.utils.book_append_sheet(wb,ws,'Coupon Books');
   XLSX.writeFile(wb,'Draw_CouponBooks_Mahotsav2026.xlsx');
   toast('✓ Excel download thayo!','ts');
+}
+
+
+// ============================================================
+// COUPON SALES MODULE
+// ============================================================
+let couponSales = [];
+let parsedCoupons = [];
+
+function parseCoupons(){
+  const val = document.getElementById('cs-coupons').value.trim();
+  const el = document.getElementById('cs-parsed');
+  if(!val){ el.style.display='none'; parsedCoupons=[]; calcCsTotal(); return; }
+
+  let coupons = new Set();
+
+  // Split by newline and comma
+  const parts = val.split(/[\n,]+/).map(p=>p.trim()).filter(p=>p);
+
+  parts.forEach(p=>{
+    // Book reference: B1, Book1, book 1
+    const bookMatch = p.match(/^[Bb](?:ook\s*)?(\d+)$/);
+    if(bookMatch){
+      const bn = parseInt(bookMatch[1]);
+      const from = (bn-1)*50+1;
+      const to = bn*50;
+      for(let i=from;i<=to;i++) coupons.add(i);
+      return;
+    }
+    // Range: 0051-0100 or 51-100
+    const rangeMatch = p.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+    if(rangeMatch){
+      const from=parseInt(rangeMatch[1]);
+      const to=parseInt(rangeMatch[2]);
+      for(let i=from;i<=to;i++) if(i>=1&&i<=4000) coupons.add(i);
+      return;
+    }
+    // Single number
+    const n = parseInt(p);
+    if(!isNaN(n)&&n>=1&&n<=4000) coupons.add(n);
+  });
+
+  parsedCoupons = [...coupons].sort((a,b)=>a-b);
+
+  if(parsedCoupons.length){
+    el.style.display='block';
+    const display = parsedCoupons.length<=10
+      ? parsedCoupons.map(n=>String(n).padStart(4,'0')).join(', ')
+      : parsedCoupons.slice(0,5).map(n=>String(n).padStart(4,'0')).join(', ')+' ... +'+( parsedCoupons.length-5)+' more';
+    el.textContent = '✓ '+parsedCoupons.length+' coupons: '+display;
+  } else {
+    el.style.display='block';
+    el.style.color='var(--re)';
+    el.textContent = '⚠️ Valid coupon numbers find nahi thaya';
+  }
+  calcCsTotal();
+}
+
+function calcCsTotal(){
+  const price = parseFloat(document.getElementById('cs-price').value)||20;
+  const total = parsedCoupons.length * price;
+  document.getElementById('cs-total').value = total||'';
+}
+
+async function addCouponSale(){
+  const naam = document.getElementById('cs-naam').value.trim();
+  const mobile = document.getElementById('cs-mobile').value.trim();
+  const price = parseFloat(document.getElementById('cs-price').value)||20;
+  const paid = parseFloat(document.getElementById('cs-paid').value)||0;
+  const note = document.getElementById('cs-note').value.trim();
+
+  if(!naam) return toast('Buyer નું નામ ભરો!','te');
+  if(!parsedCoupons.length) return toast('Coupon numbers ભરો!','te');
+
+  const total = parsedCoupons.length * price;
+  const status = paid >= total ? 'Paid' : paid > 0 ? 'Partial' : 'Pending';
+  const couponStr = parsedCoupons.map(n=>String(n).padStart(4,'0')).join(',');
+
+  const {error} = await sb.from('coupon_sales').insert({
+    coupon_nos: couponStr,
+    buyer_name: naam,
+    mobile_no: mobile||null,
+    quantity: parsedCoupons.length,
+    price_per: price,
+    total_amount: total,
+    paid_amount: paid,
+    payment_status: status,
+    note: note||null,
+    entry_by: cu
+  });
+
+  if(error) return toast('Error: '+error.message,'te');
+  toast('✓ '+naam+' — '+parsedCoupons.length+' coupons save thaya!','ts');
+  ['cs-naam','cs-mobile','cs-coupons','cs-paid','cs-note'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('cs-price').value='20';
+  document.getElementById('cs-total').value='';
+  document.getElementById('cs-parsed').style.display='none';
+  parsedCoupons=[];
+  await loadCouponSales();
+}
+
+async function loadCouponSales(){
+  const {data} = await sb.from('coupon_sales').select('*').order('created_at',{ascending:false});
+  couponSales = data||[];
+  renderCouponSales();
+}
+
+function lookupWinner(val){
+  const no = parseInt(val);
+  const el = document.getElementById('draw-winner-result');
+  if(!no||no<1||no>4000){ el.style.display='none'; return; }
+  el.style.display='block';
+
+  const padNo = String(no).padStart(4,'0');
+  const results = [];
+
+  // Check coupon sales
+  couponSales.forEach(s=>{
+    const nos = s.coupon_nos.split(',').map(n=>parseInt(n));
+    if(nos.includes(no)){
+      results.push({type:'sale', data:s});
+    }
+  });
+
+  // Check book assignments
+  const book = drawBooks.find(x=>x.from_coupon<=no && x.to_coupon>=no);
+
+  if(!results.length && !book){
+    el.innerHTML=`<div style="background:var(--gyl);border-radius:var(--rs);padding:12px;font-size:13px;color:var(--gy)">
+      ⚠️ Coupon <strong>${padNo}</strong> — કોઈ record નથી
+    </div>`;
+    return;
+  }
+
+  let html = `<div style="background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(192,57,43,.03));border:2px solid rgba(192,57,43,.3);border-radius:var(--r);padding:14px">
+    <div style="font-size:14px;font-weight:700;color:#c0392b;margin-bottom:10px">🎯 Coupon ${padNo} — Winner Info</div>`;
+
+  if(results.length){
+    results.forEach(r=>{
+      const s=r.data;
+      const paid=parseFloat(s.paid_amount)||0;
+      const total=parseFloat(s.total_amount)||0;
+      const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'}[s.payment_status]||'⏳';
+      html+=`<div style="background:#fff;border-radius:var(--rs);padding:11px;margin-bottom:8px;border:1px solid rgba(192,57,43,.2)">
+        <div style="font-size:15px;font-weight:700;color:#c0392b;margin-bottom:5px">🎟️ Individual Coupon Purchase</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:3px">👤 ${s.buyer_name}</div>
+        ${s.mobile_no?`<div style="font-size:13px;color:var(--bl);margin-bottom:3px">📱 ${s.mobile_no}</div>`:''}
+        <div style="font-size:12px;color:var(--gy);margin-bottom:5px">Total coupons: ${s.quantity} | Amount: ${fmt(total)} | Paid: ${fmt(paid)} ${stIcon}</div>
+        ${s.note?`<div style="font-size:11px;color:var(--gy)">📝 ${s.note}</div>`:''}
+      </div>`;
+    });
+  }
+
+  if(book){
+    html+=`<div style="background:#fff;border-radius:var(--rs);padding:11px;border:1px solid rgba(212,160,23,.3)">
+      <div style="font-size:15px;font-weight:700;color:var(--gold4);margin-bottom:5px">📚 Book Assignment</div>
+      <div style="font-size:14px;color:var(--gy);margin-bottom:3px">Book #${book.book_no} (${String(book.from_coupon).padStart(4,'0')}—${String(book.to_coupon).padStart(4,'0')})</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:3px">👤 ${book.holder_name}</div>
+      ${book.mobile_no?`<div style="font-size:13px;color:var(--bl)">📱 ${book.mobile_no}</div>`:''}
+    </div>`;
+  }
+
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function renderCouponSales(){
+  const list=document.getElementById('coupon-sales-list');
+  if(!list)return;
+  if(!couponSales.length){list.innerHTML='<div class="empty">કોઈ coupon sale નથી</div>';return;}
+
+  const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'};
+  const stColor={Pending:'var(--re)',Partial:'var(--am)',Paid:'var(--gr)'};
+
+  const grandTotal=couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  const grandPaid=couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+
+  let html=`<div style="overflow-x:auto;border-radius:var(--rs);border:1px solid var(--bd)">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:580px">
+      <thead><tr style="background:linear-gradient(135deg,#c0392b,#e74c3c)">
+        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">#</th>
+        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Buyer</th>
+        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Coupons</th>
+        <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Qty</th>
+        <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Total</th>
+        <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Paid</th>
+        <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Status</th>
+        <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Action</th>
+      </tr></thead>
+      <tbody>`;
+
+  couponSales.forEach((x,i)=>{
+    const paid=parseFloat(x.paid_amount)||0;
+    const total=parseFloat(x.total_amount)||0;
+    const baki=total-paid;
+    const nos=x.coupon_nos.split(',');
+    const displayNos=nos.length<=6?nos.join(', '):nos.slice(0,4).join(', ')+' +'+( nos.length-4)+' more';
+    html+=`<tr style="background:${i%2?'#fafafa':'#fff'};border-bottom:1px solid #f0f0f0">
+      <td style="padding:8px;color:var(--gy)">${i+1}</td>
+      <td style="padding:8px">
+        <div style="font-weight:600">${x.buyer_name}</div>
+        ${x.mobile_no?'<div style="font-size:10px;color:var(--bl)">📱 '+x.mobile_no+'</div>':''}
+        ${x.note?'<div style="font-size:10px;color:var(--gy)">'+x.note+'</div>':''}
+      </td>
+      <td style="padding:8px;font-family:monospace;font-size:11px;color:#c0392b;max-width:140px;word-break:break-all">${displayNos}</td>
+      <td style="padding:8px;text-align:center;font-weight:700">${x.quantity}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:var(--teal);white-space:nowrap">${fmt(total)}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:${baki>0?'var(--re)':'var(--gr)'};white-space:nowrap">${fmt(paid)}</td>
+      <td style="padding:8px;text-align:center;font-weight:700;color:${stColor[x.payment_status]||'var(--gy)'}">${stIcon[x.payment_status]||'⏳'}</td>
+      <td style="padding:8px;text-align:center;white-space:nowrap">
+        <input type="number" id="cpay-${x.id}" value="${paid||''}" placeholder="₹" inputmode="numeric"
+          style="width:65px;padding:4px 5px;font-size:11px;border:1px solid var(--bd);border-radius:5px;font-family:Poppins,sans-serif;display:block;margin-bottom:3px">
+        <button onclick="updateCsPayment(${x.id},parseFloat(document.getElementById('cpay-${x.id}').value)||0,${total})"
+          style="background:var(--gr);color:#fff;border:none;border-radius:5px;padding:3px 6px;font-size:11px;cursor:pointer;font-weight:600;margin-right:2px">💰</button>
+        <button onclick="deleteCouponSale(${x.id})"
+          style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 6px;font-size:11px;cursor:pointer;font-weight:600">🗑</button>
+      </td>
+    </tr>`;
+  });
+
+  html+=`<tr style="background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(192,57,43,.03));border-top:2px solid #c0392b;font-weight:700">
+    <td colspan="3" style="padding:10px 8px;color:#c0392b">📊 કુલ (${couponSales.length})</td>
+    <td style="padding:10px 8px;text-align:center;color:#c0392b">${couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)}</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--teal)">${fmt(grandTotal)}</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--gr)">${fmt(grandPaid)}</td>
+    <td colspan="2"></td>
+  </tr></tbody></table></div>`;
+  list.innerHTML=html;
+}
+
+async function updateCsPayment(id,paid,total){
+  const status=paid>=total?'Paid':paid>0?'Partial':'Pending';
+  await sb.from('coupon_sales').update({paid_amount:paid,payment_status:status}).eq('id',id);
+  toast('✓ Payment update thayo!','tg');
+  await loadCouponSales();
+}
+
+async function deleteCouponSale(id){
+  if(!confirm('Delete?'))return;
+  await sb.from('coupon_sales').delete().eq('id',id);
+  toast('🗑 Delete');
+  await loadCouponSales();
+}
+
+function exportCouponExcel(){
+  const wb=XLSX.utils.book_new();
+  const H='Coupon Sales — ૨૫મો ગણેશ મહોત્સવ Silver Jubilee 2026';
+  const rows=[
+    [H],[],
+    ['#','Buyer','Mobile','Coupon Nos','Qty','Total','Paid','Baki','Status','Note'],
+    ...couponSales.map((x,i)=>{
+      const paid=parseFloat(x.paid_amount)||0;
+      const total=parseFloat(x.total_amount)||0;
+      return [i+1,x.buyer_name,x.mobile_no||'',x.coupon_nos,x.quantity,total,paid,total-paid,x.payment_status,x.note||''];
+    }),
+    [],
+    ['','','','Total →',
+      couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0),
+      couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0),
+      couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0),
+      couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0)-(parseFloat(x.paid_amount)||0),0),
+      '',''
+    ]
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:4},{wch:20},{wch:14},{wch:40},{wch:6},{wch:10},{wch:10},{wch:10},{wch:10},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Coupon Sales');
+  XLSX.writeFile(wb,'CouponSales_Draw2026.xlsx');
+  toast('✓ Excel download thayo!','ts');
+}
+
+function exportCouponPDF(){
+  let body=`<div style="text-align:center;margin-bottom:18px;border-bottom:2px solid #c0392b;padding-bottom:12px">
+    <div style="font-size:11px;color:#888;letter-spacing:2px">🕉 SHREE VISHVANATH MAHADEV GROUP 🕉</div>
+    <h2 style="font-size:20px;color:#1a0a2e;margin:6px 0">🎟️ Coupon Sales List</h2>
+    <div style="font-size:13px;color:#666">૨૫મો ગણેશ મહોત્સવ — Silver Jubilee 2026</div>
+    <div style="font-size:11px;color:#aaa;margin-top:3px">Print: ${new Date().toLocaleDateString('en-IN')}</div>
+  </div>`;
+
+  body+=`<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px">
+    <thead><tr style="background:#c0392b;color:#fff">
+      <th style="padding:8px">ક્રમ</th>
+      <th style="padding:8px;text-align:left">Buyer</th>
+      <th style="padding:8px;text-align:left">Mobile</th>
+      <th style="padding:8px;text-align:left">Coupon Nos</th>
+      <th style="padding:8px;text-align:center">Qty</th>
+      <th style="padding:8px;text-align:right">Total</th>
+      <th style="padding:8px;text-align:right">Paid</th>
+      <th style="padding:8px;text-align:center">Status</th>
+    </tr></thead>
+    <tbody>
+    ${couponSales.map((x,i)=>{
+      const paid=parseFloat(x.paid_amount)||0;
+      const total=parseFloat(x.total_amount)||0;
+      const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'}[x.payment_status]||'';
+      return `<tr style="background:${i%2?'#f9f9f9':'#fff'};border-bottom:1px solid #eee">
+        <td style="padding:7px;text-align:center;color:#666">${i+1}</td>
+        <td style="padding:7px;font-weight:600">${x.buyer_name}</td>
+        <td style="padding:7px;color:#1a5fa8">${x.mobile_no||'—'}</td>
+        <td style="padding:7px;font-family:monospace;font-size:11px;color:#c0392b">${x.coupon_nos.split(',').join(', ')}</td>
+        <td style="padding:7px;text-align:center;font-weight:700">${x.quantity}</td>
+        <td style="padding:7px;text-align:right;font-weight:600">${fmt(total)}</td>
+        <td style="padding:7px;text-align:right;font-weight:600;color:${paid>=total?'#1a7a4a':'#c0392b'}">${fmt(paid)}</td>
+        <td style="padding:7px;text-align:center">${stIcon}</td>
+      </tr>`;
+    }).join('')}
+    <tr style="background:#fff5f5;border-top:2px solid #c0392b;font-weight:700">
+      <td colspan="4" style="padding:9px;color:#c0392b">Total (${couponSales.length} buyers)</td>
+      <td style="padding:9px;text-align:center;color:#c0392b">${couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)}</td>
+      <td style="padding:9px;text-align:right">${fmt(couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0))}</td>
+      <td style="padding:9px;text-align:right;color:#1a7a4a">${fmt(couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0))}</td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>`;
+
+  const win=window.open('','_blank');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Coupon Sales</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:900px;margin:0 auto}@media print{@page{margin:12mm}}</style></head><body>'+body+'<script>setTimeout(()=>window.print(),400);<\/script></body></html>');
+  win.document.close();
 }
 
 
