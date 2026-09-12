@@ -77,8 +77,16 @@ body{font-family:'Poppins',sans-serif;background:linear-gradient(160deg,#1a0a2e 
     </div>
 
     <div class="fg">
-      <label>Buyer નું નામ * <span style="font-size:10px;color:#c0392b;font-weight:400">(Capital ma auto)</span></label>
-      <input type="text" id="f-naam" placeholder="Your full name..." oninput="this.value=this.value.toUpperCase()">
+      <label>Book Holder Select * <span style="font-size:10px;color:#c0392b;font-weight:400">(List mathi select karo)</span></label>
+      <select id="f-holder-select" onchange="onHolderSelect(this.value)" style="width:100%;padding:11px 13px;font-size:14px;border:1.5px solid #e5e7eb;border-radius:9px;color:#1a1a1a;outline:none;font-family:'Poppins',sans-serif;background:#fff;-webkit-appearance:none;appearance:none;margin-bottom:8px">
+        <option value="">-- Book Holder Select karo --</option>
+      </select>
+      <div id="holder-info" style="display:none;background:#fff5f5;border:1px solid rgba(192,57,43,.2);border-radius:9px;padding:10px 12px;margin-bottom:8px;font-size:12px">
+        <div id="holder-book-info" style="color:#c0392b;font-weight:600"></div>
+        <div id="holder-coupons" style="margin-top:4px;font-family:monospace;color:#555;word-break:break-all"></div>
+      </div>
+      <label style="font-size:11px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Ya manually nakho</label>
+      <input type="text" id="f-naam" placeholder="Naam manually nakho (Capital ma)..." oninput="this.value=this.value.toUpperCase()" style="margin-top:4px">
     </div>
 
     <div class="fg">
@@ -136,6 +144,41 @@ const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
 const sb=supabase.createClient(SU,SK);
 
 var parsedNos=[];
+var bookHolders=[];
+
+// Load book holders on page start
+(function loadBooks(){
+  sb.from('coupon_books').select('*').eq('is_deleted',false).order('book_no',{ascending:true}).then(function(r){
+    bookHolders=r.data||[];
+    var sel=document.getElementById('f-holder-select');
+    bookHolders.forEach(function(b){
+      var opt=document.createElement('option');
+      opt.value=b.id;
+      opt.textContent=b.holder_name+' — Book #'+b.book_no+' ('+String(b.from_coupon).padStart(4,'0')+'-'+String(b.to_coupon).padStart(4,'0')+')';
+      sel.appendChild(opt);
+    });
+  }).catch(function(){});
+})();
+
+function onHolderSelect(val){
+  var info=document.getElementById('holder-info');
+  var infoTxt=document.getElementById('holder-book-info');
+  var coupTxt=document.getElementById('holder-coupons');
+  if(!val){info.style.display='none';return;}
+  var book=bookHolders.find(function(b){return b.id==val;});
+  if(!book){info.style.display='none';return;}
+  document.getElementById('f-naam').value=book.holder_name;
+  if(book.mobile_no)document.getElementById('f-mobile').value=book.mobile_no;
+  var from=book.from_coupon,to=book.to_coupon;
+  var allNos=[];
+  for(var i=from;i<=to;i++)allNos.push(String(i).padStart(4,'0'));
+  info.style.display='block';
+  infoTxt.textContent='Book #'+book.book_no+' | '+String(from).padStart(4,'0')+' — '+String(to).padStart(4,'0')+' ('+book.total_coupons+' coupons = ₹'+book.book_value+')';
+  coupTxt.textContent='Coupons: '+allNos.join(', ');
+  var rangeStr=String(from).padStart(4,'0')+'-'+String(to).padStart(4,'0');
+  document.getElementById('f-coupons').value=rangeStr;
+  parseCoupons(rangeStr);
+}
 
 function parseCoupons(val){
   val=val||'';

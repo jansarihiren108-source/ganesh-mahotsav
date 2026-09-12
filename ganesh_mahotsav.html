@@ -470,21 +470,29 @@ tr:last-child td{border-bottom:none}
   <div id="page-transfer" class="page">
     <div style="height:11px"></div>
     <div class="transfer-box">
-      <div class="transfer-ttl">🔄 Internal Transfer</div>
-      <div style="font-size:12px;color:var(--gy);margin-bottom:14px;line-height:1.7">
-        Jem ke Admin e Partner ne ₹50,000 aapya:<br>
-        • Admin ni <strong>Javak</strong> ma umeraashe<br>
-        • Partner ni <strong>Aavak</strong> ma automatically umeraashe
+      <div class="transfer-ttl">💸 Transfer / ↩️ Return</div>
+      <!-- Type Cards -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px">
+        <div id="tr-type-normal" onclick="setTrType('normal')" style="border:2px solid var(--pu);border-radius:var(--rs);padding:11px;text-align:center;cursor:pointer;background:var(--pul)">
+          <div style="font-size:20px">💸</div>
+          <div style="font-size:12px;font-weight:700;color:var(--pu)">Transfer</div>
+          <div style="font-size:10px;color:var(--gy)">Admin → Partner</div>
+        </div>
+        <div id="tr-type-return" onclick="setTrType('return')" style="border:2px solid var(--bd);border-radius:var(--rs);padding:11px;text-align:center;cursor:pointer;background:#fff">
+          <div style="font-size:20px">↩️</div>
+          <div style="font-size:12px;font-weight:700;color:var(--re)">Return</div>
+          <div style="font-size:10px;color:var(--gy)">Partner → Admin</div>
+        </div>
+      </div>
+      <div id="tr-info" style="background:var(--pul);border-radius:var(--rs);padding:9px 12px;font-size:11px;color:var(--pu);font-weight:600;margin-bottom:11px">
+        💸 Admin → Partner ane Transfer
       </div>
       <div class="frow">
         <div class="fg"><label>તારીખ</label><input type="date" id="tr-d"></div>
-        <div class="fg"><label>Transfer કોને?</label><select id="tr-to"><option value="">-- Select --</option></select></div>
-      </div>
-      <div class="frow">
         <div class="fg"><label>રકમ (₹)</label><input type="number" id="tr-a" placeholder="0" inputmode="numeric"></div>
-        <div class="fg"><label>નોંધ</label><input type="text" id="tr-no" placeholder="Kem aapya..."></div>
       </div>
-      <div class="bbar"><button class="btn bpu" onclick="doTransfer()">🔄 Transfer Entry</button></div>
+      <div class="fg"><label>નોંધ</label><input type="text" id="tr-no" placeholder="Optional..."></div>
+      <div class="bbar"><button class="btn bpu" id="tr-btn" onclick="doTransfer()">💸 Transfer Entry</button></div>
     </div>
     <div class="card">
       <div class="ctitle"><span class="cdot dpu"></span>Transfer History</div>
@@ -1538,14 +1546,7 @@ function printReport(type){
   }
 
   const win=window.open('','_blank');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ganesh Mahotsav Report</title>
-  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;padding:20px;color:#1a1a1a;max-width:900px;margin:0 auto}@media print{body{padding:10px}@page{margin:15mm}}</style>
-  </head><body>${body}
-  <div style="text-align:center;margin-top:30px;padding-top:15px;border-top:1px solid #e5e7eb;font-size:11px;color:#888">
-    🕉 શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ Silver Jubilee 🕉<br>
-    Generated: ${now}
-  </div>
-  <script>setTimeout(()=>window.print(),400);<\/script></body></html>`);
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ganesh Mahotsav Report</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:900px;margin:0 auto}@media print{@page{margin:15mm}}</style></head><body>'+body+'<scr'+'ipt>setTimeout(()=>window.print(),400);</scr'+'ipt></body></html>');
   win.document.close();
 }
 
@@ -1614,18 +1615,60 @@ async function addE(){
 }
 
 // -------- TRANSFER --------
-async function doTransfer(){
-  const d=document.getElementById('tr-d').value,toUser=parseInt(document.getElementById('tr-to').value),a=parseFloat(document.getElementById('tr-a').value)||0,no=document.getElementById('tr-no').value.trim();
-  if(!a||!toUser){toast('રકમ ફરજિયાત!','te');return;}
-  await sb.from('expense').insert({entry_date:d,type:'Internal Transfer',description:`Transfer → ${un(toUser)}${no?' ('+no+')':''}`,amount:a,note:no,user_id:cu});
-  await sb.from('income').insert({entry_date:d,type:'Internal Transfer',name:`Transfer ← ${un(cu)}${no?' ('+no+')':''}`,amount:a,note:no,user_id:toUser});
-  await sb.from('transfers').insert({transfer_date:d,from_user:cu,to_user:toUser,amount:a,note:no});
-  toast('✓ Transfer — '+fmt(a),'tpu');
-  document.getElementById('tr-a').value='';document.getElementById('tr-no').value='';
-  await loadAll();
+function setTrType(type){
+  window._trType=type;
+  const c=cfg();
+  const ne=document.getElementById('tr-type-normal');
+  const re=document.getElementById('tr-type-return');
+  const info=document.getElementById('tr-info');
+  const btn=document.getElementById('tr-btn');
+  if(type==='normal'){
+    ne.style.border='2px solid var(--pu)';ne.style.background='var(--pul)';
+    re.style.border='2px solid var(--bd)';re.style.background='#fff';
+    info.style.background='var(--pul)';info.style.color='var(--pu)';
+    info.textContent='💸 '+c.an+' → '+c.pn+' Transfer';
+    btn.style.background='';btn.innerHTML='💸 Transfer Entry';
+    btn.className='btn bpu';
+  } else {
+    ne.style.border='2px solid var(--bd)';ne.style.background='#fff';
+    re.style.border='2px solid var(--re)';re.style.background='var(--rel)';
+    info.style.background='var(--rel)';info.style.color='var(--re)';
+    info.textContent='↩️ '+c.pn+' → '+c.an+' (Partner e paisa return karya)';
+    btn.innerHTML='↩️ Return Entry';
+    btn.className='btn bte';
+  }
 }
 
-// -------- PENDING --------
+async function doTransfer(){
+  const c=cfg();
+  const d=document.getElementById('tr-d').value||td();
+  const a=parseFloat(document.getElementById('tr-a').value)||0;
+  const no=document.getElementById('tr-no').value.trim();
+  if(!a) return toast('Amount ભરો!','te');
+  const trType = window._trType||'normal';
+
+  if(trType==='return'){
+    // Partner → Admin return
+    const {error}=await sb.from('transfers').insert({transfer_date:d,from_user:2,to_user:1,amount:a,note:'↩️ Return'+(no?' — '+no:'')});
+    if(error) return toast('Error: '+error.message,'te');
+    await sb.from('income').insert({entry_date:d,type:'↩️ Return ← Partner',name:'↩️ Return ← '+c.pn+(no?' ('+no+')':''),amount:a,note:no||null,user_id:1});
+    await sb.from('expense').insert({entry_date:d,type:'↩️ Return → Admin',description:'↩️ Return → '+c.an+(no?' ('+no+')':''),amount:a,note:no||null,user_id:2});
+    toast('✓ ↩️ Return thayo! Admin ma ₹'+fmt(a)+' aavya','ts');
+  } else {
+    // Normal transfer Admin → Partner
+    const from=cu===1?1:2, to=cu===1?2:1;
+    const {error}=await sb.from('transfers').insert({transfer_date:d,from_user:from,to_user:to,amount:a,note:no||null});
+    if(error) return toast('Error: '+error.message,'te');
+    await sb.from('income').insert({entry_date:d,type:'Internal Transfer',name:'Transfer ← '+(from===1?c.an:c.pn),amount:a,note:no||null,user_id:to});
+    await sb.from('expense').insert({entry_date:d,type:'Internal Transfer',description:'Transfer → '+(to===1?c.an:c.pn),amount:a,note:no||null,user_id:from});
+    toast('✓ Transfer thayo!','ts');
+  }
+  document.getElementById('tr-a').value='';
+  document.getElementById('tr-no').value='';
+  await loadAll(true);
+}
+
+
 async function addP(){
   const n=document.getElementById('pe-n').value.trim(),a=parseFloat(document.getElementById('pe-a').value)||0,t=document.getElementById('pe-t').value.trim()||'Other',d=document.getElementById('pe-d').value,no=document.getElementById('pe-no').value.trim();
   if(!n||!a){toast('નામ અને રકમ ફરજિયાત!','te');return;}
@@ -3385,7 +3428,7 @@ function printTshirtSummary(){
   });
 
   const win = window.open('','_blank');
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>T-Shirt Orders</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:900px;margin:0 auto}@media print{@page{margin:15mm}}</style></head><body>'+body+'<script>setTimeout(()=>window.print(),400);<\/script></body></html>');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>T-Shirt Orders</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:900px;margin:0 auto}@media print{@page{margin:15mm}}</style></head><body>'+body+'<scr'+'ipt>setTimeout(()=>window.print(),400);</scr'+'ipt></body></html>');
   win.document.close();
 }
 
@@ -3534,7 +3577,7 @@ function printSizeConfirm(){
   body+='</div></div>';
 
   const win=window.open('','_blank');
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Size Confirmation</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:700px;margin:0 auto}@media print{@page{margin:15mm}}</style></head><body>'+body+'<script>setTimeout(()=>window.print(),400);<\/script></body></html>');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Size Confirmation</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:700px;margin:0 auto}@media print{@page{margin:15mm}}</style></head><body>'+body+'<scr'+'ipt>setTimeout(()=>window.print(),400);</scr'+'ipt></body></html>');
   win.document.close();
 }
 
@@ -3828,6 +3871,8 @@ function renderDraw(){
           style="width:70px;padding:4px 6px;font-size:12px;border:1px solid var(--bd);border-radius:5px;font-family:Poppins,sans-serif;margin-bottom:3px;display:block">
         <button onclick="updateDrawPayment(${x.id},parseFloat(document.getElementById('dpay-${x.id}').value)||0,${bval})"
           style="background:var(--gr);color:#fff;border:none;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:600;margin-right:3px">💰</button>
+        <button onclick="editDrawBook(${x.id})"
+          style="background:var(--pul);color:var(--pu);border:none;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:600;margin-right:3px">✏️</button>
         <button onclick="deleteDrawBook(${x.id})"
           style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:600">🗑</button>
       </td>
@@ -3844,6 +3889,33 @@ function renderDraw(){
 
   html+='</tbody></table></div>';
   list.innerHTML=html;
+}
+
+function editDrawBook(id){
+  const x=drawBooks.find(b=>b.id===id); if(!x)return;
+  _editDrawId=id;
+  document.getElementById('de-holder').value=x.holder_name||'';
+  document.getElementById('de-mobile').value=x.mobile_no||'';
+  document.getElementById('de-paid').value=x.paid_amount||'';
+  document.getElementById('de-bval').value=x.book_value||'';
+  document.getElementById('de-note').value=x.note||'';
+  document.getElementById('draw-edit-modal').style.display='block';
+}
+async function saveDrawEdit(){
+  if(!_editDrawId)return;
+  const paid=parseFloat(document.getElementById('de-paid').value)||0;
+  const bval=parseFloat(document.getElementById('de-bval').value)||0;
+  const status=paid>=bval?'Paid':paid>0?'Partial':'Pending';
+  const {error}=await sb.from('coupon_books').update({
+    holder_name:document.getElementById('de-holder').value.trim(),
+    mobile_no:document.getElementById('de-mobile').value.trim()||null,
+    paid_amount:paid,advance_amount:paid,payment_status:status,
+    note:document.getElementById('de-note').value.trim()||null
+  }).eq('id',_editDrawId);
+  if(error)return toast('Error: '+error.message,'te');
+  toast('✓ Book update thayo!','tg');
+  document.getElementById('draw-edit-modal').style.display='none';
+  await loadDraw();
 }
 
 function exportDrawExcel(){
@@ -3944,6 +4016,29 @@ async function addCouponSale(){
 
   if(!naam) return toast('Buyer નું નામ ભરો!','te');
   if(!parsedCoupons.length) return toast('Coupon numbers ભરો!','te');
+
+  // Check for duplicate coupons across all existing sales AND book assignments
+  const duplicates = [];
+  parsedCoupons.forEach(no=>{
+    // Check in coupon sales
+    couponSales.forEach(s=>{
+      const existingNos = s.coupon_nos.split(',').map(n=>parseInt(n));
+      if(existingNos.includes(no)){
+        duplicates.push({no:String(no).padStart(4,'0'), name:s.buyer_name, source:'Coupon Sale'});
+      }
+    });
+    // Check in book assignments
+    const book = drawBooks.find(x=>x.from_coupon<=no && x.to_coupon>=no);
+    if(book){
+      duplicates.push({no:String(no).padStart(4,'0'), name:book.holder_name, source:'Book #'+book.book_no});
+    }
+  });
+
+  if(duplicates.length){
+    const dupMsg = duplicates.slice(0,5).map(d=>'Coupon '+d.no+' already '+d.source+' — '+d.name).join('\n');
+    toast('⚠️ Duplicate coupons:\n'+dupMsg,'te');
+    return;
+  }
 
   const total = parsedCoupons.length * price;
   const status = paid >= total ? 'Paid' : paid > 0 ? 'Partial' : 'Pending';
@@ -4050,56 +4145,66 @@ function renderCouponSales(){
   const grandTotal=couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
   const grandPaid=couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
 
-  let html=`<div style="overflow-x:auto;border-radius:var(--rs);border:1px solid var(--bd)">
-    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:580px">
-      <thead><tr style="background:linear-gradient(135deg,#c0392b,#e74c3c)">
-        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">#</th>
-        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Buyer</th>
-        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Coupons</th>
-        <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Qty</th>
-        <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Total</th>
-        <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Paid</th>
-        <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Status</th>
-        <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Action</th>
-      </tr></thead>
-      <tbody>`;
-
+  // Card view instead of table - better for mobile
+  let html='';
   couponSales.forEach((x,i)=>{
     const paid=parseFloat(x.paid_amount)||0;
     const total=parseFloat(x.total_amount)||0;
     const baki=total-paid;
     const nos=x.coupon_nos.split(',');
-    const displayNos=nos.length<=6?nos.join(', '):nos.slice(0,4).join(', ')+' +'+( nos.length-4)+' more';
-    html+=`<tr style="background:${i%2?'#fafafa':'#fff'};border-bottom:1px solid #f0f0f0">
-      <td style="padding:8px;color:var(--gy)">${i+1}</td>
-      <td style="padding:8px">
-        <div style="font-weight:600">${x.buyer_name}</div>
-        ${x.mobile_no?'<div style="font-size:10px;color:var(--bl)">📱 '+x.mobile_no+'</div>':''}
-        ${x.note?'<div style="font-size:10px;color:var(--gy)">'+x.note+'</div>':''}
-      </td>
-      <td style="padding:8px;font-family:monospace;font-size:11px;color:#c0392b;max-width:140px;word-break:break-all">${displayNos}</td>
-      <td style="padding:8px;text-align:center;font-weight:700">${x.quantity}</td>
-      <td style="padding:8px;text-align:right;font-weight:700;color:var(--teal);white-space:nowrap">${fmt(total)}</td>
-      <td style="padding:8px;text-align:right;font-weight:700;color:${baki>0?'var(--re)':'var(--gr)'};white-space:nowrap">${fmt(paid)}</td>
-      <td style="padding:8px;text-align:center;font-weight:700;color:${stColor[x.payment_status]||'var(--gy)'}">${stIcon[x.payment_status]||'⏳'}</td>
-      <td style="padding:8px;text-align:center;white-space:nowrap">
-        <input type="number" id="cpay-${x.id}" value="${paid||''}" placeholder="₹" inputmode="numeric"
-          style="width:65px;padding:4px 5px;font-size:11px;border:1px solid var(--bd);border-radius:5px;font-family:Poppins,sans-serif;display:block;margin-bottom:3px">
+    const pct=total>0?Math.round((paid/total)*100):0;
+    const stC=stColor[x.payment_status]||'var(--gy)';
+    const stI=stIcon[x.payment_status]||'⏳';
+
+    html+=`<div style="background:#fff;border-radius:var(--r);border:1.5px solid var(--bd);padding:13px;margin-bottom:9px">
+      <!-- Row 1: name + status + amount -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+        <div>
+          <div style="font-size:14px;font-weight:700">${x.buyer_name}</div>
+          ${x.mobile_no?'<div style="font-size:11px;color:var(--bl)">📱 '+x.mobile_no+'</div>':''}
+          ${x.note?'<div style="font-size:10px;color:var(--gy)">'+x.note+'</div>':''}
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:15px;font-weight:700;color:#c0392b">${fmt(total)}</div>
+          <span style="font-size:11px;font-weight:700;color:${stC}">${stI} ${x.payment_status}</span>
+        </div>
+      </div>
+      <!-- Row 2: coupons -->
+      <div style="background:#fff5f5;border-radius:7px;padding:8px 10px;margin-bottom:8px">
+        <div style="font-size:10px;color:var(--gy);margin-bottom:4px">🎟️ Coupons (${nos.length})</div>
+        <div style="font-family:monospace;font-size:12px;color:#c0392b;word-break:break-all;line-height:1.8">${nos.join(', ')}</div>
+      </div>
+      <!-- Row 3: payment progress -->
+      <div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gy);margin-bottom:4px">
+          <span>Paid: <strong style="color:var(--gr)">${fmt(paid)}</strong></span>
+          <span>Baki: <strong style="color:${baki>0?'var(--re)':'var(--gr)'}">${fmt(baki)}</strong></span>
+        </div>
+        <div style="height:5px;background:var(--gyl);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--gr),#2dd4a0);border-radius:4px"></div>
+        </div>
+      </div>
+      <!-- Row 4: payment update -->
+      <div style="display:flex;gap:7px;align-items:center">
+        <input type="number" id="cpay-${x.id}" value="${paid||''}" placeholder="Paid amount..." inputmode="numeric"
+          style="flex:1;padding:7px 10px;font-size:13px;border:1.5px solid var(--bd);border-radius:7px;font-family:Poppins,sans-serif">
         <button onclick="updateCsPayment(${x.id},parseFloat(document.getElementById('cpay-${x.id}').value)||0,${total})"
-          style="background:var(--gr);color:#fff;border:none;border-radius:5px;padding:3px 6px;font-size:11px;cursor:pointer;font-weight:600;margin-right:2px">💰</button>
+          style="background:var(--gr);color:#fff;border:none;border-radius:7px;padding:7px 11px;font-size:12px;cursor:pointer;font-weight:600;white-space:nowrap">💰 Update</button>
         <button onclick="deleteCouponSale(${x.id})"
-          style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 6px;font-size:11px;cursor:pointer;font-weight:600">🗑</button>
-      </td>
-    </tr>`;
+          style="background:var(--rel);color:var(--re);border:none;border-radius:7px;padding:7px 9px;font-size:12px;cursor:pointer;font-weight:600">🗑</button>
+      </div>
+    </div>`;
   });
 
-  html+=`<tr style="background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(192,57,43,.03));border-top:2px solid #c0392b;font-weight:700">
-    <td colspan="3" style="padding:10px 8px;color:#c0392b">📊 કુલ (${couponSales.length})</td>
-    <td style="padding:10px 8px;text-align:center;color:#c0392b">${couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)}</td>
-    <td style="padding:10px 8px;text-align:right;color:var(--teal)">${fmt(grandTotal)}</td>
-    <td style="padding:10px 8px;text-align:right;color:var(--gr)">${fmt(grandPaid)}</td>
-    <td colspan="2"></td>
-  </tr></tbody></table></div>`;
+  // Summary row
+  html+=`<div style="background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(192,57,43,.03));border-radius:var(--r);border:1.5px solid rgba(192,57,43,.2);padding:12px 13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div style="font-size:12px;font-weight:700;color:#c0392b">📊 કુલ ${couponSales.length} buyers — ${couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)} coupons</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <span style="font-size:12px;color:var(--teal);font-weight:700">Total: ${fmt(grandTotal)}</span>
+      <span style="font-size:12px;color:var(--gr);font-weight:700">Paid: ${fmt(grandPaid)}</span>
+      <span style="font-size:12px;color:var(--re);font-weight:700">Baki: ${fmt(grandTotal-grandPaid)}</span>
+    </div>
+  </div>`;
   list.innerHTML=html;
 }
 
@@ -4190,7 +4295,7 @@ function exportCouponPDF(){
   </table>`;
 
   const win=window.open('','_blank');
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Coupon Sales</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:900px;margin:0 auto}@media print{@page{margin:12mm}}</style></head><body>'+body+'<script>setTimeout(()=>window.print(),400);<\/script></body></html>');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Coupon Sales</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;max-width:700px;margin:0 auto}@media print{@page{margin:12mm}}</style></head><body>'+body+'<scr'+'ipt>setTimeout(()=>window.print(),400);</scr'+'ipt></body></html>');
   win.document.close();
 }
 
@@ -4229,5 +4334,125 @@ function exportCSV(){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='GM25.csv';a.click();
 }
 </script>
+
+<!-- INCOME EDIT MODAL -->
+<div id="inc-edit-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:var(--deep)">✏️ Income Edit</div>
+      <button onclick="document.getElementById('inc-edit-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>તારીખ</label><input type="date" id="ie-date"></div>
+      <div class="fg"><label>નામ</label><input type="text" id="ie-name"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>પ્રકાર</label><input type="text" id="ie-type"></div>
+      <div class="fg"><label>Amount (₹)</label><input type="number" id="ie-amount" inputmode="numeric"></div>
+    </div>
+    <div class="fg"><label>નોંધ</label><input type="text" id="ie-note"></div>
+    <div class="bbar"><button class="btn bgr" onclick="saveIncomeEdit()">💾 Save</button></div>
+  </div>
+</div>
+
+<!-- EXPENSE EDIT MODAL -->
+<div id="exp-edit-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:var(--deep)">✏️ Expense Edit</div>
+      <button onclick="document.getElementById('exp-edit-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>તારીખ</label><input type="date" id="ee-date"></div>
+      <div class="fg"><label>વિવરણ</label><input type="text" id="ee-desc"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>પ્રકાર</label><input type="text" id="ee-type"></div>
+      <div class="fg"><label>Amount (₹)</label><input type="number" id="ee-amount" inputmode="numeric"></div>
+    </div>
+    <div class="fg"><label>નોંધ</label><input type="text" id="ee-note"></div>
+    <div class="bbar"><button class="btn bte" onclick="saveExpenseEdit()">💾 Save</button></div>
+  </div>
+</div>
+
+<!-- DRAW BOOK EDIT MODAL -->
+<div id="draw-edit-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:var(--deep)">✏️ Book Edit</div>
+      <button onclick="document.getElementById('draw-edit-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Holder Name</label><input type="text" id="de-holder"></div>
+      <div class="fg"><label>Mobile</label><input type="tel" id="de-mobile" maxlength="10" inputmode="numeric"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Paid Amount (₹)</label><input type="number" id="de-paid" inputmode="numeric"></div>
+      <div class="fg"><label>Book Value (₹)</label><input type="number" id="de-bval" readonly style="background:var(--gyl)"></div>
+    </div>
+    <div class="fg"><label>નોંધ</label><input type="text" id="de-note"></div>
+    <div class="bbar"><button class="btn bgold" onclick="saveDrawEdit()">💾 Save</button></div>
+  </div>
+</div>
+
+<!-- INCOME EDIT MODAL -->
+<div id="inc-edit-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:var(--deep)">✏️ Income Edit</div>
+      <button onclick="document.getElementById('inc-edit-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>તારીખ</label><input type="date" id="ie-date"></div>
+      <div class="fg"><label>નામ</label><input type="text" id="ie-name"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>પ્રકાર</label><input type="text" id="ie-type"></div>
+      <div class="fg"><label>Amount (₹)</label><input type="number" id="ie-amount" inputmode="numeric"></div>
+    </div>
+    <div class="fg"><label>નોંધ</label><input type="text" id="ie-note"></div>
+    <div class="bbar"><button class="btn bgr" onclick="saveIncomeEdit()">💾 Save</button></div>
+  </div>
+</div>
+
+<!-- EXPENSE EDIT MODAL -->
+<div id="exp-edit-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:var(--deep)">✏️ Expense Edit</div>
+      <button onclick="document.getElementById('exp-edit-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>તારીખ</label><input type="date" id="ee-date"></div>
+      <div class="fg"><label>વિવરણ</label><input type="text" id="ee-desc"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>પ્રકાર</label><input type="text" id="ee-type"></div>
+      <div class="fg"><label>Amount (₹)</label><input type="number" id="ee-amount" inputmode="numeric"></div>
+    </div>
+    <div class="fg"><label>નોંધ</label><input type="text" id="ee-note"></div>
+    <div class="bbar"><button class="btn bte" onclick="saveExpenseEdit()">💾 Save</button></div>
+  </div>
+</div>
+
+<!-- DRAW BOOK EDIT MODAL -->
+<div id="draw-edit-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);padding:16px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;max-width:480px;margin:0 auto;padding:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:var(--deep)">✏️ Book Edit</div>
+      <button onclick="document.getElementById('draw-edit-modal').style.display='none'" style="background:var(--gyl);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px">✕</button>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Holder Name</label><input type="text" id="de-holder"></div>
+      <div class="fg"><label>Mobile</label><input type="tel" id="de-mobile" maxlength="10" inputmode="numeric"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Paid Amount (₹)</label><input type="number" id="de-paid" inputmode="numeric"></div>
+      <div class="fg"><label>Book Value (₹)</label><input type="number" id="de-bval" readonly style="background:var(--gyl)"></div>
+    </div>
+    <div class="fg"><label>નોંધ</label><input type="text" id="de-note"></div>
+    <div class="bbar"><button class="btn bgold" onclick="saveDrawEdit()">💾 Save</button></div>
+  </div>
+</div>
 </body>
 </html>
