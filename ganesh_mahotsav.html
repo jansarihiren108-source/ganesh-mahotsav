@@ -1224,8 +1224,9 @@ function startApp(){
   document.getElementById('hun').textContent=(cu===1?'👑 ':'👤 ')+un(cu);
   document.getElementById('exp-bar').style.display=cu===1?'flex':'none';
   const c=cfg();
+  // tr-to removed from new transfer page design
   const sel=document.getElementById('tr-to');
-  sel.innerHTML=cu===1?`<option value="2">${c.pn} ને</option>`:`<option value="1">${c.an} ને</option>`;
+  if(sel) sel.innerHTML=cu===1?`<option value="2">${c.pn} ને</option>`:`<option value="1">${c.an} ને</option>`;
   // Save login state so refresh doesn't logout
   sessionStorage.setItem('gm_cu', cu);
   setTd();loadAll();
