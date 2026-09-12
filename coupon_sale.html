@@ -77,16 +77,19 @@ body{font-family:'Poppins',sans-serif;background:linear-gradient(160deg,#1a0a2e 
     </div>
 
     <div class="fg">
-      <label>Book Holder Select * <span style="font-size:10px;color:#c0392b;font-weight:400">(List mathi select karo)</span></label>
+      <label>Book Holder Select <span style="font-size:10px;color:#c0392b;font-weight:400">(Jeni book chhe ae select karo)</span></label>
       <select id="f-holder-select" onchange="onHolderSelect(this.value)" style="width:100%;padding:11px 13px;font-size:14px;border:1.5px solid #e5e7eb;border-radius:9px;color:#1a1a1a;outline:none;font-family:'Poppins',sans-serif;background:#fff;-webkit-appearance:none;appearance:none;margin-bottom:8px">
-        <option value="">-- Book Holder Select karo --</option>
+        <option value="">-- Book Holder Select karo (Optional) --</option>
       </select>
       <div id="holder-info" style="display:none;background:#fff5f5;border:1px solid rgba(192,57,43,.2);border-radius:9px;padding:10px 12px;margin-bottom:8px;font-size:12px">
         <div id="holder-book-info" style="color:#c0392b;font-weight:600"></div>
         <div id="holder-coupons" style="margin-top:4px;font-family:monospace;color:#555;word-break:break-all"></div>
       </div>
-      <label style="font-size:11px;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Ya manually nakho</label>
-      <input type="text" id="f-naam" placeholder="Naam manually nakho (Capital ma)..." oninput="this.value=this.value.toUpperCase()" style="margin-top:4px">
+    </div>
+
+    <div class="fg">
+      <label>Buyer નું નામ * <span style="font-size:10px;color:#c0392b;font-weight:400">(Capital ma auto — Book select karta auto fill thay)</span></label>
+      <input type="text" id="f-naam" placeholder="Buyer full name..." oninput="this.value=this.value.toUpperCase()">
     </div>
 
     <div class="fg">
@@ -167,8 +170,9 @@ function onHolderSelect(val){
   if(!val){info.style.display='none';return;}
   var book=bookHolders.find(function(b){return b.id==val;});
   if(!book){info.style.display='none';return;}
-  document.getElementById('f-naam').value=book.holder_name;
-  if(book.mobile_no)document.getElementById('f-mobile').value=book.mobile_no;
+  // Naam auto-fill nahi - buyer alag hase
+  // Sirf mobile auto-fill karo if available
+  // if(book.mobile_no)document.getElementById('f-mobile').value=book.mobile_no;
   var from=book.from_coupon,to=book.to_coupon;
   var allNos=[];
   for(var i=from;i<=to;i++)allNos.push(String(i).padStart(4,'0'));
@@ -262,11 +266,8 @@ function submitForm(){
           duplicates.push('Coupon '+String(no).padStart(4,'0')+' — already registered by '+s.buyer_name);
         }
       });
-      // Check in book assignments
-      var book=booksData.find(function(b){return b.from_coupon<=no&&b.to_coupon>=no;});
-      if(book){
-        duplicates.push('Coupon '+String(no).padStart(4,'0')+' — Book #'+book.book_no+' ('+book.holder_name+') ma chhe');
-      }
+      // Book assignment check NATHI karvo - book holder koi pan ne sell kari shake
+      // Sirf existing SALES ma duplicate check karo (upar already thayo)
     });
 
     if(duplicates.length){
