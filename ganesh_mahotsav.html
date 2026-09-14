@@ -3875,7 +3875,7 @@ function renderDraw(){
     html+=`<tr style="background:${i%2===0?'#fff':'#fafafa'};border-bottom:1px solid #f0f0f0">
       <td style="padding:8px;font-weight:700;color:var(--gold4)">#${x.book_no}</td>
       <td style="padding:8px;font-family:monospace;font-size:12px;white-space:nowrap">
-        <span style="background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);border-radius:5px;padding:2px 7px">${String(x.from_coupon).padStart(4,'0')} — ${String(x.to_coupon).padStart(4,'0')}</span>
+        <span style="background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);border-radius:5px;padding:2px 7px">${String(x.from_coupon).padStart(4,'0')}—${String(x.to_coupon).padStart(4,'0')}</span>
       </td>
       <td style="padding:8px">
         <div style="font-weight:600;font-size:13px">${x.holder_name}</div>
@@ -4368,10 +4368,13 @@ function renderCouponSales(){
           <span style="font-size:11px;font-weight:700;color:${stC}">${stI} ${x.payment_status}</span>
         </div>
       </div>
-      <!-- Row 2: coupons -->
+      <!-- Row 2: coupons collapsible -->
       <div style="background:#fff5f5;border-radius:7px;padding:8px 10px;margin-bottom:8px">
-        <div style="font-size:10px;color:var(--gy);margin-bottom:4px">🎟️ Coupons (${nos.length})</div>
-        <div style="font-family:monospace;font-size:12px;color:#c0392b;word-break:break-all;line-height:1.8">${nos.join(', ')}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="font-size:10px;color:var(--gy)">🎟️ Coupons (${nos.length})</div>
+          ${nos.length>8?`<button onclick="toggleCoupons(${x.id})" style="background:none;border:none;color:#c0392b;font-size:11px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;padding:0" id="cs-toggle-${x.id}">▼ Show All</button>`:''}
+        </div>
+        <div id="cs-nos-${x.id}" style="font-family:monospace;font-size:12px;color:#c0392b;word-break:break-all;line-height:1.8;max-height:52px;overflow:hidden;transition:max-height .3s ease">${nos.join(', ')}</div>
       </div>
       <!-- Row 3: payment progress -->
       <div style="margin-bottom:9px">
@@ -4419,6 +4422,19 @@ async function deleteCouponSale(id){
   await sb.from('coupon_sales').delete().eq('id',id);
   toast('🗑 Delete');
   await loadCouponSales();
+}
+
+function toggleCoupons(id){
+  const el = document.getElementById('cs-nos-'+id);
+  const btn = document.getElementById('cs-toggle-'+id);
+  if(!el || !btn) return;
+  if(el.style.maxHeight==='none'||el.style.maxHeight==='1000px'){
+    el.style.maxHeight='52px';
+    btn.textContent='▼ Show All';
+  } else {
+    el.style.maxHeight='1000px';
+    btn.textContent='▲ Hide';
+  }
 }
 
 function exportCouponExcel(){
