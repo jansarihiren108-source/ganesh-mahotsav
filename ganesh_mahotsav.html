@@ -1042,6 +1042,19 @@ tr:last-child td{border-bottom:none}
     <!-- Stats -->
     <div id="draw-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px"></div>
 
+    <!-- Person Search -->
+    <div class="card" style="margin-bottom:11px">
+      <div class="ctitle"><span class="cdot" style="background:#d4a017"></span>👤 Person Search</div>
+      <div style="position:relative">
+        <input type="text" id="person-search" placeholder="Name lakho — list mathi select karo..."
+          style="width:100%;padding:10px 12px;font-size:14px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;outline:none"
+          oninput="searchPerson(this.value)" onfocus="searchPerson(this.value)"
+          onblur="setTimeout(function(){document.getElementById('person-list').style.display='none'},250)">
+        <div id="person-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:100;background:#fff;border:1.5px solid #d4a017;border-radius:var(--rs);max-height:200px;overflow-y:auto;box-shadow:0 4px 16px rgba(0,0,0,.12)"></div>
+      </div>
+      <div id="person-result" style="margin-top:10px;display:none"></div>
+    </div>
+
     <!-- Search by coupon no -->
     <div class="card" style="margin-bottom:11px">
       <div class="ctitle"><span class="cdot" style="background:#d4a017"></span>🔍 Coupon No. Search</div>
@@ -1089,7 +1102,16 @@ tr:last-child td{border-bottom:none}
       </div>
 
       <div class="frow">
-        <div class="fg"><label>Buyer નું નામ *</label><input type="text" id="cs-naam" placeholder="Jene coupon vachi..."></div>
+        <div class="fg">
+          <label>Buyer નું નામ *</label>
+          <div style="position:relative">
+            <input type="text" id="cs-naam" placeholder="Type karo ya list mathi..." autocomplete="off"
+              oninput="showBuyerSugg(this.value)" onfocus="showBuyerSugg(this.value)"
+              onblur="setTimeout(function(){var e=document.getElementById('cs-naam-list');if(e)e.style.display='none'},250)"
+              style="width:100%;padding:11px 13px;font-size:14px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;outline:none">
+            <div id="cs-naam-list" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:200;background:#fff;border:1.5px solid #c0392b;border-radius:var(--rs);max-height:180px;overflow-y:auto;box-shadow:0 4px 20px rgba(0,0,0,.15)"></div>
+          </div>
+        </div>
         <div class="fg"><label>Mobile No.</label><input type="tel" id="cs-mobile" placeholder="Optional..." maxlength="10" inputmode="numeric"></div>
       </div>
 
@@ -3917,6 +3939,182 @@ async function saveDrawEdit(){
   toast('✓ Book update thayo!','tg');
   document.getElementById('draw-edit-modal').style.display='none';
   await loadDraw();
+}
+
+
+// ============================================================
+// DRAW - PERSON SEARCH & BUYER SUGGESTIONS
+// ============================================================
+
+// Normalize name for comparison - remove extra spaces, lowercase, remove special chars
+function normName(n){
+  return (n||'').toLowerCase().trim().replace(/\s+/g,' ').replace(/[^a-z0-9\u0A80-\u0AFF ]/g,'');
+}
+
+// Group similar names together (same person different spelling)
+function groupByName(val){
+  const v = normName(val);
+  const grouped = new Map(); // normalized -> {displayName, books:[], sales:[]}
+
+  drawBooks.forEach(function(b){
+    const norm = normName(b.holder_name);
+    if(norm.includes(v)){
+      if(!grouped.has(norm)) grouped.set(norm, {displayName:b.holder_name, books:[], sales:[]});
+      grouped.get(norm).books.push(b);
+    }
+  });
+
+  couponSales.forEach(function(s){
+    const norm = normName(s.buyer_name);
+    if(norm.includes(v)){
+      if(!grouped.has(norm)){
+        grouped.set(norm, {displayName:s.buyer_name, books:[], sales:[]});
+      }
+      grouped.get(norm).sales.push(s);
+    }
+  });
+
+  return grouped;
+}
+
+function searchPerson(val){
+  const list = document.getElementById('person-list');
+  const result = document.getElementById('person-result');
+  if(!val || val.length < 1){ list.style.display='none'; result.style.display='none'; return; }
+
+  const grouped = groupByName(val);
+  if(!grouped.size){ list.style.display='none'; return; }
+
+  list.innerHTML = [...grouped.entries()].map(function(entry){
+    const norm = entry[0];
+    const data = entry[1];
+    const enc = encodeURIComponent(norm);
+    const total = data.books.length + data.sales.length;
+    return '<div style="padding:10px 13px;font-size:13px;cursor:pointer;border-bottom:1px solid #f5f5f5" onmousedown="selectPerson(\'' + enc + '\')">' +
+      '<span style="font-weight:700">👤 ' + data.displayName + '</span>' +
+      '<span style="font-size:11px;color:var(--gy);margin-left:8px">' +
+      (data.books.length ? '📚 ' + data.books.length + ' books ' : '') +
+      (data.sales.length ? '🎟️ ' + data.sales.length + ' sales' : '') +
+      '</span></div>';
+  }).join('');
+  list.style.display = 'block';
+}
+
+function selectPerson(encodedNorm){
+  const norm = decodeURIComponent(encodedNorm);
+  // Find display name from grouped data
+  const grouped = groupByName(norm);
+  const data = grouped.get(norm);
+  const displayName = data ? data.displayName : norm;
+  document.getElementById('person-search').value = displayName;
+  document.getElementById('person-list').style.display = 'none';
+  showPersonResult(norm);
+}
+
+function showPersonResult(norm){
+  const result = document.getElementById('person-result');
+
+  // Match using normalized names - catches different spellings/cases
+  const myBooks = drawBooks.filter(function(b){ return normName(b.holder_name)===norm; });
+  const mySales = couponSales.filter(function(s){ return normName(s.buyer_name)===norm; });
+
+  // Also partial match if exact not found
+  const myBooksAll = myBooks.length ? myBooks : drawBooks.filter(function(b){ return normName(b.holder_name).includes(norm); });
+  const mySalesAll = mySales.length ? mySales : couponSales.filter(function(s){ return normName(s.buyer_name).includes(norm); });
+
+  if(!myBooksAll.length && !mySalesAll.length){
+    result.style.display='block';
+    result.innerHTML='<div style="color:var(--gy);font-size:13px">No records found for "'+name+'"</div>';
+    return;
+  }
+
+  const bookTotalVal = myBooksAll.reduce((s,b)=>s+(parseFloat(b.book_value)||0),0);
+  const bookPaid = myBooksAll.reduce((s,b)=>s+(parseFloat(b.paid_amount)||0),0);
+  const bookBaki = bookTotalVal - bookPaid;
+
+  const salesTotalVal = mySalesAll.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  const salesPaid = mySalesAll.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const salesBaki = salesTotalVal - salesPaid;
+
+  const totalBaki = bookBaki + salesBaki;
+
+  let html = '<div style="background:linear-gradient(135deg,rgba(212,160,23,.1),rgba(212,160,23,.05));border:1.5px solid rgba(212,160,23,.3);border-radius:var(--r);padding:13px">';
+  html += '<div style="font-size:15px;font-weight:700;margin-bottom:10px">👤 '+(document.getElementById('person-search').value||norm)+'</div>';
+
+  // Summary
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:11px">';
+  html += '<div style="background:#fff;border-radius:8px;padding:9px;text-align:center"><div style="font-size:16px;font-weight:700;color:var(--gold4)">'+(myBooks.length)+'</div><div style="font-size:10px;color:var(--gy)">📚 Books</div></div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:9px;text-align:center"><div style="font-size:14px;font-weight:700;color:var(--gr)">'+fmt(bookPaid+salesPaid)+'</div><div style="font-size:10px;color:var(--gy)">✅ Paid</div></div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:9px;text-align:center"><div style="font-size:14px;font-weight:700;color:'+(totalBaki>0?'var(--re)':'var(--gr)')+'">'+fmt(totalBaki)+'</div><div style="font-size:10px;color:var(--gy)">⏳ Baki</div></div>';
+  html += '</div>';
+
+  // Books detail
+  if(myBooksAll.length){
+    html += '<div style="font-size:11px;font-weight:700;color:var(--gold4);margin-bottom:6px">📚 Books Assigned ('+(myBooksAll.length)+'):</div>';
+    myBooksAll.forEach(b=>{
+      const paid=parseFloat(b.paid_amount)||0;
+      const bval=parseFloat(b.book_value)||0;
+      const baki=bval-paid;
+      const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'}[b.payment_status]||'⏳';
+      html += '<div style="background:#fff;border-radius:7px;padding:8px 10px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">';
+      html += '<div><div style="font-size:12px;font-weight:700;color:var(--gold4)">Book #'+b.book_no+'</div>';
+      html += '<div style="font-size:11px;font-family:monospace;color:var(--gy)">'+String(b.from_coupon).padStart(4,'0')+' — '+String(b.to_coupon).padStart(4,'0')+'</div></div>';
+      html += '<div style="text-align:right"><div style="font-size:12px;font-weight:700">'+fmt(bval)+'</div>';
+      html += '<div style="font-size:11px;color:'+(baki>0?'var(--re)':'var(--gr)')+'">Baki: '+fmt(baki)+' '+stIcon+'</div></div>';
+      html += '</div>';
+    });
+  }
+
+  // Sales detail
+  if(mySalesAll.length){
+    const totalQty = mySalesAll.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
+    html += '<div style="font-size:11px;font-weight:700;color:#c0392b;margin-top:8px;margin-bottom:6px">🎟️ Coupon Purchases ('+(mySalesAll.length)+' entries — '+totalQty+' coupons):</div>';
+    mySalesAll.forEach(s=>{
+      const paid=parseFloat(s.paid_amount)||0;
+      const total=parseFloat(s.total_amount)||0;
+      const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'}[s.payment_status]||'⏳';
+      const nos=s.coupon_nos.split(',');
+      html += '<div style="background:#fff;border-radius:7px;padding:8px 10px;margin-bottom:5px">';
+      html += '<div style="display:flex;justify-content:space-between;margin-bottom:4px">';
+      html += '<div style="font-size:12px;font-weight:600">'+s.quantity+' coupons '+stIcon+'</div>';
+      html += '<div style="font-size:12px;font-weight:700;color:#c0392b">'+fmt(total)+'<span style="color:var(--gy);font-weight:400"> / Paid: '+fmt(paid)+'</span></div></div>';
+      html += '<div style="font-size:11px;font-family:monospace;color:var(--gy);word-break:break-all">'+(nos.length<=8?nos.join(', '):nos.slice(0,6).join(', ')+' ...+'+(nos.length-6)+' more')+'</div>';
+      html += '</div>';
+    });
+  }
+
+  html += '</div>';
+  result.style.display = 'block';
+  result.innerHTML = html;
+}
+
+// Buyer suggestions in coupon sales entry
+function pickBuyer(enc){
+  const n=decodeURIComponent(enc);
+  const el=document.getElementById('cs-naam');
+  if(el) el.value=n;
+  const list=document.getElementById('cs-naam-list');
+  if(list) list.style.display='none';
+}
+
+function showBuyerSugg(val){
+  const list = document.getElementById('cs-naam-list');
+  if(!list) return;
+  if(!val || val.length < 1){ list.style.display='none'; return; }
+  const v = normName(val);
+
+  // Unique names from book holders + previous sales - normalized match
+  const names = new Set();
+  drawBooks.forEach(function(b){ if(normName(b.holder_name).includes(v)) names.add(b.holder_name); });
+  couponSales.forEach(function(s){ if(normName(s.buyer_name).includes(v)) names.add(s.buyer_name); });
+
+  if(!names.size){ list.style.display='none'; return; }
+
+  list.innerHTML = [...names].slice(0,10).map(function(n){
+    const enc2 = encodeURIComponent(n);
+    return '<div style="padding:10px 13px;font-size:13px;cursor:pointer;border-bottom:1px solid #f5f5f5" onmousedown="pickBuyer(\'' + enc2 + '\')">👤 ' + n + '</div>';
+  }).join('');
+  list.style.display = 'block';
 }
 
 function exportDrawExcel(){
