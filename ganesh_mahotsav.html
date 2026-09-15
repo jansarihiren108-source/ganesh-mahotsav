@@ -402,44 +402,7 @@ tr:last-child td{border-bottom:none}
       <div class="bbar"><button class="btn bp" onclick="addI()">💾 સેવ</button><button class="btn bex" onclick="exportExcel('income')">📊 Excel</button></div>
     </div>
 
-    <!-- GROUP FALO ENTRY -->
-    <div class="card" style="margin-bottom:11px;border:1.5px solid rgba(109,40,217,.2)">
-      <div class="ctitle"><span class="cdot dpu"></span>👥 Group Falo Entry</div>
-      <div style="font-size:11px;color:var(--gy);background:var(--pul);border-radius:var(--rs);padding:8px 11px;margin-bottom:11px;line-height:1.7">
-        💡 Dareek member no alag falo nakho — Total auto thay — Aavak ma ek entry add thay
-      </div>
 
-      <div class="fg">
-        <label>Falo Title <span style="color:var(--re)">*</span></label>
-        <input type="text" id="fl-title" placeholder="Jem ke: Ganesh Mahotsav 2026 — Group Falo">
-      </div>
-
-      <div class="fg">
-        <label>Minimum Falo per Member (₹) <span style="font-size:10px;color:var(--gy);font-weight:400">(Optional — reference mate)</span></label>
-        <input type="number" id="fl-min" placeholder="500" inputmode="numeric" onchange="updateFaloTotal()">
-      </div>
-
-      <!-- Member rows -->
-      <div id="falo-members" style="margin-bottom:10px"></div>
-
-      <button type="button" onclick="addFaloMember()" style="width:100%;padding:9px;background:var(--pul);border:1.5px dashed var(--pu);border-radius:var(--rs);color:var(--pu);font-size:13px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;margin-bottom:10px">
-        + Member ઉમેરો
-      </button>
-
-      <!-- Total preview -->
-      <div id="falo-total-box" style="background:var(--pul);border-radius:var(--rs);padding:11px 14px;margin-bottom:10px;display:none">
-        <div style="font-size:11px;color:var(--pu);margin-bottom:3px">Total Falo</div>
-        <div id="falo-total-display" style="font-size:20px;font-weight:700;color:var(--pu)">₹0</div>
-        <div id="falo-member-count" style="font-size:11px;color:var(--gy)"></div>
-      </div>
-
-      <div class="fg"><label>Date</label><input type="date" id="fl-date"></div>
-
-      <div class="bbar">
-        <button class="btn bpu" onclick="saveFaloEntry()">💾 Falo Save + Aavak ma Add</button>
-        <button class="btn bex" onclick="exportFaloExcel()">📊 Excel</button>
-      </div>
-    </div>
     <div class="card">
       <div class="ctitle"><span class="cdot dg"></span>બધી આવક</div>
       <div class="twrap"><table><thead><tr>
@@ -592,6 +555,7 @@ tr:last-child td{border-bottom:none}
     <button class="nb" onclick="showTab('balak')" id="nav-balak"><span class="ic">🎭</span><span>Program</span></button>
     <button class="nb" onclick="showTab('tshirt')" id="nav-tshirt"><span class="ic">👕</span><span>T-Shirt</span></button>
     <button class="nb" onclick="showTab('draw')" id="nav-draw"><span class="ic">🎟️</span><span>Draw</span></button>
+    <button class="nb" onclick="showTab('falo')" id="nav-falo"><span class="ic">🪙</span><span>Falo</span></button>
   </nav>
 </div>
 
@@ -1216,6 +1180,49 @@ tr:last-child td{border-bottom:none}
     </div>
   </div>
 
+  <!-- FALO PAGE -->
+  <div id="page-falo" class="page">
+    <div style="height:11px"></div>
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1a0a2e,#6d28d9);border-radius:var(--r);padding:14px 16px;margin-bottom:11px;color:#fff;position:relative;overflow:hidden">
+      <div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;margin-bottom:3px">🪙 GROUP FALO — ૨૫મો ગણેશ મહોત્સવ</div>
+      <div style="font-size:15px;font-weight:700">Group Falo Tracker</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">Member ઉમેરો → Falo add karo → Aavak ma auto update</div>
+      <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.15">🪙</div>
+    </div>
+
+    <!-- Stats -->
+    <div id="falo-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:11px"></div>
+
+    <!-- Add Member -->
+    <div class="card" style="margin-bottom:11px">
+      <div class="ctitle"><span class="cdot dpu"></span>➕ Member ઉમેરો</div>
+      <div class="frow">
+        <div class="fg"><label>Member નામ *</label><input type="text" id="falo-new-naam" placeholder="Member naam..."></div>
+        <div class="fg"><label>Falo Amount (₹) *</label><input type="number" id="falo-new-amt" placeholder="0" inputmode="numeric"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Paid Amount (₹)</label><input type="number" id="falo-new-paid" placeholder="0" inputmode="numeric"></div>
+        <div class="fg"><label>નોંધ</label><input type="text" id="falo-new-note" placeholder="Optional..."></div>
+      </div>
+      <div class="bbar">
+        <button class="btn bpu" onclick="addFaloMember2()">➕ Member Add + Aavak Update</button>
+      </div>
+    </div>
+
+    <!-- Member List -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div class="ctitle" style="margin:0;border:none;padding:0"><span class="cdot dpu"></span>🪙 Falo List</div>
+        <div style="display:flex;gap:7px">
+          <button class="btn bex" onclick="exportFaloExcel2()" style="padding:5px 10px;font-size:11px">📊 Excel</button>
+        </div>
+      </div>
+      <div id="falo-list"><div class="empty">Loading...</div></div>
+    </div>
+  </div>
+
   <!-- EDIT MODAL -->
 <div class="mov" id="emod">
   <div class="modal">
@@ -1380,7 +1387,7 @@ function un(id){const c=cfg();return id==1?c.an:c.pn;}
 function utag(id){return `<span class="utag ${id==1?'ut1':'ut2'}">${un(id)}</span>`;}
 function setTd(){const t=new Date().toISOString().split('T')[0];['in-d','ex-d','pe-d','ag-d','tr-d'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=t;});}
 function showTab(n){
-  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash','balak','tshirt','draw'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
+  ['dashboard','mahotsav','aavak','javak','transfer','pending','agency','reports','checklist','trash','balak','tshirt','draw','falo'].forEach(x=>{document.getElementById('page-'+x).classList.remove('active');document.getElementById('nav-'+x).classList.remove('active');});
   document.getElementById('page-'+n).classList.add('active');
   document.getElementById('nav-'+n).classList.add('active');
   window.scrollTo(0,0);
@@ -1395,6 +1402,7 @@ function showTab(n){
     loadTshirt();
   }
   if(n==='draw'){loadDraw();}
+  if(n==='falo'){loadFalo();}
   if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
   if(n==='mahotsav'){renderMahotsav();}
 }
@@ -4555,161 +4563,185 @@ function exportCouponPDF(){
 
 
 // ============================================================
-// GROUP FALO MODULE
+// PERMANENT GROUP FALO MODULE
 // ============================================================
-let faloMembers = [];
+let faloData = [];
 
-function initFalo(){
-  if(faloMembers.length===0){
-    faloMembers = [{id:1,naam:'',amount:0},{id:2,naam:'',amount:0},{id:3,naam:'',amount:0}];
-    renderFaloMembers();
-    // Set today date
-    const td2 = new Date();
-    const ds = td2.getFullYear()+'-'+String(td2.getMonth()+1).padStart(2,'0')+'-'+String(td2.getDate()).padStart(2,'0');
-    const fl = document.getElementById('fl-date');
-    if(fl && !fl.value) fl.value = ds;
-  }
+async function loadFalo(){
+  const {data} = await sb.from('group_falo').select('*').order('created_at',{ascending:true});
+  faloData = data||[];
+  renderFalo();
+  renderFaloStats();
 }
 
-function addFaloMember(){
-  const id = Date.now();
-  faloMembers.push({id, naam:'', amount:0});
-  renderFaloMembers();
-}
+async function addFaloMember2(){
+  const naam = document.getElementById('falo-new-naam').value.trim();
+  const amount = parseFloat(document.getElementById('falo-new-amt').value)||0;
+  const paid = parseFloat(document.getElementById('falo-new-paid').value)||0;
+  const note = document.getElementById('falo-new-note').value.trim();
 
-function removeFaloMember(id){
-  if(faloMembers.length<=1){toast('Ochhamama ek member joie!','te');return;}
-  faloMembers = faloMembers.filter(m=>m.id!==id);
-  renderFaloMembers();
-}
+  if(!naam) return toast('Member naam ભરો!','te');
+  if(!amount) return toast('Falo amount ભરો!','te');
 
-function renderFaloMembers(){
-  const container = document.getElementById('falo-members');
-  if(!container) return;
-  const minAmt = parseFloat(document.getElementById('fl-min')?.value)||0;
+  const status = paid>=amount?'Paid':paid>0?'Partial':'Pending';
 
-  let html='';
-  faloMembers.forEach(function(m,i){
-    const isLow = minAmt>0 && m.amount>0 && m.amount<minAmt;
-    const isHigh = minAmt>0 && m.amount>=minAmt;
-    const borderColor = isLow?'var(--re)':isHigh?'var(--gr)':'var(--bd)';
-    const bg = isLow?'var(--rel)':isHigh?'var(--grl)':'#fff';
-    html+=`<div style="background:${bg};border:1.5px solid ${borderColor};border-radius:var(--rs);padding:10px 12px;margin-bottom:7px;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center">
-      <input type="text" placeholder="Member naam..." value="${esc2(m.naam)}"
-        onchange="updateFaloMember(${m.id},'naam',this.value)"
-        style="padding:8px 10px;font-size:13px;border:1.5px solid var(--bd);border-radius:7px;font-family:Poppins,sans-serif;outline:none;min-width:0">
-      <input type="number" placeholder="₹" value="${m.amount||''}" inputmode="numeric"
-        onchange="updateFaloMember(${m.id},'amount',this.value)"
-        style="padding:8px 10px;font-size:13px;border:1.5px solid var(--bd);border-radius:7px;font-family:Poppins,sans-serif;outline:none;width:90px;text-align:right">
-      <button onclick="removeFaloMember(${m.id})" style="background:var(--rel);color:var(--re);border:none;border-radius:7px;padding:8px 9px;font-size:12px;cursor:pointer;font-weight:700;white-space:nowrap">✕</button>
-    </div>`;
+  // Add to group_falo table
+  const {error} = await sb.from('group_falo').insert({
+    member_name: naam,
+    amount: amount,
+    paid_amount: paid,
+    payment_status: status,
+    note: note||null
   });
-  container.innerHTML=html;
-  updateFaloTotal();
-}
-
-function esc2(s){return (s||'').replace(/"/g,'&quot;');}
-
-function updateFaloMember(id,field,val){
-  const m=faloMembers.find(x=>x.id===id);
-  if(!m)return;
-  if(field==='amount') m.amount=parseFloat(val)||0;
-  else m[field]=val;
-  updateFaloTotal();
-}
-
-function updateFaloTotal(){
-  const total = faloMembers.reduce((s,m)=>s+(m.amount||0),0);
-  const minAmt = parseFloat(document.getElementById('fl-min')?.value)||0;
-  const filled = faloMembers.filter(m=>m.naam.trim()&&m.amount>0);
-  const box = document.getElementById('falo-total-box');
-  const disp = document.getElementById('falo-total-display');
-  const cnt = document.getElementById('falo-member-count');
-
-  if(box) box.style.display = filled.length?'block':'none';
-  if(disp) disp.textContent = fmt(total);
-  if(cnt){
-    let info = filled.length+' members';
-    if(minAmt>0){
-      const low=filled.filter(m=>m.amount<minAmt);
-      if(low.length) info+=' | ⚠️ '+low.length+' member(s) ₹'+minAmt+' thi ochhu';
-    }
-    cnt.textContent=info;
-  }
-
-  // Re-render to update colors
-  const container=document.getElementById('falo-members');
-  if(container){
-    container.querySelectorAll('div[style]').forEach(function(div,i){
-      if(i<faloMembers.length){
-        const m=faloMembers[i];
-        const isLow=minAmt>0&&m.amount>0&&m.amount<minAmt;
-        const isHigh=minAmt>0&&m.amount>=minAmt;
-        div.style.background=isLow?'var(--rel)':isHigh?'var(--grl)':'#fff';
-        div.style.border='1.5px solid '+(isLow?'var(--re)':isHigh?'var(--gr)':'var(--bd)');
-      }
-    });
-  }
-}
-
-async function saveFaloEntry(){
-  const title = document.getElementById('fl-title')?.value.trim();
-  const date = document.getElementById('fl-date')?.value;
-  if(!title) return toast('Falo title ભરો!','te');
-
-  const filled = faloMembers.filter(m=>m.naam.trim()&&m.amount>0);
-  if(!filled.length) return toast('Ochhamama ek member naam ane amount umerao!','te');
-
-  const total = filled.reduce((s,m)=>s+(m.amount||0),0);
-  const memberList = filled.map(m=>m.naam+': ₹'+m.amount).join(' | ');
-  const note = 'Group Falo — '+filled.length+' members — '+memberList;
-
-  // Add single income entry with total
-  const {error} = await sb.from('income').insert({
-    entry_date: date||td(),
-    type: '👥 Group Falo',
-    name: title,
-    amount: total,
-    note: note,
-    user_id: cu
-  });
-
   if(error) return toast('Error: '+error.message,'te');
 
-  toast('✅ Falo save thayo! Total: '+fmt(total)+' — Aavak ma add thayo','ts');
+  // Add to income table as well
+  const {error:incErr} = await sb.from('income').insert({
+    entry_date: td(),
+    type: '🪙 Group Falo',
+    name: naam+' — Falo',
+    amount: amount,
+    note: 'Group Falo'+(note?' — '+note:''),
+    user_id: cu
+  });
+  if(incErr) console.log('Income entry error:', incErr.message);
 
-  // Reset
-  faloMembers=[];
-  document.getElementById('fl-title').value='';
-  document.getElementById('fl-min').value='';
-  document.getElementById('falo-total-box').style.display='none';
-  initFalo();
+  toast('✅ '+naam+' — '+fmt(amount)+' Falo add thayo!','ts');
+  ['falo-new-naam','falo-new-amt','falo-new-paid','falo-new-note'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  await loadFalo();
   await loadAll(true);
 }
 
-function exportFaloExcel(){
-  const filled = faloMembers.filter(m=>m.naam.trim());
-  if(!filled.length){toast('Member list empty chhe!','te');return;}
+async function updateFaloPayment(id, paid, total){
+  const status = paid>=total?'Paid':paid>0?'Partial':'Pending';
+  await sb.from('group_falo').update({paid_amount:paid,payment_status:status}).eq('id',id);
+  toast('✅ Payment update thayo!','tg');
+  await loadFalo();
+}
 
-  const title = document.getElementById('fl-title')?.value||'Group Falo';
-  const minAmt = parseFloat(document.getElementById('fl-min')?.value)||0;
-  const total = filled.reduce((s,m)=>s+(m.amount||0),0);
+async function deleteFaloMember(id, naam, amount){
+  if(!confirm(naam+' — '+fmt(amount)+' delete karvu?')) return;
+  await sb.from('group_falo').delete().eq('id',id);
+  toast('🗑 Delete thayo');
+  await loadFalo();
+}
 
-  const wb = XLSX.utils.book_new();
-  const rows = [
-    ['શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ'],
-    [title],[],
-    ['ક્રમ','Member નામ','Falo (₹)',(minAmt?'Min: ₹'+minAmt:'')],
-    ...filled.map(function(m,i){
-      return [i+1, m.naam, m.amount, minAmt&&m.amount<minAmt?'⚠️ Ochhu':'✅'];
+async function editFaloAmount(id, oldAmt){
+  const newAmt = parseFloat(prompt('New amount:', oldAmt));
+  if(!newAmt || newAmt===oldAmt) return;
+  await sb.from('group_falo').update({amount:newAmt}).eq('id',id);
+  toast('✅ Amount update thayo!','tg');
+  await loadFalo();
+}
+
+function renderFaloStats(){
+  const el = document.getElementById('falo-stats');
+  if(!el) return;
+  const total = faloData.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  const paid = faloData.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const baki = total-paid;
+
+  el.innerHTML = `
+    <div style="background:var(--pul);border-radius:10px;padding:11px;border:1.5px solid rgba(109,40,217,.2)">
+      <div style="font-size:18px;font-weight:700;color:var(--pu)">${faloData.length}</div>
+      <div style="font-size:10px;color:var(--gy)">👥 Members</div>
+    </div>
+    <div style="background:var(--grl);border-radius:10px;padding:11px;border:1.5px solid rgba(26,122,74,.2)">
+      <div style="font-size:15px;font-weight:700;color:var(--gr)">${fmt(paid)}</div>
+      <div style="font-size:10px;color:var(--gy)">✅ Collected</div>
+    </div>
+    <div style="background:var(--rel);border-radius:10px;padding:11px;border:1.5px solid rgba(192,57,43,.2)">
+      <div style="font-size:15px;font-weight:700;color:var(--re)">${fmt(baki)}</div>
+      <div style="font-size:10px;color:var(--gy)">⏳ Baki</div>
+    </div>
+  `;
+}
+
+function renderFalo(){
+  const list = document.getElementById('falo-list');
+  if(!list) return;
+  if(!faloData.length){list.innerHTML='<div class="empty">કોઈ member નથી</div>';return;}
+
+  const stIcon={Pending:'⏳',Partial:'💛',Paid:'✅'};
+  const stColor={Pending:'var(--re)',Partial:'var(--am)',Paid:'var(--gr)'};
+
+  const grandTotal = faloData.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  const grandPaid = faloData.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+
+  let html = `<div style="overflow-x:auto;border-radius:var(--rs);border:1px solid var(--bd)">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:400px">
+      <thead><tr style="background:linear-gradient(135deg,#1a0a2e,#6d28d9)">
+        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">#</th>
+        <th style="padding:9px 8px;color:#fff;text-align:left;font-size:11px">Member</th>
+        <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Falo</th>
+        <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Paid</th>
+        <th style="padding:9px 8px;color:#fff;text-align:right;font-size:11px">Baki</th>
+        <th style="padding:9px 8px;color:#fff;text-align:center;font-size:11px">Action</th>
+      </tr></thead>
+      <tbody>`;
+
+  faloData.forEach((x,i)=>{
+    const paid=parseFloat(x.paid_amount)||0;
+    const total=parseFloat(x.amount)||0;
+    const baki=total-paid;
+    const pct=total>0?Math.round((paid/total)*100):0;
+    const sc=stColor[x.payment_status]||'var(--gy)';
+    const si=stIcon[x.payment_status]||'⏳';
+
+    html+=`<tr style="background:${i%2?'#fafafa':'#fff'};border-bottom:1px solid #f0f0f0">
+      <td style="padding:8px;color:var(--gy)">${i+1}</td>
+      <td style="padding:8px">
+        <div style="font-weight:600;font-size:13px">${x.member_name}</div>
+        ${x.note?'<div style="font-size:10px;color:var(--gy)">'+x.note+'</div>':''}
+        <div style="height:4px;background:var(--gyl);border-radius:4px;margin-top:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:var(--pu);border-radius:4px"></div>
+        </div>
+      </td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:var(--pu);white-space:nowrap" onclick="editFaloAmount(${x.id},${total})" style="cursor:pointer">${fmt(total)} ✏️</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:var(--gr);white-space:nowrap">${fmt(paid)}</td>
+      <td style="padding:8px;text-align:right;font-weight:700;color:${baki>0?'var(--re)':'var(--gr)'};white-space:nowrap">${fmt(baki)}</td>
+      <td style="padding:8px;text-align:center;white-space:nowrap">
+        <input type="number" id="fp-${x.id}" value="${paid||''}" placeholder="₹" inputmode="numeric"
+          style="width:65px;padding:4px 5px;font-size:11px;border:1px solid var(--bd);border-radius:5px;font-family:Poppins,sans-serif;display:block;margin-bottom:3px">
+        <button onclick="updateFaloPayment(${x.id},parseFloat(document.getElementById('fp-${x.id}').value)||0,${total})"
+          style="background:var(--gr);color:#fff;border:none;border-radius:5px;padding:3px 6px;font-size:11px;cursor:pointer;font-weight:600;margin-right:2px">💰</button>
+        <button onclick="deleteFaloMember(${x.id},'${x.member_name.replace(/'/g,"\'")}',${total})"
+          style="background:var(--rel);color:var(--re);border:none;border-radius:5px;padding:3px 6px;font-size:11px;cursor:pointer;font-weight:600">🗑</button>
+      </td>
+    </tr>`;
+  });
+
+  html+=`<tr style="background:var(--pul);border-top:2px solid var(--pu);font-weight:700">
+    <td colspan="2" style="padding:10px 8px;color:var(--pu)">📊 કુલ (${faloData.length})</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--pu)">${fmt(grandTotal)}</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--gr)">${fmt(grandPaid)}</td>
+    <td style="padding:10px 8px;text-align:right;color:var(--re)">${fmt(grandTotal-grandPaid)}</td>
+    <td></td>
+  </tr></tbody></table></div>`;
+  list.innerHTML = html;
+}
+
+function exportFaloExcel2(){
+  const wb=XLSX.utils.book_new();
+  const H='Group Falo — ૨૫મો ગણેશ મહોત્સવ Silver Jubilee 2026';
+  const total=faloData.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  const paid=faloData.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const rows=[
+    [H],[],
+    ['ક્રમ','Member','Falo Amount','Paid','Baki','Status','Note'],
+    ...faloData.map((x,i)=>{
+      const p=parseFloat(x.paid_amount)||0;
+      const a=parseFloat(x.amount)||0;
+      return [i+1,x.member_name,a,p,a-p,x.payment_status,x.note||''];
     }),
-    [],
-    ['','Total',total,'']
+    [],['','Total',total,paid,total-paid,'','']
   ];
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:5},{wch:25},{wch:12},{wch:15}];
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:5},{wch:25},{wch:12},{wch:12},{wch:12},{wch:10},{wch:20}];
   XLSX.utils.book_append_sheet(wb,ws,'Group Falo');
-  XLSX.writeFile(wb,'GroupFalo_'+title.replace(/ /g,'_')+'.xlsx');
+  XLSX.writeFile(wb,'GroupFalo_Mahotsav2026.xlsx');
   toast('✅ Excel download thayo!','ts');
 }
 
