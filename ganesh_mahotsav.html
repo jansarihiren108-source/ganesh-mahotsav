@@ -698,7 +698,15 @@ tr:last-child td{border-bottom:none}
         style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">📋</span><span>List</span>
       </button>
-      <button onclick="switchBalakTab('export')" id="btab-export"
+      <b<button onclick="switchBalakTab('search')" id="btab-search"
+        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:18px">🔍</span><span>Search</span>
+      </button>
+      <button onclick="switchBalakTab('bulk')" id="btab-bulk"
+        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:18px">📤</span><span>Bulk WA</span>
+      </button>
+      utton onclick="switchBalakTab('export')" id="btab-export"
         style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">📊</span><span>Excel</span>
       </button>
@@ -837,6 +845,50 @@ tr:last-child td{border-bottom:none}
         </select>
       </div>
       <div id="balak-list"><div class="empty">Loading...</div></div>
+    </div>
+
+    <!-- SEARCH TAB -->
+    <div id="bsec-search" style="display:none">
+      <div class="card">
+        <div class="ctitle"><span class="cdot dpu"></span>🔍 Balak Search</div>
+        <input type="text" id="balak-search-input" placeholder="Naam ya Mobile no. lakho..."
+          oninput="searchBalak(this.value)"
+          style="width:100%;padding:11px 13px;font-size:14px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif;outline:none;margin-bottom:10px">
+        <div id="balak-search-result"><div style="font-size:13px;color:var(--gy);text-align:center;padding:20px">Type karo to results dikhashe...</div></div>
+      </div>
+    </div>
+
+    <!-- BULK WA TAB -->
+    <div id="bsec-bulk" style="display:none">
+      <div class="card">
+        <div class="ctitle"><span class="cdot dg" style="background:#25d366"></span>📤 Bulk WhatsApp</div>
+        <div style="background:var(--gyl);border-radius:var(--rs);padding:10px 13px;font-size:12px;margin-bottom:12px;line-height:1.7">
+          💡 Badha registered balako ne updated message moklo<br>
+          📱 Dareek number par WA khulse — Send dabate j next aavse
+        </div>
+        <div class="frow" style="margin-bottom:10px">
+          <div class="fg"><label>Program Filter</label>
+            <select id="bulk-prog-filter" onchange="renderBulkList()" style="width:100%;padding:9px 11px;font-size:13px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:Poppins,sans-serif">
+              <option value="all">🎭 Badha Programs</option>
+              <option value="નૃત્ય (Dance)">🕺 Dance</option>
+              <option value="ગાયન (Singing)">🎤 Singing</option>
+              <option value="નાટક (Natak)">🎭 Natak</option>
+              <option value="મિમિક્રી (Mimicry)">🎪 Mimicry</option>
+              <option value="શ્લોક (Shlok)">📿 Shlok</option>
+              <option value="પ્રાર્થના (Prayer)">🙏 Prayer</option>
+              <option value="ભાષણ (Speech)">🎙️ Speech</option>
+            </select>
+          </div>
+          <div class="fg"><label>Total</label>
+            <div id="bulk-count" style="background:var(--pul);border-radius:var(--rs);padding:9px 11px;font-size:13px;font-weight:700;color:var(--pu)">0 balako</div>
+          </div>
+        </div>
+        <div id="bulk-list" style="max-height:300px;overflow-y:auto;margin-bottom:10px;border:1px solid var(--bd);border-radius:var(--rs)"></div>
+        <button onclick="sendBulkWA()" style="width:100%;padding:13px;background:#25d366;border:none;border-radius:var(--rs);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif">
+          📤 Badha ne WA Message Moklo
+        </button>
+        <div style="font-size:11px;color:var(--gy);margin-top:5px;text-align:center">Dareek balak no WA alag tab ma khulse — Send dabate j next</div>
+      </div>
     </div>
 
     <!-- EXPORT TAB -->
@@ -2335,7 +2387,7 @@ function switchBalakTab(tab){
     document.getElementById('prog-time-display').textContent = c.prog_time||'9:15 AM - 12:30 PM';
     badge.style.display='block';
   }
-  ['dashboard','entry','list','export'].forEach(t=>{
+  ['dashboard','entry','list','search','bulk','export'].forEach(t=>{
     const sec = document.getElementById('bsec-'+t);
     const btn = document.getElementById('btab-'+t);
     if(sec) sec.style.display = t===tab ? 'block' : 'none';
@@ -2352,6 +2404,12 @@ function switchBalakTab(tab){
   if(tab==='list') renderBalak();
   if(tab==='dashboard') renderBalakDashboard();
   if(tab==='export') renderExportSummary();
+  if(tab==='search'){
+    const si=document.getElementById('balak-search-input');
+    if(si){si.value='';si.focus();}
+    document.getElementById('balak-search-result').innerHTML='<div style="font-size:13px;color:var(--gy);text-align:center;padding:20px">Type karo to results dikhashe...</div>';
+  }
+  if(tab==='bulk') renderBulkList();
 }
 
 // GROUP MEMBERS
@@ -2498,6 +2556,128 @@ function calcAge(){
   const m = today.getMonth() - birth.getMonth();
   if(m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
   document.getElementById('b-age').value = age + ' વર્ષ';
+}
+
+
+// ============================================================
+// BALAK SEARCH
+// ============================================================
+function searchBalak(val){
+  const result = document.getElementById('balak-search-result');
+  if(!result) return;
+  if(!val || val.length<1){
+    result.innerHTML='<div style="font-size:13px;color:var(--gy);text-align:center;padding:20px">Type karo to results dikhashe...</div>';
+    return;
+  }
+  const v = val.toLowerCase();
+  const found = balaks.filter(x=>{
+    const nameMatch = (x.balak_naam||'').toLowerCase().includes(v);
+    const mobileMatch = (x.mobile_no||'').includes(v);
+    // Also search in group members
+    let memberMatch = false;
+    if(x.group_members){
+      try{
+        const mems = JSON.parse(x.group_members);
+        memberMatch = mems.some(m=>(m.naam||'').toLowerCase().includes(v));
+      }catch(e){}
+    }
+    return nameMatch || mobileMatch || memberMatch;
+  });
+
+  if(!found.length){
+    result.innerHTML='<div style="font-size:13px;color:var(--gy);text-align:center;padding:20px">⚠️ "'+val+'" — koi record nathi maldyu</div>';
+    return;
+  }
+
+  let html='<div style="font-size:11px;color:var(--gy);margin-bottom:8px">'+found.length+' result(s)</div>';
+  found.forEach(x=>{
+    const isGroup = x.performance_type==='Group';
+    html+=`<div style="background:#fff;border-radius:var(--r);border:1.5px solid var(--bd);padding:12px 13px;margin-bottom:9px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px">
+        <div>
+          <div style="font-size:15px;font-weight:700">#${x.serial_no} — ${x.balak_naam}</div>
+          <div style="font-size:11px;color:var(--gy);margin-top:2px">👤 ${x.parent_naam} &nbsp;•&nbsp; 🎂 ${x.umer} વર્ષ</div>
+          <div style="font-size:11px;color:var(--gy)">🏠 ${x.society_naam}${x.shala_naam?' &nbsp;•&nbsp; 🏫 '+x.shala_naam:''}</div>
+        </div>
+        <div style="text-align:right">
+          <span style="background:var(--pul);color:var(--pu);font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px">${x.program_prakar}</span>
+          ${isGroup?'<div style="font-size:10px;color:var(--gy);margin-top:3px">👥 '+x.total_members+' members</div>':''}
+        </div>
+      </div>
+      ${x.performance_details?'<div style="font-size:12px;color:var(--saff);font-weight:600;margin-bottom:7px">🎵 '+x.performance_details+'</div>':''}
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:600;color:var(--bl)">📱 ${x.mobile_no}</div>
+        <button onclick="sendWhatsApp(balaks.find(b=>b.id===${x.id}),${x.serial_no})"
+          style="background:#25d366;color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer">📤 WA</button>
+      </div>
+    </div>`;
+  });
+  result.innerHTML=html;
+}
+
+// ============================================================
+// BULK WHATSAPP
+// ============================================================
+function renderBulkList(){
+  const filter = document.getElementById('bulk-prog-filter')?.value||'all';
+  const list = document.getElementById('bulk-list');
+  const countEl = document.getElementById('bulk-count');
+  if(!list) return;
+
+  const filtered = filter==='all' ? balaks : balaks.filter(x=>x.program_prakar===filter);
+  if(countEl) countEl.textContent = filtered.length+' balako';
+
+  if(!filtered.length){
+    list.innerHTML='<div class="empty">કોઈ balak નથી</div>';
+    return;
+  }
+
+  let html='';
+  filtered.forEach((x,i)=>{
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid #f5f5f5;background:${i%2?'#fafafa':'#fff'}">
+      <div>
+        <div style="font-size:13px;font-weight:600">#${x.serial_no} ${x.balak_naam}</div>
+        <div style="font-size:11px;color:var(--gy)">${x.program_prakar}${x.performance_type==='Group'?' 👥':''}</div>
+      </div>
+      <div style="font-size:12px;color:var(--bl);font-weight:600">📱 ${x.mobile_no}</div>
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+
+let bulkWAIndex=0;
+let bulkWAList=[];
+
+function sendBulkWA(){
+  const filter = document.getElementById('bulk-prog-filter')?.value||'all';
+  bulkWAList = filter==='all' ? balaks : balaks.filter(x=>x.program_prakar===filter);
+
+  if(!bulkWAList.length){toast('Koi balak nathi!','te');return;}
+
+  if(!confirm('📤 '+bulkWAList.length+' balako ne WA message moklavsho?\n\nDareek number par WA khulse — Send dabate j next aavse.')) return;
+
+  bulkWAIndex=0;
+  sendNextBulkWA();
+}
+
+function sendNextBulkWA(){
+  if(bulkWAIndex >= bulkWAList.length){
+    toast('✅ Badha '+bulkWAList.length+' balako ne message moklayu!','tg');
+    return;
+  }
+  const b = bulkWAList[bulkWAIndex];
+  sendWhatsApp(b, b.serial_no);
+  bulkWAIndex++;
+
+  // Show progress
+  toast('📤 '+bulkWAIndex+'/'+bulkWAList.length+' — '+b.balak_naam,'ts');
+
+  // Open next after delay
+  if(bulkWAIndex < bulkWAList.length){
+    setTimeout(sendNextBulkWA, 2500);
+  } else {
+    setTimeout(()=>toast('✅ Badha '+bulkWAList.length+' balako ne message moklayu!','tg'),2500);
+  }
 }
 
 async function loadBalak(){
