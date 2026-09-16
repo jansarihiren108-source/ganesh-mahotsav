@@ -3816,6 +3816,7 @@ async function updateDrawPayment(id, paidAmt, bookVal){
   if(error) return toast('Error: '+error.message,'te');
   toast('✓ Payment update thayo!','tg');
   await loadDraw();
+  await syncDrawBooksToIncome();
 }
 
 async function deleteDrawBook(id){
@@ -4197,6 +4198,7 @@ async function updatePersonBookPayment(bookId, bookVal){
 
   // Reload draw data and refresh person result
   await loadDraw();
+  await syncDrawBooksToIncome();
 
   // Re-run person search to show updated data
   const searchEl = document.getElementById('person-search');
@@ -4623,25 +4625,26 @@ async function loadFalo(){
 
 const FALO_INCOME_NAME = 'Group Falo — ૨૫મો ગણેશ મહોત્સવ 2026';
 const COUPON_INCOME_NAME = 'Draw Coupon Sales — ૨૫મો ગણેશ મહોત્સવ 2026';
-const DRAW_BOOK_INCOME_NAME = 'Draw Book Assignment — ૨૫મો ગણેશ મહોત્સવ 2026';
+const DRAW_BOOK_INCOME_NAME = 'Draw Book Recovery — ૨૫મો ગણેશ મહોત્સવ 2026';
 
 async function syncDrawBooksToIncome(){
-  // Total book value of all assigned books
-  const total = drawBooks.reduce((s,x)=>s+(parseFloat(x.book_value)||0),0);
-  if(!total) return;
+  // Only PAID amounts - actual recovery received
+  const totalPaid = drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  if(!totalPaid) return;
   try{
     const r = await sb.from('income').select('id').eq('name',DRAW_BOOK_INCOME_NAME);
     const existing = r.data && r.data.length>0 ? r.data[0] : null;
-    const note = drawBooks.length+' books — '+drawBooks.reduce((s,x)=>s+(x.total_coupons||50),0)+' coupons';
+    const paidBooks = drawBooks.filter(x=>parseFloat(x.paid_amount)>0).length;
+    const note = paidBooks+' books ma payment — actual recovery';
     if(existing){
-      await sb.from('income').update({amount:total, note:note}).eq('id',existing.id);
+      await sb.from('income').update({amount:totalPaid, note:note}).eq('id',existing.id);
     } else {
       await sb.from('income').insert({
-        entry_date:td(), type:'Draw Books', name:DRAW_BOOK_INCOME_NAME,
-        amount:total, note:note, user_id:cu, is_deleted:false
+        entry_date:td(), type:'Draw Recovery', name:DRAW_BOOK_INCOME_NAME,
+        amount:totalPaid, note:note, user_id:cu, is_deleted:false
       });
     }
-  }catch(e){console.log('draw book sync error:',e);}
+  }catch(e){console.log('draw sync error:',e);}
   await loadAll(true);
 }
 
