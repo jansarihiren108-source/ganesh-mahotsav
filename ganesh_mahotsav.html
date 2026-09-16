@@ -4584,23 +4584,26 @@ const FALO_INCOME_NAME = 'Group Falo — ૨૫મો ગણેશ મહોત�
 const COUPON_INCOME_NAME = 'Draw Coupon Sales — ૨૫મો ગણેશ મહોત્સવ 2026';
 
 async function syncCouponToIncome(){
-  // Total from all coupon sales paid amounts
   const total = couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  const qty = couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
   if(!total) return;
 
-  const existing = inc.find(x=>x.name===COUPON_INCOME_NAME && x.type==='🎟️ Coupon Sales');
-  if(existing){
+  // Query DB directly - don't rely on stale inc variable
+  const {data:existing} = await sb.from('income')
+    .select('id').eq('name',COUPON_INCOME_NAME).eq('type','🎟️ Coupon Sales').limit(1);
+
+  if(existing && existing.length>0){
     await sb.from('income').update({
       amount: total,
-      note: couponSales.length+' buyers — '+couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)+' coupons'
-    }).eq('id',existing.id);
+      note: couponSales.length+' buyers — '+qty+' coupons'
+    }).eq('id', existing[0].id);
   } else {
     await sb.from('income').insert({
       entry_date: td(),
       type: '🎟️ Coupon Sales',
       name: COUPON_INCOME_NAME,
       amount: total,
-      note: couponSales.length+' buyers — '+couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)+' coupons',
+      note: couponSales.length+' buyers — '+qty+' coupons',
       user_id: cu
     });
   }
@@ -4608,18 +4611,19 @@ async function syncCouponToIncome(){
 }
 
 async function syncFaloToIncome(){
-  // Calculate total falo amount from all members
   const total = faloData.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
   if(!total) return;
 
-  // Check if Group Falo income entry already exists
-  const existing = inc.find(x=>x.name===FALO_INCOME_NAME && x.type==='🪙 Group Falo');
+  // Query DB directly - don't rely on stale inc variable
+  const {data:existing} = await sb.from('income')
+    .select('id').eq('name',FALO_INCOME_NAME).eq('type','🪙 Group Falo').limit(1);
 
-  if(existing){
-    // Update existing entry with new total
-    await sb.from('income').update({amount:total}).eq('id',existing.id);
+  if(existing && existing.length>0){
+    await sb.from('income').update({
+      amount: total,
+      note: faloData.length+' members'
+    }).eq('id', existing[0].id);
   } else {
-    // Create new single entry
     await sb.from('income').insert({
       entry_date: td(),
       type: '🪙 Group Falo',
