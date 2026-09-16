@@ -4587,52 +4587,37 @@ async function syncCouponToIncome(){
   const total = couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
   const qty = couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
   if(!total) return;
-
-  // Query DB directly - don't rely on stale inc variable
-  const {data:existing} = await sb.from('income')
-    .select('id').eq('name',COUPON_INCOME_NAME).eq('type','🎟️ Coupon Sales').limit(1);
-
-  if(existing && existing.length>0){
-    await sb.from('income').update({
-      amount: total,
-      note: couponSales.length+' buyers — '+qty+' coupons'
-    }).eq('id', existing[0].id);
-  } else {
-    await sb.from('income').insert({
-      entry_date: td(),
-      type: '🎟️ Coupon Sales',
-      name: COUPON_INCOME_NAME,
-      amount: total,
-      note: couponSales.length+' buyers — '+qty+' coupons',
-      user_id: cu
-    });
-  }
+  try{
+    const r = await sb.from('income').select('id,name').eq('name',COUPON_INCOME_NAME);
+    const existing = r.data && r.data.length>0 ? r.data[0] : null;
+    if(existing){
+      await sb.from('income').update({amount:total, note:couponSales.length+' buyers '+qty+' coupons'}).eq('id',existing.id);
+    } else {
+      await sb.from('income').insert({
+        entry_date:td(), type:'Coupon Sales', name:COUPON_INCOME_NAME,
+        amount:total, note:couponSales.length+' buyers '+qty+' coupons', user_id:cu
+      });
+    }
+  }catch(e){console.log('coupon sync error:',e);}
   await loadAll(true);
 }
 
 async function syncFaloToIncome(){
   const total = faloData.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
   if(!total) return;
-
-  // Query DB directly - don't rely on stale inc variable
-  const {data:existing} = await sb.from('income')
-    .select('id').eq('name',FALO_INCOME_NAME).eq('type','🪙 Group Falo').limit(1);
-
-  if(existing && existing.length>0){
-    await sb.from('income').update({
-      amount: total,
-      note: faloData.length+' members'
-    }).eq('id', existing[0].id);
-  } else {
-    await sb.from('income').insert({
-      entry_date: td(),
-      type: '🪙 Group Falo',
-      name: FALO_INCOME_NAME,
-      amount: total,
-      note: faloData.length+' members',
-      user_id: cu
-    });
-  }
+  try{
+    // Find by name only - simple search
+    const r = await sb.from('income').select('id,name').eq('name',FALO_INCOME_NAME);
+    const existing = r.data && r.data.length>0 ? r.data[0] : null;
+    if(existing){
+      await sb.from('income').update({amount:total, note:faloData.length+' members'}).eq('id',existing.id);
+    } else {
+      await sb.from('income').insert({
+        entry_date:td(), type:'Group Falo', name:FALO_INCOME_NAME,
+        amount:total, note:faloData.length+' members', user_id:cu
+      });
+    }
+  }catch(e){console.log('falo sync error:',e);}
   await loadAll(true);
 }
 
