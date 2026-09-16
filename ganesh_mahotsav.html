@@ -685,29 +685,29 @@ tr:last-child td{border-bottom:none}
     </div>
 
     <!-- Sub tabs -->
-    <div style="display:flex;background:#fff;border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin-bottom:12px;box-shadow:var(--sh)">
+    <div style="display:flex;background:#fff;border-radius:var(--r);border:1px solid var(--bd);overflow-x:auto;margin-bottom:12px;box-shadow:var(--sh);-webkit-overflow-scrolling:touch;scrollbar-width:none">
       <button onclick="switchBalakTab('dashboard')" id="btab-dashboard"
-        style="flex:1;padding:10px 6px;border:none;background:linear-gradient(135deg,var(--pu),#8b5cf6);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        style="flex:0 0 auto;min-width:70px;padding:10px 6px;border:none;background:linear-gradient(135deg,var(--pu),#8b5cf6);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">📊</span><span>Dashboard</span>
       </button>
       <button onclick="switchBalakTab('entry')" id="btab-entry"
-        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        style="flex:0 0 auto;min-width:60px;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">✍️</span><span>Entry</span>
       </button>
       <button onclick="switchBalakTab('list')" id="btab-list"
-        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        style="flex:0 0 auto;min-width:60px;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">📋</span><span>List</span>
       </button>
       <button onclick="switchBalakTab('search')" id="btab-search"
-        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        style="flex:0 0 auto;min-width:60px;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">🔍</span><span>Search</span>
       </button>
       <button onclick="switchBalakTab('bulk')" id="btab-bulk"
-        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+        style="flex:0 0 auto;min-width:60px;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">📤</span><span>Bulk WA</span>
       </button>
-      utton onclick="switchBalakTab('export')" id="btab-export"
-        style="flex:1;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
+      <button onclick="switchBalakTab('export')" id="btab-export"
+        style="flex:0 0 auto;min-width:60px;padding:10px 6px;border:none;background:var(--gyl);color:var(--gy);font-size:12px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px">
         <span style="font-size:18px">📊</span><span>Excel</span>
       </button>
     </div>
