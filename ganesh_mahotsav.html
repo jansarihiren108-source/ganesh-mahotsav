@@ -4634,7 +4634,8 @@ async function syncCouponToIncome(){
     } else {
       await sb.from('income').insert({
         entry_date:td(), type:'Coupon Sales', name:COUPON_INCOME_NAME,
-        amount:total, note:couponSales.length+' buyers '+qty+' coupons', user_id:cu
+        amount:total, note:couponSales.length+' buyers '+qty+' coupons', user_id:cu,
+        is_deleted:false
       });
     }
   }catch(e){console.log('coupon sync error:',e);}
@@ -4653,7 +4654,8 @@ async function syncFaloToIncome(){
     } else {
       await sb.from('income').insert({
         entry_date:td(), type:'Group Falo', name:FALO_INCOME_NAME,
-        amount:total, note:faloData.length+' members', user_id:cu
+        amount:total, note:faloData.length+' members', user_id:cu,
+        is_deleted:false
       });
     }
   }catch(e){console.log('falo sync error:',e);}
