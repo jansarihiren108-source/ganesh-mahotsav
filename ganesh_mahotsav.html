@@ -3803,6 +3803,7 @@ async function addDrawBook(){
   });
   document.getElementById('db-remaining-preview').style.display='none';
   await loadDraw();
+  await syncDrawBooksToIncome();
 }
 
 async function updateDrawPayment(id, paidAmt, bookVal){
@@ -3822,6 +3823,7 @@ async function deleteDrawBook(id){
   await sb.from('coupon_books').update({is_deleted:true}).eq('id',id);
   toast('🗑 Delete thayo');
   await loadDraw();
+  await syncDrawBooksToIncome();
 }
 
 function searchCoupon(val){
@@ -4621,6 +4623,27 @@ async function loadFalo(){
 
 const FALO_INCOME_NAME = 'Group Falo — ૨૫મો ગણેશ મહોત્સવ 2026';
 const COUPON_INCOME_NAME = 'Draw Coupon Sales — ૨૫મો ગણેશ મહોત્સવ 2026';
+const DRAW_BOOK_INCOME_NAME = 'Draw Book Assignment — ૨૫મો ગણેશ મહોત્સવ 2026';
+
+async function syncDrawBooksToIncome(){
+  // Total book value of all assigned books
+  const total = drawBooks.reduce((s,x)=>s+(parseFloat(x.book_value)||0),0);
+  if(!total) return;
+  try{
+    const r = await sb.from('income').select('id').eq('name',DRAW_BOOK_INCOME_NAME);
+    const existing = r.data && r.data.length>0 ? r.data[0] : null;
+    const note = drawBooks.length+' books — '+drawBooks.reduce((s,x)=>s+(x.total_coupons||50),0)+' coupons';
+    if(existing){
+      await sb.from('income').update({amount:total, note:note}).eq('id',existing.id);
+    } else {
+      await sb.from('income').insert({
+        entry_date:td(), type:'Draw Books', name:DRAW_BOOK_INCOME_NAME,
+        amount:total, note:note, user_id:cu, is_deleted:false
+      });
+    }
+  }catch(e){console.log('draw book sync error:',e);}
+  await loadAll(true);
+}
 
 async function syncCouponToIncome(){
   const total = couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
