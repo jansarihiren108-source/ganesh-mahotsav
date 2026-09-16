@@ -4313,6 +4313,7 @@ async function addCouponSale(){
   document.getElementById('cs-parsed').style.display='none';
   parsedCoupons=[];
   await loadCouponSales();
+  await syncCouponToIncome();
 }
 
 async function loadCouponSales(){
@@ -4469,6 +4470,7 @@ async function deleteCouponSale(id){
   await sb.from('coupon_sales').delete().eq('id',id);
   toast('🗑 Delete');
   await loadCouponSales();
+  await syncCouponToIncome();
 }
 
 function toggleCoupons(id){
@@ -4579,6 +4581,31 @@ async function loadFalo(){
 }
 
 const FALO_INCOME_NAME = 'Group Falo — ૨૫મો ગણેશ મહોત્સવ 2026';
+const COUPON_INCOME_NAME = 'Draw Coupon Sales — ૨૫મો ગણેશ મહોત્સવ 2026';
+
+async function syncCouponToIncome(){
+  // Total from all coupon sales paid amounts
+  const total = couponSales.reduce((s,x)=>s+(parseFloat(x.total_amount)||0),0);
+  if(!total) return;
+
+  const existing = inc.find(x=>x.name===COUPON_INCOME_NAME && x.type==='🎟️ Coupon Sales');
+  if(existing){
+    await sb.from('income').update({
+      amount: total,
+      note: couponSales.length+' buyers — '+couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)+' coupons'
+    }).eq('id',existing.id);
+  } else {
+    await sb.from('income').insert({
+      entry_date: td(),
+      type: '🎟️ Coupon Sales',
+      name: COUPON_INCOME_NAME,
+      amount: total,
+      note: couponSales.length+' buyers — '+couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)+' coupons',
+      user_id: cu
+    });
+  }
+  await loadAll(true);
+}
 
 async function syncFaloToIncome(){
   // Calculate total falo amount from all members
@@ -4626,9 +4653,11 @@ async function addFaloMember2(){
   if(error) return toast('Error: '+error.message,'te');
 
   toast('✅ '+naam+' — '+fmt(amount)+' Falo add thayo!','ts');
-  ['falo-new-naam','falo-new-amt','falo-new-paid','falo-new-note'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.value='';
-  });
+  // Clear ALL form fields
+  document.getElementById('falo-new-naam').value='';
+  document.getElementById('falo-new-amt').value='';
+  document.getElementById('falo-new-paid').value='';
+  document.getElementById('falo-new-note').value='';
 
   // Reload falo then sync total to income
   await loadFalo();
