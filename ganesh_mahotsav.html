@@ -5047,6 +5047,7 @@ async function loadFalo(){
   faloData = data||[];
   renderFalo();
   renderFaloStats();
+  syncFaloToIncome();
   // Clear input fields on tab switch
   ['falo-new-naam','falo-new-amt','falo-new-paid','falo-new-note'].forEach(id=>{
     const el=document.getElementById(id); if(el && !el.value) el.value='';
@@ -5083,7 +5084,7 @@ async function syncCouponToIncome(){
   const qty = couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
   if(!total) return;
   try{
-    const r = await sb.from('income').select('id,name').eq('name',COUPON_INCOME_NAME);
+    const r = await sb.from('income').select('id,name').eq('name',COUPON_INCOME_NAME).eq('is_deleted',false);
     const existing = r.data && r.data.length>0 ? r.data[0] : null;
     if(existing){
       await sb.from('income').update({amount:total, note:couponSales.length+' buyers '+qty+' coupons'}).eq('id',existing.id);
@@ -5099,18 +5100,17 @@ async function syncCouponToIncome(){
 }
 
 async function syncFaloToIncome(){
-  const total = faloData.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
-  if(!total) return;
+  const paid = faloData.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  if(!paid) return;
   try{
-    // Find by name only - simple search
     const r = await sb.from('income').select('id,name').eq('name',FALO_INCOME_NAME).eq('is_deleted',false);
     const existing = r.data && r.data.length>0 ? r.data[0] : null;
     if(existing){
-      await sb.from('income').update({amount:total, note:faloData.length+' members'}).eq('id',existing.id);
+      await sb.from('income').update({amount:paid, note:'Collected from '+faloData.filter(x=>x.paid_amount>0).length+' members'}).eq('id',existing.id);
     } else {
       await sb.from('income').insert({
         entry_date:td(), type:'Group Falo', name:FALO_INCOME_NAME,
-        amount:total, note:faloData.length+' members', user_id:cu,
+        amount:paid, note:'Collected from '+faloData.filter(x=>x.paid_amount>0).length+' members', user_id:cu,
         is_deleted:false
       });
     }
