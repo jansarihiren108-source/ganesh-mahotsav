@@ -1202,6 +1202,35 @@ tr:last-child td{border-bottom:none}
       <div id="draw-winner-result" style="margin-top:10px;display:none"></div>
     </div>
 
+    <!-- Gift List -->
+    <div class="card" style="margin-bottom:11px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="ctitle"><span class="cdot" style="background:#8b5cf6"></span>🎁 Gift List — Draw Preparation</div>
+        <div style="display:flex;gap:6px">
+          <button onclick="addGiftRow()" style="background:var(--pu);color:#fff;border:none;border-radius:var(--rs);padding:6px 10px;font-size:11px;cursor:pointer;font-family:Poppins,sans-serif">+ Gift ઉમેરો</button>
+          <button onclick="generateDrawPDF()" style="background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;border:none;border-radius:var(--rs);padding:6px 10px;font-size:11px;cursor:pointer;font-family:Poppins,sans-serif">📄 PDF</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--gy);margin-bottom:10px">🎁 Advance ma gifts prepare karo — Draw na divase coupon no. nakhsho to auto winner show thase</div>
+      <div id="gift-list-area">
+        <div style="font-size:12px;color:var(--gy);text-align:center;padding:12px">Loading...</div>
+      </div>
+      <div id="gift-draw-result" style="margin-top:12px;display:none">
+        <div style="border-top:1px solid var(--bd);padding-top:12px;margin-top:4px">
+          <div style="font-size:13px;font-weight:600;color:var(--pu);margin-bottom:8px">🏆 Draw Result — Gift vs Winner</div>
+          <div id="gift-draw-table"></div>
+          <button onclick="generateDrawPDF()" style="background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;border:none;border-radius:var(--r);padding:10px 16px;font-size:12px;cursor:pointer;font-family:Poppins,sans-serif;width:100%;margin-top:10px">📄 Full Draw Result PDF Download</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Draw Result Public Link -->
+    <div class="card" style="margin-bottom:11px;background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(192,57,43,.08));border:1.5px solid rgba(139,92,246,.25)">
+      <div class="ctitle"><span class="cdot" style="background:#c0392b"></span>🔗 Draw Result — Public Link</div>
+      <div style="font-size:11px;color:var(--gy);margin-bottom:12px">Aa link share karo — loko pote coupon no. nakhine check kari shake</div>
+      <button onclick="showDrawResultLink()" style="background:linear-gradient(135deg,#8b5cf6,#c0392b);color:#fff;border:none;border-radius:var(--r);padding:12px;font-size:13px;cursor:pointer;font-family:Poppins,sans-serif;width:100%;font-weight:600">🔗 Draw Result Link / QR Share karo</button>
+    </div>
+
     <!-- Coupon Sales List -->
     <div class="card" style="margin-bottom:11px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
@@ -3870,6 +3899,224 @@ function exportTshirtExcel(){
 // ============================================================
 const COUPON_SALE_URL = 'https://jansarihiren108-source.github.io/ganesh-mahotsav/coupon_sale.html';
 
+// ==================== GIFT LIST + DRAW RESULT ====================
+let giftList = []; // [{name, photo, from_no, to_no, coupon_no}] saved in localStorage
+
+function loadGiftList(){
+  try{ giftList = JSON.parse(localStorage.getItem('ganesh_gift_list')||'[]'); }catch(e){ giftList=[]; }
+  renderGiftList();
+}
+
+function saveGiftList(){
+  try{ localStorage.setItem('ganesh_gift_list', JSON.stringify(giftList)); }catch(e){}
+  renderGiftList();
+}
+
+function addGiftRow(){
+  giftList.push({name:'', photo:'', from_no:'', to_no:'', coupon_no:''});
+  saveGiftList();
+}
+
+function removeGiftRow(i){
+  giftList.splice(i,1);
+  saveGiftList();
+}
+
+function updateGift(i, field, val){
+  giftList[i][field] = val;
+  try{ localStorage.setItem('ganesh_gift_list', JSON.stringify(giftList)); }catch(e){}
+}
+
+function renderGiftList(){
+  const area = document.getElementById('gift-list-area');
+  if(!area) return;
+  if(!giftList.length){
+    area.innerHTML = '<div style="text-align:center;padding:12px;font-size:12px;color:var(--gy)">+ Gift ઉમેરો button dabao — gift name, photo URL, coupon range add karo</div>';
+    return;
+  }
+  let h = '<div style="overflow-x:auto">';
+  h += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+  h += '<tr style="background:rgba(139,92,246,.1)"><th style="padding:6px;text-align:left;border-bottom:1px solid var(--bd)">Gift</th><th style="padding:6px;text-align:left;border-bottom:1px solid var(--bd)">Photo URL</th><th style="padding:6px;text-align:center;border-bottom:1px solid var(--bd)">From</th><th style="padding:6px;text-align:center;border-bottom:1px solid var(--bd)">To</th><th style="padding:6px;text-align:center;border-bottom:1px solid var(--bd)">Winner Coupon</th><th style="padding:6px;border-bottom:1px solid var(--bd)"></th></tr>';
+  giftList.forEach((g,i)=>{
+    h += `<tr style="border-bottom:1px solid var(--bd)">
+      <td style="padding:4px"><input value="${g.name||''}" placeholder="Gift naam..." onchange="updateGift(${i},'name',this.value)" style="width:100%;padding:5px;font-size:12px;border:1px solid var(--bd);border-radius:6px;font-family:Poppins,sans-serif"></td>
+      <td style="padding:4px"><input value="${g.photo||''}" placeholder="Photo URL (optional)" onchange="updateGift(${i},'photo',this.value)" style="width:100%;padding:5px;font-size:12px;border:1px solid var(--bd);border-radius:6px;font-family:Poppins,sans-serif">${g.photo?`<img src="${g.photo}" onerror="this.style.display='none'" style="width:30px;height:30px;object-fit:cover;border-radius:4px;margin-top:2px">`:''}</td>
+      <td style="padding:4px"><input type="number" value="${g.from_no||''}" placeholder="0001" onchange="updateGift(${i},'from_no',this.value)" style="width:70px;padding:5px;font-size:12px;border:1px solid var(--bd);border-radius:6px;text-align:center;font-family:Poppins,sans-serif"></td>
+      <td style="padding:4px"><input type="number" value="${g.to_no||''}" placeholder="0050" onchange="updateGift(${i},'to_no',this.value)" style="width:70px;padding:5px;font-size:12px;border:1px solid var(--bd);border-radius:6px;text-align:center;font-family:Poppins,sans-serif"></td>
+      <td style="padding:4px"><input type="number" value="${g.coupon_no||''}" placeholder="Draw no." oninput="updateGift(${i},'coupon_no',this.value);autoFillGiftResult()" style="width:80px;padding:5px;font-size:12px;border:1px solid var(--bd);border-radius:6px;text-align:center;font-family:Poppins,sans-serif"></td>
+      <td style="padding:4px;text-align:center"><button onclick="removeGiftRow(${i})" style="background:#fee2e2;color:#c0392b;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px">🗑️</button></td>
+    </tr>`;
+  });
+  h += '</table></div>';
+  area.innerHTML = h;
+}
+
+async function autoFillGiftResult(){
+  // Check if any gift has coupon_no filled
+  const hasResults = giftList.some(g => g.coupon_no);
+  if(!hasResults){
+    document.getElementById('gift-draw-result').style.display='none';
+    return;
+  }
+  document.getElementById('gift-draw-result').style.display='block';
+  
+  const tbl = document.getElementById('gift-draw-table');
+  tbl.innerHTML = '<div style="font-size:12px;color:var(--gy)">Loading winner info...</div>';
+  
+  // Load all coupon sales
+  const {data:sales} = await sb.from('coupon_sales').select('coupon_from,coupon_to,buyer_name,holder_name');
+  const {data:books} = await sb.from('coupon_books').select('from_coupon,to_coupon,holder_name,mobile_no').eq('is_deleted',false);
+  
+  let h = '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+  h += '<tr style="background:rgba(139,92,246,.1)"><th style="padding:8px;text-align:left;border-bottom:1px solid var(--bd)">🎁 Gift</th><th style="padding:8px;text-align:center;border-bottom:1px solid var(--bd)">Coupon</th><th style="padding:8px;text-align:left;border-bottom:1px solid var(--bd)">🏆 Winner</th></tr>';
+  
+  giftList.forEach(g => {
+    if(!g.name) return;
+    const cno = parseInt(g.coupon_no);
+    let winner = '—';
+    let winnerDetail = '';
+    
+    if(cno){
+      // Check buyer first
+      const sale = (sales||[]).find(s => cno >= parseInt(s.coupon_from) && cno <= parseInt(s.coupon_to));
+      if(sale && sale.buyer_name){
+        winner = sale.buyer_name;
+        winnerDetail = `(Coupon Kharideo)`;
+      } else {
+        // Check book holder
+        const book = (books||[]).find(b => cno >= parseInt(b.from_coupon) && cno <= parseInt(b.to_coupon));
+        if(book && book.holder_name){
+          winner = book.holder_name;
+          winnerDetail = `(Book Holder)`;
+          if(book.mobile_no) winnerDetail += ` · ${book.mobile_no}`;
+        }
+      }
+    }
+    
+    const giftRange = (g.from_no && g.to_no) ? `No. ${g.from_no}–${g.to_no}` : '';
+    h += `<tr style="border-bottom:1px solid var(--bd)">
+      <td style="padding:8px">
+        ${g.photo ? `<img src="${g.photo}" onerror="this.style.display='none'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:6px">` : '🎁 '}
+        <strong>${g.name}</strong>${giftRange ? `<div style="font-size:10px;color:var(--gy)">${giftRange}</div>` : ''}
+      </td>
+      <td style="padding:8px;text-align:center;font-weight:700;color:var(--pu)">${cno ? String(cno).padStart(4,'0') : '—'}</td>
+      <td style="padding:8px">
+        <div style="font-weight:600;color:${winner!='—'?'var(--gr)':'var(--gy)'}">${winner}</div>
+        ${winnerDetail ? `<div style="font-size:10px;color:var(--gy)">${winnerDetail}</div>` : ''}
+      </td>
+    </tr>`;
+  });
+  h += '</table>';
+  tbl.innerHTML = h;
+}
+
+async function generateDrawPDF(){
+  // Save first
+  saveGiftList();
+  
+  // Load data
+  const {data:sales} = await sb.from('coupon_sales').select('coupon_from,coupon_to,buyer_name,holder_name');
+  const {data:books} = await sb.from('coupon_books').select('from_coupon,to_coupon,holder_name,mobile_no,book_no').eq('is_deleted',false);
+  
+  // Build PDF-like print page
+  const today = new Date().toLocaleDateString('gu-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+  
+  let rows = '';
+  let sr = 1;
+  giftList.forEach(g => {
+    if(!g.name) return;
+    const cno = parseInt(g.coupon_no);
+    let winner = '—', winnerType = '', mobile = '';
+    
+    if(cno){
+      const sale = (sales||[]).find(s => cno >= parseInt(s.coupon_from) && cno <= parseInt(s.coupon_to));
+      if(sale && sale.buyer_name){
+        winner = sale.buyer_name;
+        winnerType = 'Coupon Buyer';
+      } else {
+        const book = (books||[]).find(b => cno >= parseInt(b.from_coupon) && cno <= parseInt(b.to_coupon));
+        if(book){
+          winner = book.holder_name||'—';
+          winnerType = 'Book Holder';
+          mobile = book.mobile_no||'';
+        }
+      }
+    }
+    
+    const giftRange = (g.from_no && g.to_no) ? `(Coupon ${g.from_no}–${g.to_no})` : '';
+    rows += `<tr>
+      <td style="padding:10px 8px;text-align:center;font-weight:700;border:1px solid #ddd">${sr++}</td>
+      <td style="padding:10px 8px;border:1px solid #ddd">
+        ${g.photo ? `<img src="${g.photo}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:8px">` : ''}
+        <strong>${g.name}</strong><br><small style="color:#666">${giftRange}</small>
+      </td>
+      <td style="padding:10px 8px;text-align:center;font-size:20px;font-weight:700;color:#8b5cf6;border:1px solid #ddd">${cno ? String(cno).padStart(4,'0') : '—'}</td>
+      <td style="padding:10px 8px;border:1px solid #ddd">
+        <strong style="color:${winner!='—'?'#059669':'#999'}">${winner}</strong><br>
+        <small style="color:#666">${winnerType}${mobile ? ' · '+mobile : ''}</small>
+      </td>
+    </tr>`;
+  });
+  
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    body{font-family:'Poppins',Arial,sans-serif;margin:0;padding:20px;background:#fff;color:#1a0533}
+    .header{text-align:center;background:linear-gradient(135deg,#1a0533,#8b5cf6);color:#fff;padding:24px;border-radius:12px;margin-bottom:20px}
+    .header h1{font-size:22px;margin:0 0 6px;color:#ffd700}
+    .header p{font-size:13px;opacity:.8;margin:4px 0}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:#1a0533;color:#ffd700;padding:10px 8px;text-align:left;border:1px solid #ccc}
+    tr:nth-child(even){background:#f8f4ff}
+    .footer{text-align:center;margin-top:20px;font-size:11px;color:#999;border-top:1px solid #eee;padding-top:12px}
+    @media print{body{margin:0}button{display:none!important}}
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  </head><body>
+  <div class="header">
+    <h1>🏆 ૨૫મો ગણેશ મહોત્સવ — Draw Result 2026</h1>
+    <p>🕉️ શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ, અમરાઈવાડી, અમદાવાદ</p>
+    <p style="font-size:12px;margin-top:4px">તારીખ: ${today} · Silver Jubilee</p>
+  </div>
+  <button onclick="window.print()" style="background:#8b5cf6;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer;margin-bottom:16px;font-family:Poppins,sans-serif">🖨️ Print / PDF</button>
+  <table>
+    <tr><th style="width:40px">ક્ર.</th><th>🎁 Gift</th><th style="width:80px;text-align:center">Coupon No.</th><th>🏆 Winner</th></tr>
+    ${rows || '<tr><td colspan="4" style="text-align:center;padding:20px;color:#999">Gift list khali chhe — Draw tab ma gift add karo</td></tr>'}
+  </table>
+  <div class="footer">
+    🕉️ Shree Vishvanath Mahadev Group · ૨૫મો ગણેશ મહોત્સવ Silver Jubilee 2026<br>
+    Generated: ${new Date().toLocaleString('gu-IN')}
+  </div>
+  </body></html>`;
+  
+  const win = window.open('','_blank','width=900,height=700');
+  win.document.write(html);
+  win.document.close();
+}
+
+function showDrawResultLink(){
+  const publicUrl = 'https://jansarihiren108-source.github.io/ganesh-mahotsav/draw_result.html';
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(publicUrl)}`;
+  const existingModal = document.getElementById('draw-result-modal');
+  if(existingModal){ existingModal.remove(); }
+  const modal = document.createElement('div');
+  modal.id = 'draw-result-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  modal.innerHTML = `<div style="background:#fff;border-radius:16px;padding:20px;max-width:360px;width:100%;text-align:center">
+    <div style="font-size:20px;font-weight:700;color:#1a0533;margin-bottom:8px">🔗 Draw Result Link</div>
+    <div style="font-size:11px;color:#666;margin-bottom:12px">Public link share karo — loko coupon no. nakhine check kari shake</div>
+    <img src="${qrUrl}" style="width:200px;height:200px;border-radius:8px;margin-bottom:12px">
+    <div style="background:#f3f0ff;border-radius:8px;padding:10px;font-size:11px;color:#1a0533;word-break:break-all;margin-bottom:12px">${publicUrl}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button onclick="navigator.clipboard.writeText('${publicUrl}');showToast('Link copied!')" style="background:var(--pu);color:#fff;border:none;border-radius:8px;padding:10px;font-size:12px;cursor:pointer;font-family:Poppins,sans-serif">📋 Copy Link</button>
+      <button onclick="window.open('https://wa.me/?text=${encodeURIComponent('🎟️ ૨૫મો ગણેશ મહોત્સવ Draw Result\nCoupon no. nakho — winner name check karo:\n'+publicUrl)}','_blank')" style="background:#25d366;color:#fff;border:none;border-radius:8px;padding:10px;font-size:12px;cursor:pointer;font-family:Poppins,sans-serif">📲 WhatsApp</button>
+    </div>
+    <button onclick="document.getElementById('draw-result-modal').remove()" style="margin-top:10px;background:#f3f0ff;color:#1a0533;border:none;border-radius:8px;padding:10px;font-size:12px;cursor:pointer;font-family:Poppins,sans-serif;width:100%">✕ બંધ</button>
+  </div>`;
+  document.body.appendChild(modal);
+}
+// ==================== END GIFT LIST ====================
+
+
 function showCouponLink(){
   const modal=document.getElementById('coupon-link-modal');
   if(modal.style.display==='none'){
@@ -3939,6 +4186,9 @@ async function loadDraw(){
   renderDraw();
   renderDrawStats();
   renderCouponSales();
+  syncDrawBooksToIncome();
+  syncCouponToIncome();
+  loadGiftList();
 }
 
 async function addDrawBook(){
@@ -4812,7 +5062,7 @@ async function syncDrawBooksToIncome(){
   const totalPaid = drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
   if(!totalPaid) return;
   try{
-    const r = await sb.from('income').select('id').eq('name',DRAW_BOOK_INCOME_NAME);
+    const r = await sb.from('income').select('id').eq('name',DRAW_BOOK_INCOME_NAME).eq('is_deleted',false);
     const existing = r.data && r.data.length>0 ? r.data[0] : null;
     const paidBooks = drawBooks.filter(x=>parseFloat(x.paid_amount)>0).length;
     const note = paidBooks+' books ma payment — actual recovery';
@@ -4853,7 +5103,7 @@ async function syncFaloToIncome(){
   if(!total) return;
   try{
     // Find by name only - simple search
-    const r = await sb.from('income').select('id,name').eq('name',FALO_INCOME_NAME);
+    const r = await sb.from('income').select('id,name').eq('name',FALO_INCOME_NAME).eq('is_deleted',false);
     const existing = r.data && r.data.length>0 ? r.data[0] : null;
     if(existing){
       await sb.from('income').update({amount:total, note:faloData.length+' members'}).eq('id',existing.id);

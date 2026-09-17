@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎟️ Draw Result — ૨૫મો ગણેશ મહોત્સવ</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#1a0533 0%,#2d1b69 50%,#4a1942 100%);min-height:100vh;color:#fff}
+.header{background:linear-gradient(90deg,#1a0533,#4a1942);padding:14px 16px;text-align:center;border-bottom:2px solid rgba(255,200,0,.3)}
+.header .ticker{font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:6px;opacity:.8}
+.header h1{font-size:18px;font-weight:700;color:#ffd700;text-shadow:0 0 12px rgba(255,215,0,.5)}
+.header p{font-size:12px;color:rgba(255,255,255,.7);margin-top:3px}
+.card{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:20px;margin:16px}
+.search-box{display:flex;gap:10px;align-items:center}
+.search-box input{flex:1;padding:14px 16px;border-radius:12px;border:1.5px solid rgba(255,215,0,.4);background:rgba(255,255,255,.1);color:#fff;font-size:16px;font-family:'Poppins',sans-serif;outline:none;font-weight:600;letter-spacing:1px}
+.search-box input::placeholder{color:rgba(255,255,255,.4);font-weight:400;letter-spacing:0}
+.search-box input:focus{border-color:#ffd700;background:rgba(255,215,0,.1)}
+.btn-search{background:linear-gradient(135deg,#ffd700,#f59e0b);color:#1a0533;border:none;border-radius:12px;padding:14px 20px;font-size:20px;cursor:pointer;font-weight:700;transition:.2s}
+.btn-search:active{transform:scale(.95)}
+.result-card{border-radius:16px;padding:20px;text-align:center;margin-top:14px;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.result-found{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(5,150,105,.2));border:2px solid rgba(16,185,129,.5)}
+.result-holder{background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(109,40,217,.2));border:2px solid rgba(139,92,246,.5)}
+.result-none{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.2)}
+.coupon-no{font-size:48px;font-weight:700;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,.6);letter-spacing:2px}
+.label{font-size:11px;color:rgba(255,255,255,.6);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.name{font-size:22px;font-weight:700;color:#fff;margin:6px 0}
+.sub{font-size:13px;color:rgba(255,255,255,.7)}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;margin-top:8px}
+.badge-buyer{background:rgba(16,185,129,.3);color:#6ee7b7;border:1px solid rgba(16,185,129,.4)}
+.badge-holder{background:rgba(139,92,246,.3);color:#c4b5fd;border:1px solid rgba(139,92,246,.4)}
+.divider{height:1px;background:rgba(255,255,255,.15);margin:14px 0}
+.row{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+.row .k{font-size:12px;color:rgba(255,255,255,.6)}
+.row .v{font-size:13px;font-weight:600;color:#ffd700}
+.hint{text-align:center;font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
+.loading{text-align:center;padding:20px;color:rgba(255,255,255,.6)}
+.err{color:#fca5a5;font-size:13px;text-align:center;margin-top:10px}
+.info-box{background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:14px;margin:16px;text-align:center}
+.info-box p{font-size:12px;color:rgba(255,255,255,.6);line-height:1.6}
+.trophy{font-size:48px;margin-bottom:8px;animation:bounce .6s infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="ticker">✦ 25th GANESH MAHOTSAV ✦ SILVER JUBILEE ✦</div>
+  <h1>🎟️ Draw Coupon Result</h1>
+  <p>🏆 શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ 2026</p>
+</div>
+
+<div class="card">
+  <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:12px;text-align:center">
+    🔍 Coupon No. નાખો — winner/holder name instantly show thase!
+  </div>
+  <div class="search-box">
+    <input type="number" id="coupon-input" placeholder="Coupon No. (1–4050)..." min="1" max="4050" onkeydown="if(event.key==='Enter')searchResult()">
+    <button class="btn-search" onclick="searchResult()">🔍</button>
+  </div>
+  <div id="err-msg" class="err"></div>
+  <div id="result-area"></div>
+  <div class="hint">Coupon No. 0001 થી 4050 સુધી valid chhe</div>
+</div>
+
+<div class="info-box">
+  <p>🎭 આ draw result page public chhe — anyone can check<br>
+  📲 Share karo group ma — everyone coupon check kari shake<br>
+  🎁 Winner name + book holder name aave chhe</p>
+</div>
+
+<script>
+const SB_URL = 'https://mlmrwvffdkwvnqbvkgzd.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sbXJ3dmZmZGt3dm5xYnZrZ3pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMzg4NTUsImV4cCI6MjA5NzkxNDg1NX0.pw8GlogqGvYphOhSjvRqt6E-T-DIxjSEAEdI-9QHdPQ';
+
+async function sbGet(table, filters='') {
+  const res = await fetch(`${SB_URL}/rest/v1/${table}?${filters}`, {
+    headers: {'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`}
+  });
+  return res.json();
+}
+
+async function searchResult() {
+  const val = parseInt(document.getElementById('coupon-input').value);
+  const err = document.getElementById('err-msg');
+  const area = document.getElementById('result-area');
+  
+  err.textContent = '';
+  if (!val || val < 1 || val > 4050) {
+    err.textContent = '⚠️ Coupon No. 1 to 4050 ni vaache nakhjo!';
+    area.innerHTML = '';
+    return;
+  }
+
+  area.innerHTML = '<div class="loading">🔍 Search kari rahya chhe...</div>';
+
+  try {
+    // 1. Check coupon_sales — kone kharidi?
+    const salesData = await sbGet('coupon_sales', 
+      `select=coupon_from,coupon_to,buyer_name,holder_name,quantity,total_amount&order=created_at.asc`
+    );
+    
+    // 2. Find book holder
+    const booksData = await sbGet('coupon_books',
+      `select=book_no,from_coupon,to_coupon,holder_name,mobile_no,paid_amount,payment_status&eq.is_deleted=false`
+    );
+
+    // Find which sale has this coupon
+    let buyerInfo = null;
+    for (const s of (salesData||[])) {
+      if (val >= parseInt(s.coupon_from) && val <= parseInt(s.coupon_to)) {
+        buyerInfo = s;
+        break;
+      }
+    }
+
+    // Find which book has this coupon
+    let holderInfo = null;
+    for (const b of (booksData||[])) {
+      if (val >= parseInt(b.from_coupon) && val <= parseInt(b.to_coupon)) {
+        holderInfo = b;
+        break;
+      }
+    }
+
+    showResult(val, buyerInfo, holderInfo);
+  } catch(e) {
+    area.innerHTML = '';
+    err.textContent = '❌ Error: ' + e.message;
+  }
+}
+
+function showResult(coupon, buyer, holder) {
+  const area = document.getElementById('result-area');
+  const couponStr = String(coupon).padStart(4, '0');
+  
+  if (!buyer && !holder) {
+    area.innerHTML = `
+      <div class="result-card result-none">
+        <div style="font-size:40px;margin-bottom:8px">🤔</div>
+        <div class="coupon-no" style="font-size:36px">#${couponStr}</div>
+        <div style="margin-top:12px;color:rgba(255,255,255,.6);font-size:14px">
+          Aa coupon no. system ma nathi mlyun.<br>
+          Kadach assign nathi thyu ya range valid nathi.
+        </div>
+      </div>`;
+    return;
+  }
+
+  let html = `<div style="margin-top:14px">
+    <div style="text-align:center;margin-bottom:14px">
+      <div class="label">Coupon Number</div>
+      <div class="coupon-no">#${couponStr}</div>
+    </div>`;
+
+  if (buyer) {
+    html += `
+    <div class="result-card result-found">
+      <div class="trophy">🏆</div>
+      <div class="label">Coupon Kharideo — Buyer</div>
+      <div class="name">${buyer.buyer_name || '—'}</div>
+      <span class="badge badge-buyer">✅ Coupon Kharideo</span>
+      ${buyer.holder_name ? `<div class="sub" style="margin-top:6px">Book Holder: ${buyer.holder_name}</div>` : ''}
+    </div>`;
+  }
+
+  if (holder) {
+    html += `
+    <div class="result-card result-holder" style="margin-top:10px">
+      <div style="font-size:32px;margin-bottom:6px">📚</div>
+      <div class="label">Book Assign — Holder</div>
+      <div class="name">${holder.holder_name || '—'}</div>
+      <span class="badge badge-holder">📖 Book Holder</span>
+      <div class="divider"></div>
+      <div class="row"><span class="k">Book No.</span><span class="v">#${holder.book_no}</span></div>
+      <div class="row"><span class="k">Range</span><span class="v">${String(holder.from_coupon).padStart(4,'0')} — ${String(holder.to_coupon).padStart(4,'0')}</span></div>
+      ${holder.mobile_no ? `<div class="row"><span class="k">Mobile</span><span class="v">${holder.mobile_no}</span></div>` : ''}
+    </div>`;
+  }
+
+  if (!buyer && holder) {
+    html += `<div style="text-align:center;margin-top:10px;font-size:12px;color:rgba(255,255,255,.5)">
+      💡 Aa coupon abhi sudhi koi e kharidi nathi — Book holder: ${holder.holder_name}
+    </div>`;
+  }
+
+  html += '</div>';
+  area.innerHTML = html;
+}
+</script>
+</body>
+</html>
