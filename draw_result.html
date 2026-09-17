@@ -74,16 +74,20 @@ const SB_URL = 'https://mlmrwvffdkwvnqbvkgzd.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sbXJ3dmZmZGt3dm5xYnZrZ3pkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMzg4NTUsImV4cCI6MjA5NzkxNDg1NX0.pw8GlogqGvYphOhSjvRqt6E-T-DIxjSEAEdI-9QHdPQ';
 
 async function sbFetch(table, query) {
-  const res = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {
+  const url = `${SB_URL}/rest/v1/${table}?${query}`;
+  const res = await fetch(url, {
     headers: {
       'apikey': SB_KEY,
       'Authorization': 'Bearer ' + SB_KEY,
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     }
   });
-  if (!res.ok) throw new Error('DB error: ' + res.status);
+  if (!res.ok) {
+    const txt = await res.text().catch(()=>'');
+    throw new Error('DB error ' + res.status + ': ' + txt.slice(0,120));
+  }
   const json = await res.json();
-  // Supabase returns array directly
   return Array.isArray(json) ? json : [];
 }
 
@@ -105,19 +109,20 @@ async function searchResult() {
   try {
     // Load all sales and books
     const [salesArr, booksArr] = await Promise.all([
-      sbFetch('coupon_sales', 'select=coupon_from,coupon_to,buyer_name,holder_name&order=created_at.asc'),
-      sbFetch('coupon_books', 'select=book_no,from_coupon,to_coupon,holder_name,mobile_no&is_deleted=eq.false')
+      sbFetch('coupon_sales', 'select=coupon_nos,buyer_name,mobile_no&order=created_at'),
+      sbFetch('coupon_books', 'select=book_no,from_coupon,to_coupon,holder_name,mobile_no&is_deleted=is.false')
     ]);
 
-    // Find buyer
+    const padded = String(val).padStart(4, '0');
+
+    // Find buyer — coupon_nos is comma-separated string like "0001,0735,1200"
     let buyer = null;
     for (const s of salesArr) {
-      const from = parseInt(s.coupon_from);
-      const to = parseInt(s.coupon_to);
-      if (val >= from && val <= to) { buyer = s; break; }
+      const nos = (s.coupon_nos || '').split(',').map(x => x.trim());
+      if (nos.includes(padded) || nos.includes(String(val))) { buyer = s; break; }
     }
 
-    // Find book holder
+    // Find book holder — from_coupon to to_coupon range
     let holder = null;
     for (const b of booksArr) {
       const from = parseInt(b.from_coupon);
@@ -161,8 +166,8 @@ function showResult(coupon, buyer, holder) {
       <span class="trophy">🏆</span>
       <div class="label">Coupon Kharideo — Buyer</div>
       <div class="name">${buyer.buyer_name}</div>
+      ${buyer.mobile_no ? `<div class="sub">📱 ${buyer.mobile_no}</div>` : ''}
       <span class="badge badge-buyer">✅ Coupon Buyer</span>
-      ${holder ? `<div class="sub" style="margin-top:8px">Book: ${holder.holder_name||''}</div>` : ''}
     </div>`;
   }
 
