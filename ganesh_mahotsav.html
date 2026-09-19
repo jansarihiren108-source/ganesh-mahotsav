@@ -5069,51 +5069,60 @@ const COUPON_INCOME_NAME = 'Draw Coupon Sales — ૨૫મો ગણેશ મ�
 const DRAW_BOOK_INCOME_NAME = 'Draw Book Recovery — ૨૫મો ગણેશ મહોત્સવ 2026';
 
 // Generic sync helper — upserts one auto-managed income row by name
+// Returns true if something changed (so caller can refresh income list)
 async function _upsertIncome(type, name, amount, note){
   try{
-    // Find ALL non-deleted entries with this name
     const r = await sb.from('income').select('id').eq('name',name).eq('is_deleted',false);
     const rows = r.data||[];
     if(rows.length>0){
-      // Update first, permanently delete extras (they are auto-managed duplicates)
       await sb.from('income').update({amount,note}).eq('id',rows[0].id);
       for(let i=1;i<rows.length;i++) await sb.from('income').delete().eq('id',rows[i].id);
     } else {
-      // No active entry — check if deleted one exists we can restore
       const r2 = await sb.from('income').select('id').eq('name',name).eq('is_deleted',true);
       const deleted = r2.data||[];
       if(deleted.length>0){
         await sb.from('income').update({amount,note,is_deleted:false}).eq('id',deleted[0].id);
       } else {
-        // Fresh insert
         await sb.from('income').insert({entry_date:td(),type,name,amount,note,user_id:cu,is_deleted:false});
       }
     }
-  }catch(e){console.log('income sync error ['+name+']:',e);}
+    return true;
+  }catch(e){console.log('income sync error ['+name+']:',e); return false;}
+}
+
+// Refresh only income/expense data without re-triggering Draw sync (avoids loop)
+async function _refreshIncome(){
+  const {data:inc} = await sb.from('income').select('*').eq('is_deleted',false).order('entry_date',{ascending:false});
+  const {data:exp} = await sb.from('expense').select('*').eq('is_deleted',false).order('entry_date',{ascending:false});
+  incomeData = inc||[];
+  expenseData = exp||[];
+  renderIncome();
+  renderExpense();
+  renderDashboard();
 }
 
 async function syncDrawBooksToIncome(){
   const totalPaid = drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
   if(!totalPaid) return;
   const paidBooks = drawBooks.filter(x=>parseFloat(x.paid_amount)>0).length;
-  await _upsertIncome('Draw Recovery', DRAW_BOOK_INCOME_NAME, totalPaid, paidBooks+' books — collected');
-  await loadAll(true);
+  const ok = await _upsertIncome('Draw Recovery', DRAW_BOOK_INCOME_NAME, totalPaid, paidBooks+' books — collected');
+  if(ok) await _refreshIncome();
 }
 
 async function syncCouponToIncome(){
   const paid = couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
   const qty = couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
   if(!paid) return;
-  await _upsertIncome('Coupon Sales', COUPON_INCOME_NAME, paid, couponSales.length+' buyers, '+qty+' coupons');
-  await loadAll(true);
+  const ok = await _upsertIncome('Coupon Sales', COUPON_INCOME_NAME, paid, couponSales.length+' buyers, '+qty+' coupons');
+  if(ok) await _refreshIncome();
 }
 
 async function syncFaloToIncome(){
   const paid = faloData.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
   if(!paid) return;
   const cnt = faloData.filter(x=>parseFloat(x.paid_amount)>0).length;
-  await _upsertIncome('Group Falo', FALO_INCOME_NAME, paid, cnt+' members collected');
-  await loadAll(true);
+  const ok = await _upsertIncome('Group Falo', FALO_INCOME_NAME, paid, cnt+' members collected');
+  if(ok) await _refreshIncome();
 }
 
 async function addFaloMember2(){
