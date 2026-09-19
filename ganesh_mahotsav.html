@@ -3013,6 +3013,7 @@ function openEditBalak(id){
   html+='<div class="frow"><div class="fg"><label>જન્મ તારીખ</label><input type="date" id="eb-dob" value="'+(b.janm_tarikh||'')+'"></div><div class="fg"><label>ઉંમર</label><input type="number" id="eb-age" value="'+(b.umer||0)+'"></div></div>';
   html+='<div class="frow"><div class="fg"><label>સોસાયટી</label><input type="text" id="eb-society" value="'+esc(b.society_naam)+'"></div><div class="fg"><label>શાળા</label><input type="text" id="eb-shala" value="'+esc(b.shala_naam)+'"></div></div>';
   html+='<div class="frow"><div class="fg"><label>Program</label>'+progSelect+'</div><div class="fg"><label>Mobile</label><input type="tel" id="eb-mobile" value="'+(b.mobile_no||'')+'" maxlength="10" inputmode="numeric"></div></div>';
+  html+='<div class="fg" style="margin-top:8px"><label>🎵 Performance Details (Song / Natak / Script name...)</label><input type="text" id="eb-perf-details" value="'+esc(b.performance_details||'')+'" placeholder="Jem ke: Ae Maa tara charana ma / Ganesh Vandana / Ramayan Natak..."></div>';
 
   if(isGrp&&members.length>0){
     html+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--bd)"><div style="font-size:12px;font-weight:700;color:var(--pu);margin-bottom:10px">👥 Group Members ('+members.length+')</div>';
@@ -3049,7 +3050,8 @@ async function saveBalakEdit(id){
     society_naam: document.getElementById('eb-society').value.trim(),
     shala_naam: document.getElementById('eb-shala').value.trim(),
     program_prakar: document.getElementById('eb-prog').value,
-    mobile_no: document.getElementById('eb-mobile').value.trim()
+    mobile_no: document.getElementById('eb-mobile').value.trim(),
+    performance_details: document.getElementById('eb-perf-details')?.value.trim()||''
   };
 
   // Update group members if group
@@ -3154,6 +3156,8 @@ function exportBalakExcel(mode){
   let rowNum = 0;
   sorted.forEach(x=>{
     rowNum++;
+    const perfDet = x.performance_details||'';
+    const perfType = x.performance_type==='Group'?'Group':'Solo';
     if(x.performance_type==='Group' && x.group_members){
       try{
         const members = JSON.parse(x.group_members);
@@ -3167,22 +3171,24 @@ function exportBalakExcel(mode){
             m.society||x.society_naam,
             m.shala||x.shala_naam||'',
             x.program_prakar,
+            mi===0 ? perfType : '',
+            mi===0 ? perfDet : '',
             mi===0 ? x.mobile_no : '',
             mi===0 ? un(x.entry_by) : ''
           ]);
         });
       }catch(e){
-        dataRows.push([x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, x.mobile_no, un(x.entry_by)]);
+        dataRows.push([x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, perfType, perfDet, x.mobile_no, un(x.entry_by)]);
       }
     } else {
-      dataRows.push([x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, x.mobile_no, un(x.entry_by)]);
+      dataRows.push([x.serial_no, x.balak_naam, x.parent_naam, fD(x.janm_tarikh), x.umer+' વર્ષ', x.society_naam, x.shala_naam||'', x.program_prakar, perfType, perfDet, x.mobile_no, un(x.entry_by)]);
     }
   });
 
   const totalIndiv = balaks.reduce((s,x)=>s+(parseInt(x.total_members)||1),0);
   const rows = [
     [H],['Silver Jubilee — 25th Ganesh Mahotsav'],[],
-    ['ક્રમ','બાળકનું નામ','Parent નામ','જન્મ તા.','ઉંમર','સોસાયટી','શાળા','પ્રોગ્રામ','Mobile','Entry By'],
+    ['ક્રમ','બાળકનું નામ','Parent નામ','જન્મ તા.','ઉંમર','સોસાયટી','શાળા','પ્રોગ્રામ','Solo/Group','Performance Details (Song/Natak)','Mobile','Entry By'],
     ...dataRows,
     [],[],['Program-wise Summary'],['Program','Registrations','Total Balako'],
     ...Object.entries(progs).sort((a,b)=>b[1]-a[1]).map(([p,c])=>{
@@ -3192,7 +3198,7 @@ function exportBalakExcel(mode){
     ['કુલ', balaks.length+' Registrations', totalIndiv+' Balako']
   ];
   const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:12},{wch:8},{wch:20},{wch:18},{wch:20},{wch:14},{wch:14}];
+  ws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:12},{wch:8},{wch:20},{wch:18},{wch:20},{wch:8},{wch:35},{wch:14},{wch:14}];
   XLSX.utils.book_append_sheet(wb, ws, 'Full List');
 
   if(mode==='progwise'){
@@ -3203,6 +3209,8 @@ function exportBalakExcel(mode){
       // Expand members
       const pDataRows = [];
       items.forEach(x=>{
+        const pd = x.performance_details||'';
+        const pt = x.performance_type==='Group'?'Group':'Solo';
         if(x.performance_type==='Group' && x.group_members){
           try{
             const members = JSON.parse(x.group_members);
@@ -3213,23 +3221,25 @@ function exportBalakExcel(mode){
                 mi===0?x.parent_naam:'',
                 (m.age||x.umer)+' વર્ષ',
                 m.society||x.society_naam,
+                mi===0?pt:'',
+                mi===0?pd:'',
                 mi===0?x.mobile_no:''
               ]);
             });
           }catch(e){
-            pDataRows.push([x.serial_no,x.balak_naam,x.parent_naam,x.umer+' વર્ષ',x.society_naam,x.mobile_no]);
+            pDataRows.push([x.serial_no,x.balak_naam,x.parent_naam,x.umer+' વર્ષ',x.society_naam,pt,pd,x.mobile_no]);
           }
         } else {
-          pDataRows.push([x.serial_no,x.balak_naam,x.parent_naam,x.umer+' વર્ષ',x.society_naam,x.mobile_no]);
+          pDataRows.push([x.serial_no,x.balak_naam,x.parent_naam,x.umer+' વર્ષ',x.society_naam,pt,pd,x.mobile_no]);
         }
       });
       const prows = [
         [H],[prog+' — '+items.length+' Registrations — '+totalInProg+' Balako'],[],
-        ['ક્રમ','બાળકનું નામ (Leader 👑)','Parent','ઉંમર','સોસાયટી','Mobile'],
+        ['ક્રમ','બાળકનું નામ (Leader 👑)','Parent','ઉંમર','સોસાયટી','Solo/Group','Performance Details (Song/Natak)','Mobile'],
         ...pDataRows
       ];
       const pws = XLSX.utils.aoa_to_sheet(prows);
-      pws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:8},{wch:20},{wch:14}];
+      pws['!cols']=[{wch:5},{wch:20},{wch:18},{wch:8},{wch:20},{wch:8},{wch:35},{wch:14}];
       XLSX.utils.book_append_sheet(wb, pws, sname);
     });
   }
