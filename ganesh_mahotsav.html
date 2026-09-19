@@ -4320,6 +4320,7 @@ function renderDrawStats(){
       <div style="font-size:17px;font-weight:700;color:var(--gr)">${fmt(totalPaid)}</div>
       <div style="font-size:10px;color:var(--gy)">✅ Collected</div>
       <div style="font-size:11px;color:var(--re);margin-top:2px">⏳ Baki: ${fmt(totalPending)}</div>
+      ${totalPaid>0?`<button onclick="pushDrawToIncome()" style="margin-top:8px;background:linear-gradient(135deg,#1a7a4a,#27ae60);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;width:100%">📥 Aavak માં Sync</button>`:''}
     </div>
   `;
 }
@@ -4932,10 +4933,11 @@ function renderCouponSales(){
   // Summary row
   html+=`<div style="background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(192,57,43,.03));border-radius:var(--r);border:1.5px solid rgba(192,57,43,.2);padding:12px 13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
     <div style="font-size:12px;font-weight:700;color:#c0392b">📊 કુલ ${couponSales.length} buyers — ${couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0)} coupons</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <span style="font-size:12px;color:var(--teal);font-weight:700">Total: ${fmt(grandTotal)}</span>
       <span style="font-size:12px;color:var(--gr);font-weight:700">Paid: ${fmt(grandPaid)}</span>
       <span style="font-size:12px;color:var(--re);font-weight:700">Baki: ${fmt(grandTotal-grandPaid)}</span>
+      ${grandPaid>0?`<button onclick="pushCouponToIncome()" style="background:linear-gradient(135deg,#1a7a4a,#27ae60);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">📥 Aavak Sync</button>`:''}
     </div>
   </div>`;
   list.innerHTML=html;
@@ -5090,15 +5092,15 @@ async function _upsertIncome(type, name, amount, note){
   }catch(e){console.log('income sync error ['+name+']:',e); return false;}
 }
 
-// Refresh only income/expense data without re-triggering Draw sync (avoids loop)
+// Refresh only income/expense data without re-triggering Draw/Falo sync (avoids infinite loop)
 async function _refreshIncome(){
-  const {data:inc} = await sb.from('income').select('*').eq('is_deleted',false).order('entry_date',{ascending:false});
-  const {data:exp} = await sb.from('expense').select('*').eq('is_deleted',false).order('entry_date',{ascending:false});
-  incomeData = inc||[];
-  expenseData = exp||[];
-  renderIncome();
-  renderExpense();
-  renderDashboard();
+  const [r1,r2] = await Promise.all([
+    sb.from('income').select('*').eq('is_deleted',false).order('entry_date',{ascending:false}),
+    sb.from('expense').select('*').eq('is_deleted',false).order('entry_date',{ascending:false})
+  ]);
+  inc = r1.data||[];
+  exp = r2.data||[];
+  render();
 }
 
 async function syncDrawBooksToIncome(){
