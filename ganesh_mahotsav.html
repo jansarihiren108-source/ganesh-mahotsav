@@ -4937,7 +4937,7 @@ function renderCouponSales(){
       <span style="font-size:12px;color:var(--teal);font-weight:700">Total: ${fmt(grandTotal)}</span>
       <span style="font-size:12px;color:var(--gr);font-weight:700">Paid: ${fmt(grandPaid)}</span>
       <span style="font-size:12px;color:var(--re);font-weight:700">Baki: ${fmt(grandTotal-grandPaid)}</span>
-      ${grandPaid>0?`<button onclick="pushCouponToIncome()" style="background:linear-gradient(135deg,#1a7a4a,#27ae60);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">📥 Aavak Sync</button>`:''}
+
     </div>
   </div>`;
   list.innerHTML=html;
@@ -5135,19 +5135,8 @@ async function pushDrawToIncome(){
   finally{ if(btn){ btn.textContent='📥 Aavak માં Sync'; btn.disabled=false; } }
 }
 
-async function pushCouponToIncome(){
-  const paid = couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
-  const qty = couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
-  if(!paid){ toast('Coupon collection ₹0 chhe!','te'); return; }
-  const btn = document.querySelector('[onclick="pushCouponToIncome()"]');
-  if(btn){ btn.textContent='⏳ Saving...'; btn.disabled=true; }
-  try{
-    const ok = await _upsertIncome('Coupon Sales', COUPON_INCOME_NAME, paid, couponSales.length+' buyers, '+qty+' coupons');
-    if(ok){ await _refreshIncome(); toast('✅ Coupon ₹'+paid+' Aavak ma add thayun!','tg'); }
-    else { toast('⚠️ Sync thayun nahi — upar no error message juo','te'); }
-  } catch(e){ toast('❌ pushCoupon Error: '+e.message,'te'); }
-  finally{ if(btn){ btn.textContent='📥 Aavak Sync'; btn.disabled=false; } }
-}
+// Coupon Sales Aavak ma sync nathi — amount Draw Book Recovery ma already include chhe
+function pushCouponToIncome(){ toast('ℹ️ Coupon amount Draw Book Recovery ma include chhe','tg'); }
 
 async function syncDrawBooksToIncome(){
   const totalPaid = drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
