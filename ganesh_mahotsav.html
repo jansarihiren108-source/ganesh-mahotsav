@@ -5073,23 +5073,32 @@ const DRAW_BOOK_INCOME_NAME = 'Draw Book Recovery — ૨૫મો ગણેશ 
 // Generic sync helper — upserts one auto-managed income row by name
 // Returns true if something changed (so caller can refresh income list)
 async function _upsertIncome(type, name, amount, note){
-  try{
-    const r = await sb.from('income').select('id').eq('name',name).eq('is_deleted',false);
-    const rows = r.data||[];
-    if(rows.length>0){
-      await sb.from('income').update({amount,note}).eq('id',rows[0].id);
-      for(let i=1;i<rows.length;i++) await sb.from('income').delete().eq('id',rows[i].id);
-    } else {
-      const r2 = await sb.from('income').select('id').eq('name',name).eq('is_deleted',true);
-      const deleted = r2.data||[];
-      if(deleted.length>0){
-        await sb.from('income').update({amount,note,is_deleted:false}).eq('id',deleted[0].id);
-      } else {
-        await sb.from('income').insert({entry_date:td(),type,name,amount,note,user_id:cu,is_deleted:false});
-      }
-    }
+  // Step 1: find existing active entry
+  const r = await sb.from('income').select('id').eq('name',name).eq('is_deleted',false);
+  if(r.error){ toast('❌ DB Error: '+r.error.message,'te'); return false; }
+  const rows = r.data||[];
+
+  if(rows.length>0){
+    // Update existing
+    const upd = await sb.from('income').update({amount,note}).eq('id',rows[0].id);
+    if(upd.error){ toast('❌ Update Error: '+upd.error.message,'te'); return false; }
+    // Delete duplicates if any
+    for(let i=1;i<rows.length;i++) await sb.from('income').delete().eq('id',rows[i].id);
     return true;
-  }catch(e){console.log('income sync error ['+name+']:',e); return false;}
+  }
+
+  // Step 2: try to restore a deleted entry with same name
+  const r2 = await sb.from('income').select('id').eq('name',name).eq('is_deleted',true);
+  if(!r2.error && r2.data && r2.data.length>0){
+    const upd2 = await sb.from('income').update({amount,note,is_deleted:false}).eq('id',r2.data[0].id);
+    if(upd2.error){ toast('❌ Restore Error: '+upd2.error.message,'te'); return false; }
+    return true;
+  }
+
+  // Step 3: fresh insert
+  const ins = await sb.from('income').insert({entry_date:td(),type,name,amount,note,user_id:cu,is_deleted:false});
+  if(ins.error){ toast('❌ Insert Error: '+ins.error.message,'te'); return false; }
+  return true;
 }
 
 // Refresh only income/expense data without re-triggering Draw/Falo sync (avoids infinite loop)
@@ -5103,28 +5112,59 @@ async function _refreshIncome(){
   render();
 }
 
+// Manual push buttons — user presses to sync Draw amounts to Aavak
+async function pushDrawToIncome(){
+  const totalPaid = drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  if(!totalPaid){ toast('Book collection ₹0 chhe!','te'); return; }
+  const paidBooks = drawBooks.filter(x=>parseFloat(x.paid_amount)>0).length;
+  const btn = document.querySelector('[onclick="pushDrawToIncome()"]');
+  if(btn){ btn.textContent='⏳ Saving...'; btn.disabled=true; }
+  const ok = await _upsertIncome('Draw Recovery', DRAW_BOOK_INCOME_NAME, totalPaid, paidBooks+' books — collected');
+  if(btn){ btn.textContent='📥 Aavak માં Sync'; btn.disabled=false; }
+  if(ok){ await _refreshIncome(); toast('✅ Draw ₹'+totalPaid+' Aavak ma add thayun!','tg'); }
+}
+
+async function pushCouponToIncome(){
+  const paid = couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  const qty = couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
+  if(!paid){ toast('Coupon collection ₹0 chhe!','te'); return; }
+  const btn = document.querySelector('[onclick="pushCouponToIncome()"]');
+  if(btn){ btn.textContent='⏳ Saving...'; btn.disabled=true; }
+  const ok = await _upsertIncome('Coupon Sales', COUPON_INCOME_NAME, paid, couponSales.length+' buyers, '+qty+' coupons');
+  if(btn){ btn.textContent='📥 Aavak Sync'; btn.disabled=false; }
+  if(ok){ await _refreshIncome(); toast('✅ Coupon ₹'+paid+' Aavak ma add thayun!','tg'); }
+}
+
 async function syncDrawBooksToIncome(){
   const totalPaid = drawBooks.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
   if(!totalPaid) return;
   const paidBooks = drawBooks.filter(x=>parseFloat(x.paid_amount)>0).length;
-  const ok = await _upsertIncome('Draw Recovery', DRAW_BOOK_INCOME_NAME, totalPaid, paidBooks+' books — collected');
-  if(ok) await _refreshIncome();
+  await _upsertIncome('Draw Recovery', DRAW_BOOK_INCOME_NAME, totalPaid, paidBooks+' books — collected');
 }
 
 async function syncCouponToIncome(){
   const paid = couponSales.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
   const qty = couponSales.reduce((s,x)=>s+(parseInt(x.quantity)||0),0);
   if(!paid) return;
-  const ok = await _upsertIncome('Coupon Sales', COUPON_INCOME_NAME, paid, couponSales.length+' buyers, '+qty+' coupons');
-  if(ok) await _refreshIncome();
+  await _upsertIncome('Coupon Sales', COUPON_INCOME_NAME, paid, couponSales.length+' buyers, '+qty+' coupons');
+}
+
+async function pushFaloToIncome(){
+  const paid = faloData.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
+  if(!paid){ toast('Falo collection ₹0 chhe!','te'); return; }
+  const cnt = faloData.filter(x=>parseFloat(x.paid_amount)>0).length;
+  const btn = document.querySelector('[onclick="pushFaloToIncome()"]');
+  if(btn){ btn.textContent='⏳ Saving...'; btn.disabled=true; }
+  const ok = await _upsertIncome('Group Falo', FALO_INCOME_NAME, paid, cnt+' members collected');
+  if(btn){ btn.textContent='📥 Aavak Sync'; btn.disabled=false; }
+  if(ok){ await _refreshIncome(); toast('✅ Falo ₹'+paid+' Aavak ma add thayun!','tg'); }
 }
 
 async function syncFaloToIncome(){
   const paid = faloData.reduce((s,x)=>s+(parseFloat(x.paid_amount)||0),0);
   if(!paid) return;
   const cnt = faloData.filter(x=>parseFloat(x.paid_amount)>0).length;
-  const ok = await _upsertIncome('Group Falo', FALO_INCOME_NAME, paid, cnt+' members collected');
-  if(ok) await _refreshIncome();
+  await _upsertIncome('Group Falo', FALO_INCOME_NAME, paid, cnt+' members collected');
 }
 
 async function addFaloMember2(){
@@ -5198,6 +5238,7 @@ function renderFaloStats(){
     <div style="background:var(--grl);border-radius:10px;padding:11px;border:1.5px solid rgba(26,122,74,.2)">
       <div style="font-size:15px;font-weight:700;color:var(--gr)">${fmt(paid)}</div>
       <div style="font-size:10px;color:var(--gy)">✅ Collected</div>
+      ${paid>0?`<button onclick="pushFaloToIncome()" style="margin-top:6px;background:linear-gradient(135deg,#1a7a4a,#27ae60);color:#fff;border:none;border-radius:7px;padding:5px 8px;font-size:10px;font-weight:700;cursor:pointer;width:100%">📥 Aavak Sync</button>`:''}
     </div>
     <div style="background:var(--rel);border-radius:10px;padding:11px;border:1.5px solid rgba(192,57,43,.2)">
       <div style="font-size:15px;font-weight:700;color:var(--re)">${fmt(baki)}</div>
