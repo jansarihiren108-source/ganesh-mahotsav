@@ -5076,25 +5076,32 @@ async function _upsertIncome(type, name, amount, note){
   try{
     const today = new Date().toISOString().split('T')[0];
 
-    // Step 1: soft-delete all existing rows with same name (active or not)
-    const rFind = await sb.from('income').select('id').eq('name', name);
+    // Step 1: check if row with same name exists (active)
+    const rFind = await sb.from('income').select('id,amount').eq('name', name).eq('is_deleted', false);
     if(rFind.error){ toast('❌ Find Error: '+rFind.error.message,'te'); return false; }
 
     if(rFind.data && rFind.data.length > 0){
-      // Mark all old ones as deleted
-      const delR = await sb.from('income').update({is_deleted:true}).eq('name', name);
-      if(delR.error){ toast('❌ Clear Error: '+delR.error.message,'te'); return false; }
+      // Update amount only — do NOT insert new row
+      const upd = await sb.from('income').update({amount, note, entry_date: today}).eq('id', rFind.data[0].id);
+      if(upd.error){ toast('❌ Update Error: '+upd.error.message,'te'); return false; }
+      // Remove duplicates if any
+      for(let i=1;i<rFind.data.length;i++){
+        await sb.from('income').update({is_deleted:true}).eq('id', rFind.data[i].id);
+      }
+      return true;
     }
 
-    // Step 2: fresh insert
+    // Step 2: check soft-deleted rows — restore instead of new insert
+    const rDel = await sb.from('income').select('id').eq('name', name).eq('is_deleted', true);
+    if(!rDel.error && rDel.data && rDel.data.length > 0){
+      const upd2 = await sb.from('income').update({amount, note, entry_date: today, is_deleted: false}).eq('id', rDel.data[0].id);
+      if(upd2.error){ toast('❌ Restore Error: '+upd2.error.message,'te'); return false; }
+      return true;
+    }
+
+    // Step 3: truly new — insert once
     const ins = await sb.from('income').insert({
-      entry_date: today,
-      type: type,
-      name: name,
-      amount: amount,
-      note: note,
-      user_id: cu,
-      is_deleted: false
+      entry_date: today, type, name, amount, note, user_id: cu, is_deleted: false
     });
     if(ins.error){ toast('❌ Insert Error: '+ins.error.message,'te'); return false; }
 
