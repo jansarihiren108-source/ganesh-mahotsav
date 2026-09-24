@@ -6,6 +6,7 @@
 <title>શ્રી વિશ્વનાથ મહાદેવ ગ્રુપ — ૨૫મો ગણેશ મહોત્સવ</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1259,6 +1260,80 @@ tr:last-child td{border-bottom:none}
       </div>
       <div id="draw-list"><div class="empty">Loading...</div></div>
     </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- 🏆 DRAW CEREMONY SECTION -->
+    <!-- ══════════════════════════════════════════ -->
+    <div style="margin-top:14px">
+      <div style="background:linear-gradient(135deg,#4a1942,#7c1d6f,#d4a017);border-radius:var(--r);padding:14px 16px;margin-bottom:11px;color:#fff;position:relative;overflow:hidden">
+        <div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;margin-bottom:3px">🏆 LIVE DRAW CEREMONY</div>
+        <div style="font-size:15px;font-weight:700">Draw Ceremony — ઇનામ નીકાળો</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">125 ઇનામ · Coupon no. nako → auto info → confirm → PDF</div>
+        <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:48px;opacity:.15">🏆</div>
+      </div>
+
+      <!-- CEREMONY STATS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:11px" id="cer-stats-bar">
+        <div style="background:linear-gradient(135deg,#1a0a2e,#2d1154);border-radius:10px;padding:11px;text-align:center;border:1px solid rgba(212,160,23,.2)">
+          <div style="font-size:20px;font-weight:800;color:#ffd700">125</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.5);margin-top:2px">કુલ ઇનામ</div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(5,150,105,.08));border-radius:10px;padding:11px;text-align:center;border:1px solid rgba(16,185,129,.25)">
+          <div style="font-size:20px;font-weight:800;color:#10b981" id="cer-done">0</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.5);margin-top:2px">થઈ ગઈ</div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(217,119,6,.06));border-radius:10px;padding:11px;text-align:center;border:1px solid rgba(245,158,11,.25)">
+          <div style="font-size:20px;font-weight:800;color:#f59e0b" id="cer-left">125</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.5);margin-top:2px">બાકી</div>
+        </div>
+      </div>
+
+      <!-- NEXT PRIZE INFO -->
+      <div style="background:rgba(255,215,0,.08);border:1.5px solid rgba(255,215,0,.25);border-radius:12px;padding:12px 14px;margin-bottom:11px;text-align:center">
+        <div style="font-size:10px;color:rgba(255,255,255,.45);margin-bottom:3px" id="cer-rank-label">ઇનામ ક્રમ</div>
+        <div style="font-size:17px;font-weight:700;color:#ffd700" id="cer-rank-name">— — —</div>
+      </div>
+
+      <!-- PRIZE NAME INPUT -->
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px;margin-bottom:10px">
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px">🎁 ઇનામ શું chhe? (ભરો)</div>
+        <input type="text" id="cer-prize-name" placeholder="ઉદા: બાઇક, ₹500 ગિફ્ટ, ઘડિયાળ..."
+          style="width:100%;padding:10px 13px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,215,0,.3);border-radius:9px;color:#fff;font-size:13px;font-family:Poppins,sans-serif;outline:none;margin-bottom:10px">
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px">🎟️ Coupon No. નાખો</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="number" id="cer-coupon-input" placeholder="Coupon No." inputmode="numeric" min="1" max="5050"
+            style="flex:1;padding:12px 14px;background:rgba(255,255,255,.1);border:2px solid rgba(255,215,0,.35);border-radius:10px;color:#fff;font-size:24px;font-weight:700;font-family:Poppins,sans-serif;outline:none;text-align:center;letter-spacing:2px"
+            oninput="cerCouponReset()"
+            onkeydown="if(event.key==='Enter')cerLookup()">
+          <button onclick="cerLookup()" style="background:linear-gradient(135deg,#ffd700,#f59e0b);color:#1a0a2e;border:none;border-radius:10px;padding:12px 16px;font-size:20px;cursor:pointer;font-weight:700">🔍</button>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <div id="cer-preview" style="display:none;background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(5,150,105,.08));border:2px solid rgba(16,185,129,.35);border-radius:12px;padding:14px;margin-bottom:10px;text-align:center">
+        <div style="font-size:34px;font-weight:800;color:#ffd700" id="cer-pv-coupon"></div>
+        <div style="font-size:17px;font-weight:700;color:#fff;margin-top:4px" id="cer-pv-holder"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:2px" id="cer-pv-range"></div>
+        <div id="cer-pv-buyer" style="margin-top:8px"></div>
+      </div>
+
+      <button id="cer-btn-confirm" onclick="cerConfirm()"
+        style="display:none;width:100%;padding:13px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;margin-bottom:14px">
+        ✅ ઇનામ Confirm કરો
+      </button>
+
+      <!-- RESULTS LIST -->
+      <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:13px;font-weight:700;color:#ffd700">🏅 Draw Results (<span id="cer-res-count">0</span>)</div>
+          <button onclick="cerGeneratePDF()" id="cer-btn-pdf"
+            style="background:linear-gradient(135deg,#6d28d9,#7c3aed);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif;opacity:.4"
+            disabled>📄 PDF</button>
+        </div>
+        <div id="cer-results-list"><div style="text-align:center;padding:20px;color:rgba(255,255,255,.3);font-size:13px">હજી કોઈ ઇનામ નથી નીકળ્યું</div></div>
+      </div>
+    </div>
+
   </div>
 
   <!-- FALO PAGE -->
@@ -1482,7 +1557,7 @@ function showTab(n){
     renderSizeRows();
     loadTshirt();
   }
-  if(n==='draw'){loadDraw();}
+  if(n==='draw'){loadDraw();cerLoadResults();}
   if(n==='falo'){loadFalo();}
   if(n==='javak'){document.getElementById('javak-tag').innerHTML=utag(cu);}
   if(n==='mahotsav'){renderMahotsav();}
@@ -5372,6 +5447,191 @@ function exportCSV(){
   const rows=[[`Shree Vishvanath Mahadev Group 25th`],[],['AAVAK'],['Tarikh','Naam','Prakar','Rakam','User'],...inc.map(x=>[fD(x.entry_date),x.name,x.type,x.amount,un(x.user_id)]),[],'JAVAK',['Tarikh','Vivaran','Prakar','Rakam','User','Bill'],...exp.map(x=>[fD(x.entry_date),x.description,x.type,x.amount,un(x.user_id),x.bill_url?'Yes':'No'])];
   const csv=rows.map(r=>Array.isArray(r)?r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(','):r).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='GM25.csv';a.click();
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// \uD83C\uDFC6 DRAW CEREMONY \u2014 embedded in Draw tab
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+let cerResults = [];
+let cerCurrentData = null;
+
+async function cerLoadResults(){
+  // Try DB first
+  const r = await sb.from('draw_ceremony_results').select('*').order('rank_no');
+  if(!r.error){
+    cerResults = r.data||[];
+    localStorage.setItem('cer_results_2026', JSON.stringify(cerResults));
+  } else {
+    cerResults = JSON.parse(localStorage.getItem('cer_results_2026')||'[]');
+  }
+  cerRenderAll();
+}
+
+function cerRenderAll(){
+  const done = cerResults.length;
+  document.getElementById('cer-done').textContent = done;
+  document.getElementById('cer-left').textContent = Math.max(0,125-done);
+  document.getElementById('cer-res-count').textContent = done;
+  const pdfBtn = document.getElementById('cer-btn-pdf');
+  if(pdfBtn){ pdfBtn.disabled = done===0; pdfBtn.style.opacity = done===0?'.4':'1'; }
+
+  // Next prize label
+  const rankNo = done+1;
+  const prizeRank = 126-rankNo;
+  document.getElementById('cer-rank-label').textContent = `\u0A87\u0AA8\u0ABE\u0AAE \u0A95\u0ACD\u0AB0\u0AAE: ${rankNo} / 125`;
+  document.getElementById('cer-rank-name').textContent =
+    prizeRank===1?'\uD83E\uDD47 \u0AAA\u0ACD\u0AB0\u0AA5\u0AAE \u0A87\u0AA8\u0ABE\u0AAE':prizeRank===2?'\uD83E\uDD48 \u0AAC\u0AC0\u0A9C\u0ACB \u0A87\u0AA8\u0ABE\u0AAE':prizeRank===3?'\uD83E\uDD49 \u0AA4\u0ACD\u0AB0\u0AC0\u0A9C\u0ACB \u0A87\u0AA8\u0ABE\u0AAE':`${prizeRank}\u0AAE\u0ACB \u0A87\u0AA8\u0ABE\u0AAE`;
+
+  // Results list
+  const list = document.getElementById('cer-results-list');
+  if(!cerResults.length){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:rgba(255,255,255,.3);font-size:13px">\u0AB9\u0A9C\u0AC0 \u0A95\u0ACB\u0A88 \u0A87\u0AA8\u0ABE\u0AAE \u0AA8\u0AA5\u0AC0 \u0AA8\u0AC0\u0A95\u0AB3\u0ACD\u0AAF\u0AC1\u0A82</div>';
+    return;
+  }
+  const sorted=[...cerResults].sort((a,b)=>b.rank_no-a.rank_no);
+  list.innerHTML=sorted.map(r=>{
+    const pl=r.prize_rank===1?'\uD83E\uDD47 1st':r.prize_rank===2?'\uD83E\uDD48 2nd':r.prize_rank===3?'\uD83E\uDD49 3rd':`${r.prize_rank}th`;
+    const winner=r.buyer_name||r.holder_name||'\u2014';
+    return `<div style="display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07)">
+      <div style="font-size:10px;font-weight:700;background:rgba(255,215,0,.12);color:#ffd700;border:1px solid rgba(255,215,0,.25);border-radius:5px;padding:3px 7px;white-space:nowrap;min-width:44px;text-align:center">${pl}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:700;color:#ffd700">#${String(r.coupon_no).padStart(4,'0')}</div>
+        <div style="font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${winner}</div>
+        ${r.book_no?`<div style="font-size:10px;color:rgba(255,255,255,.4)">Book #${r.book_no}${r.holder_name&&r.buyer_name?' \u00B7 '+r.holder_name:''}</div>`:''}
+        <div style="font-size:11px;color:#86efac;font-weight:600">\uD83C\uDF81 ${r.prize_name}</div>
+      </div>
+      <button onclick="cerDelete(${r.rank_no})" style="background:rgba(255,50,50,.15);border:1px solid rgba(255,50,50,.3);color:#fca5a5;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;font-family:Poppins,sans-serif">\uD83D\uDDD1\uFE0F</button>
+    </div>`;
+  }).join('');
+}
+
+function cerCouponReset(){
+  document.getElementById('cer-preview').style.display='none';
+  document.getElementById('cer-btn-confirm').style.display='none';
+  cerCurrentData=null;
+}
+
+async function cerLookup(){
+  const val=parseInt(document.getElementById('cer-coupon-input').value);
+  if(!val||val<1||val>5050){ toast('\u26A0\uFE0F 1 thi 5050 ni vaache!','te'); return; }
+  if(cerResults.find(r=>parseInt(r.coupon_no)===val)){ toast('\u26A0\uFE0F Aa coupon pahela j nikdyo chhe!','te'); return; }
+
+  const padded=String(val).padStart(4,'0');
+  let holder=null;
+  for(const b of drawBooks){ if(val>=parseInt(b.from_coupon)&&val<=parseInt(b.to_coupon)){holder=b;break;} }
+  let buyer=null;
+  for(const s of couponSales){ const nos=(s.coupon_nos||'').split(',').map(x=>x.trim()); if(nos.includes(padded)||nos.includes(String(val))){buyer=s;break;} }
+
+  cerCurrentData={coupon_no:val,holder,buyer};
+
+  document.getElementById('cer-pv-coupon').textContent='#'+padded;
+  document.getElementById('cer-pv-holder').textContent=holder?holder.holder_name||'\u2014':'Book Holder: \u2014\u2014';
+  document.getElementById('cer-pv-range').textContent=holder?`Book #${holder.book_no} \u00B7 ${String(holder.from_coupon).padStart(4,'0')}\u2013${String(holder.to_coupon).padStart(4,'0')}`:'';
+  const bEl=document.getElementById('cer-pv-buyer');
+  if(buyer&&buyer.buyer_name){
+    bEl.innerHTML=`<div style="background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);border-radius:8px;padding:7px 11px;font-size:12px;color:#c4b5fd;text-align:center">\uD83C\uDF9F\uFE0F Kharideo: <b>${buyer.buyer_name}</b>${buyer.mobile_no?' \u00B7 \uD83D\uDCF1'+buyer.mobile_no:''}</div>`;
+  } else {
+    bEl.innerHTML=`<div style="background:rgba(255,100,0,.1);border:1px solid rgba(255,100,0,.25);border-radius:8px;padding:6px 11px;font-size:11px;color:#fdba74;text-align:center">\uD83D\uDCA1 Koi e kharidi nathi \u2014 book holder winner</div>`;
+  }
+  document.getElementById('cer-preview').style.display='block';
+  document.getElementById('cer-btn-confirm').style.display='block';
+  document.getElementById('cer-btn-confirm').disabled=false;
+}
+
+async function cerConfirm(){
+  if(!cerCurrentData){ toast('Pehla coupon search karo!','te'); return; }
+  const prizeName=document.getElementById('cer-prize-name').value.trim();
+  if(!prizeName){ toast('\u26A0\uFE0F \u0A87\u0AA8\u0ABE\u0AAE \u0AB6\u0AC1\u0A82 chhe ae \u0AAD\u0AB0\u0ACB!','te'); return; }
+
+  const btn=document.getElementById('cer-btn-confirm');
+  btn.textContent='\u23F3 Saving...'; btn.disabled=true;
+
+  const rankNo=cerResults.length+1;
+  const prizeRank=126-rankNo;
+  const entry={
+    rank_no:rankNo, prize_rank:prizeRank,
+    coupon_no:cerCurrentData.coupon_no,
+    holder_name:cerCurrentData.holder?.holder_name||'',
+    book_no:cerCurrentData.holder?.book_no||null,
+    buyer_name:cerCurrentData.buyer?.buyer_name||'',
+    buyer_mobile:cerCurrentData.buyer?.mobile_no||'',
+    prize_name:prizeName,
+    drawn_at:new Date().toISOString()
+  };
+
+  // Save to DB
+  try{ await sb.from('draw_ceremony_results').insert(entry); } catch(e){}
+  // Always localStorage backup
+  cerResults.push(entry);
+  localStorage.setItem('cer_results_2026',JSON.stringify(cerResults));
+
+  // Reset
+  document.getElementById('cer-coupon-input').value='';
+  document.getElementById('cer-prize-name').value='';
+  document.getElementById('cer-preview').style.display='none';
+  btn.style.display='none';
+  btn.textContent='\u2705 \u0A87\u0AA8\u0ABE\u0AAE Confirm \u0A95\u0AB0\u0ACB';
+  cerCurrentData=null;
+
+  cerRenderAll();
+  toast('\uD83C\uDFC6 \u0A87\u0AA8\u0ABE\u0AAE #'+rankNo+' save thayun!','tg');
+}
+
+async function cerDelete(rankNo){
+  if(!confirm('Rank #'+rankNo+' delete karvu chhe?')) return;
+  cerResults=cerResults.filter(r=>r.rank_no!==rankNo);
+  localStorage.setItem('cer_results_2026',JSON.stringify(cerResults));
+  try{ await sb.from('draw_ceremony_results').delete().eq('rank_no',rankNo); } catch(e){}
+  cerRenderAll();
+  toast('\uD83D\uDDD1\uFE0F Delete thayun','te');
+}
+
+async function cerGeneratePDF(){
+  if(!cerResults.length){ toast('Pehla draw karo!','te'); return; }
+  if(!window.jspdf){ toast('PDF library load nathi thai!','te'); return; }
+  toast('\u23F3 PDF bani rahi chhe...','ti');
+
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const pageW=210,m=14;
+  let y=20;
+
+  doc.setFontSize(16);doc.setFont('helvetica','bold');
+  doc.text('SHRI VISHWANATH MAHADEV GROUP',pageW/2,y,{align:'center'});y+=8;
+  doc.setFontSize(13);
+  doc.text('25th Ganesh Mahotsav 2026 \u2014 Draw Result',pageW/2,y,{align:'center'});y+=6;
+  doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text('Date: '+new Date().toLocaleDateString('en-IN')+'  |  Total: '+cerResults.length+'/125 Inam',pageW/2,y,{align:'center'});y+=9;
+
+  doc.setDrawColor(200,150,0);doc.setLineWidth(0.7);doc.line(m,y,pageW-m,y);y+=7;
+
+  // Header row
+  doc.setFillColor(40,20,80);doc.rect(m,y-5,pageW-m*2,7,'F');
+  doc.setTextColor(255,215,0);doc.setFontSize(8);doc.setFont('helvetica','bold');
+  doc.text('INAM',m+2,y);doc.text('COUPON',m+28,y);doc.text('WINNER',m+52,y);doc.text('BOOK/HOLDER',m+110,y);doc.text('PRIZE',m+155,y);
+  y+=7;
+
+  doc.setTextColor(0,0,0);doc.setFont('helvetica','normal');doc.setFontSize(8);
+  const sorted=[...cerResults].sort((a,b)=>a.rank_no-b.rank_no);
+
+  for(const r of sorted){
+    if(y>272){doc.addPage();y=20;}
+    const pl=r.prize_rank===1?'1st Prize':r.prize_rank===2?'2nd Prize':r.prize_rank===3?'3rd Prize':`${r.prize_rank}th`;
+    const winner=(r.buyer_name||r.holder_name||'\u2014').substring(0,26);
+    const book=r.book_no?`Book#${r.book_no}`:'';
+    const hldr=(r.holder_name&&r.buyer_name?r.holder_name:'').substring(0,14);
+    if(sorted.indexOf(r)%2===0){doc.setFillColor(245,240,255);doc.rect(m,y-4,pageW-m*2,7,'F');}
+    doc.setTextColor(100,60,0);doc.setFont('helvetica','bold');doc.text(pl,m+2,y);
+    doc.setTextColor(0,0,0);doc.setFont('helvetica','normal');
+    doc.text('#'+String(r.coupon_no).padStart(4,'0'),m+28,y);
+    doc.text(winner,m+52,y);
+    doc.text([book,hldr].filter(Boolean).join(' '),m+110,y);
+    doc.text(r.prize_name.substring(0,18),m+155,y);
+    y+=7;
+  }
+
+  doc.save('Draw_Result_25th_Ganesh_Mahotsav_2026.pdf');
+  toast('\u2705 PDF ready!','tg');
 }
 </script>
 
